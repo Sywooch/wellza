@@ -1,0 +1,308 @@
+.admin-customer-detail{
+    .panel-heading{
+        padding: 15px 0px 0px !important; margin-bottom:30px;
+    }
+    .customer-detail{padding: 40px 15px 10px;background-color: $color-white;box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.1); position: relative;
+                     .edit-btn{
+                         position: absolute; top: 15px; right: 15px;height: 40px; width: 40px; border-radius: 50%; line-height: 40px; display: block;background-color: #F9AE39;
+                         &:hover{ background-color: #ffbe49;}
+
+                         @media(min-width:$screen-sm-min) and (max-width:$screen-sm-max){
+                            height: 30px; width: 30px; top: 8px; line-height:29px;
+                         }
+                         img{
+                           @media(min-width:$screen-sm-min) and (max-width:$screen-sm-max){
+                                height: 15px; width: 15px; 
+                             } 
+                         }
+                     }
+                     .customer-left{
+                         .customer-image{
+                             height: 200px; width: 200px; border: 3px solid $color-green; border-radius: 50%; padding: 5px; margin: 0 auto;
+                             @media(min-width:$screen-sm-min) and (max-width:$screen-md-max){
+                                 height: 120px; width: 120px;
+                             }
+                             @media(max-width:$screen-xs-max){
+                                 height: 120px; width: 120px;
+                             }
+                         }
+                         ul{
+                             li{
+                                 padding: 3px 0px;
+                             }
+                             .name{font-family:$avantgardestd-bk; font-size:28px; color:#333;
+                                   @media(min-width:$screen-sm-min) and (max-width:$screen-md-max){
+                                       font-size:18px;
+                                   }
+                                   @media(max-width:$screen-xs-max){
+                                       font-size:18px;
+                                   }
+                             }
+                             .wellza-member{
+                                 font-size: 16px; color: #F8AD39; font-family: $avantgardestd-bk;
+                                 @media(min-width:$screen-sm-min) and (max-width:$screen-md-max){
+                                     font-size:14px;
+                                 }
+                             }
+                             .gender{
+                                 font-size: 16px; color: $color-666;font-family: $avantgarde-md;
+                                 @media(min-width:$screen-sm-min) and (max-width:$screen-md-max){
+                                     font-size:14px;
+                                 }
+                             }  
+                         }
+                     }
+
+                     .user-text-detail{
+                         .text-gray{
+                             color: #A0A0A0; font-family: $avantgardestd-bk; font-size:18px;margin-bottom:30px; 
+                             @media(min-width:$screen-sm-min) and (max-width:$screen-md-max){
+                                 font-size:14px; 
+                             }
+                             @media(max-width:$screen-xs-max){
+                                 font-size:14px; margin-bottom:15px; 
+                             }
+                             span{color: $color-666; font-family: $avantgardestd-bk; font-size:20px;
+                                  @media(min-width:$screen-sm-min) and (max-width:$screen-md-max){
+                                      font-size:16px; 
+                                  }
+                                  @media(max-width:$screen-xs-max){
+                                      font-size:16px; 
+                                  }
+                             } 
+                         }
+                     }
+    }
+
+    .product-status-list{
+        
+         .box-resize{
+            @media(max-width:$screen-xs-max){
+                width:50%; float:left;
+            }
+            @media(max-width:480px){
+                width:100%;
+            }
+        }
+
+        .item{
+            .product-detail{
+                text-align: center; background-color: $color-white;box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.1);padding-bottom:1px;margin-top: 30px;
+                text-align: center;
+                .product-name{
+                    font-size:20px; color: #52BFB8;font-family: $avantgarde-md;font-weight:normal; margin-top:20px;
+                }
+                .price{
+                    .new-price{
+                        font-size:18px; color:$color-pink;font-family: $avantgarde-md;
+                    }
+                    .old-price{
+                        font-size: 15px; color:#A1A1A1;display:inline-block;position:relative;
+                        &:after{
+                            content: ''; display: block; position:absolute; width: 100%; height: 1px; background: $color-pink; top:10px;
+                        }
+                    }
+                }
+                .status{
+                    font-family:$avantgarde-md;
+                    padding-top:5px;
+                }
+                .return{
+                    color:$color-666;
+                }
+                .cancle{
+                    color:#A1A1A1;
+                }
+                .deliver{
+                    color:$color-yellow;
+                }
+            }
+        }
+
+        .owl-nav{
+            position: absolute;top: 45%;  width: 100%;  height: 0;
+            .owl-prev{
+                float: left; position: relative; left: -9px;
+            }
+            .owl-next{
+                float: right;position: relative; right: -9px;
+            }
+        }
+    }
+
+    .total-referral{
+        .head2{
+            font-family: $avantgarde-md;font-size:28px;color:$heading-color;font-weight:bold;margin-top:40px;margin-bottom:20px;
+        }
+
+        .referral-box-list{
+
+            .box-five{
+                @media(min-width:$screen-lg-min){
+                    width:20%;
+                }
+
+                @media(max-width:$screen-xs-max){
+                    width:50%; float:left;
+                }
+                @media(max-width:480px){
+                    width:100%;
+                }
+            }
+            .referral-box{
+                text-align: center; padding: 15px; background-color: $color-white;@extend .box-shadow;margin-top: 30px;
+                .customer-image{
+                    width:140px;    height:140px;    margin: 0 auto;    border: 3px solid $color-green;    padding: 5px; border-radius:50%;
+                }
+                .name{
+                    font-family: $avantgardestd-bk; font-size:24px; margin-top:15px;color:#333;
+                }
+                .mail{
+                    font-family: $avantgardestd-bk; font-size:18px;color:#333;
+                    @media(min-width:$screen-sm-min) and (max-width:$screen-md-max){
+                        font-size:16px;
+                    }
+                }
+            }
+            .owl-nav{
+                position: absolute;top: 45%;width: 100%;  height: 0;
+                .owl-prev{
+                    float: left; position: relative;  left: -9px;
+                }
+                .owl-next{
+                    float: right;  position: relative; right: -9px;
+                }
+            }
+        }
+    }
+
+
+    .service-provider-list{
+        .table-responsive{
+            padding:1px;
+            @media(min-width:$screen-sm-min) and (max-width:$screen-lg-max){
+                width: 100%;  margin-bottom: 15px;overflow-y: hidden;      overflow-x: auto;
+            }
+            table{
+                @media(min-width:$screen-sm-min) and (max-width:$screen-lg-max){
+                    width: 1400px; 
+                }  
+            }
+        }
+        .head2{
+            font-family: $avantgarde-md;font-size:28px;color:$heading-color;font-weight:bold;margin-top:40px;margin-bottom:20px;
+        }
+        .table{margin-bottom:0;
+               td{
+                   border:0;
+               }
+        }
+        .box-shadow{
+            box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.1);
+        }
+        .main-provider-table{
+            background-color: $color-white; box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.1);
+
+            .pad{padding:0;border:0;}
+            .data-table{
+                .table-user-wrap{
+                    padding:30px 15px;border:0;
+                    .user-img{
+                        width: 75px; height: 75px; border: 2px solid #666; padding: 3px;  border-radius: 50%; display: inline-block; float: left;
+                    }
+                    .user-detail{
+                        float: left;margin-top: 8px;margin-left: 25px;
+                        .name{
+                            font-family: $avantgardestd-bk; font-size:20px; color:#383838; font-weight:bold;margin-bottom:0;
+
+                        }
+                        .address{
+                            font-family: $avantgardestd-bk; font-size:16px; color:$color-666;
+                        }
+                    }
+
+                }
+
+                .user-detail-tr{
+                    font-family: $avantgardestd-bk;  background:#F9F9F9;
+                    color:$color-666; height: 60px; border-top:1px solid #EEEEEE;
+                    &:last-child{
+                        border-bottom:1px solid #E4E4E4;
+                    }
+                    td{    vertical-align: middle;}
+                    img{
+                        margin-top: -5px;
+                    }
+                    .category{
+                        padding-left: 15px;
+                        padding-top:15px;
+                        padding-bottom:15px;
+                    }
+                    .review{
+                        color:$color-green;
+                        font-size: 16px;
+                        font-family: $avantgarde-md;
+                    }
+                    .clr-6{
+                        color:$color-666;
+                        font-family: $avantgarde-md;
+                    }
+                    .cancle{
+                        color: $color-pink;
+                        font-family: $avantgarde-md;
+                    }
+                    .done{
+                        color:$color-green;
+                        font-family: $avantgarde-md;
+                    }
+                }
+
+            }
+        }
+
+    }
+}
+
+.admin-product-view-modal{
+    .modal-header{
+        border:0 !important;
+        .close{background:$color-666 !important;}
+    }
+    .modal-body{
+        padding:40px!important; 
+        .details{
+            position:relative;padding-left: 20px;
+            &:before{
+                content: '';display:block;position:absolute;width:1px;height:100%;background:#EEEEEE;left:-17px;
+            }
+            h2{
+                font: 45px $avantgardestd-bk;color:$color-666;
+            }
+            p{
+                font: 32px $avantgarde-md; color:$color-green;
+            }
+            ul{
+                font:16px $avantgarde-md;
+                li{
+                    color:#9F9F9F;padding-bottom:15px;
+                    span{
+                        color: $color-666;
+                    }
+                }
+            }
+        }
+    }
+}
+.edit-customerdetail-modal{
+    .modal-dialog{
+        margin-top: 0 !important;
+        .customer-image{
+            width:200px; height:200px; position: relative; margin: 0 auto; border: 3px solid $color-green; padding: 5px; border-radius:50%; margin-bottom:25px;
+            .edit-btn{
+                position: absolute; top: 15px; right:3px;height: 40px; width: 40px; border-radius: 50%; line-height: 40px; display: block;background-color: #F9AE39;
+                &:hover{ background-color: #ffbe49;}
+            }
+        }  
+    }
+    
+}

@@ -1,0 +1,135 @@
+.service-package-section{  padding:0 60px;
+                           .btn-bottom{ margin-bottom: 40px;}
+                           .select-time-slider{ box-shadow: 0 0 4px -1px rgba(0, 0, 0, 0.2); margin-top: 90px;
+                                                &:after{
+                                                    background-color: #52bfb8; content: "";  height: 246px; left: 0;
+                                                    position: absolute;  right: 0; text-align: center; top: -24px; width: 220px; z-index: -1; margin: 0 auto; 
+                                                }
+                                                .owl-item{
+                                                   .item{
+                                                    .item-cnt{ text-align: center; padding:15px; border-left:2px solid #F0F0F0; z-index: -11;
+                                                               /*   &:after{
+                                                                         content: ''; background-color: #F0F0F0; width: 2px; height: 100%; top: 0; right: 0; position: absolute; z-index: -11;
+                                                                     }*/
+
+                                                               .time{
+                                                                   .number{
+                                                                       font-size: 60px; color:$color-black; font-family: $avantgardestd-bk; position: relative;
+                                                                       &:after{
+                                                                           background-color:rgba(0,0,0,0.1); content: "";  height: 2px; left: 0;
+                                                                           position: absolute;  right: 0; text-align: center;bottom:-7px;width: 129px; z-index: -1; margin: 0 auto; 
+                                                                       }
+                                                                   }
+                                                                   .minutes{
+                                                                       font-size: 18px; color:$color-black; font-family: $brandon-grotesque-r; margin-top: -13px;
+                                                                   }
+                                                                   .price{
+                                                                       font-size: 35px; font-family: $avantgardestd-bk; padding: 10px;
+                                                                   }
+                                                               }
+                                                    }
+                                                }  
+                                              
+                                                }
+                                               
+
+                                                .owl-item{
+                                                    &.active.center{
+                                                        /* .item-cnt{ background-color: $color-green;} */
+
+                                                        .item-cnt{ border-left: none;
+
+                                                                   .time{
+                                                                       .number,.minutes, .price{
+                                                                           color: $color-white;  
+                                                                       }
+                                                                   }
+                                                        }
+                                                    }
+
+                                                }
+                                                .owl-item{
+                                                    &.active.center + .owl-item{
+                                                        .item-cnt{ border-left: none;}
+                                                    }
+                                                }
+                                               
+
+
+
+                           }
+                           .select-datetime-section{ position: relative; margin:130px 0 30px; 
+                                                     .top-header{ font-family: $avantgardestd-bk;
+                                                                  .left-heading{
+                                                                      float: left; font-size: 20px; color: $color-666;  
+                                                                  }
+                                                                  .month{
+                                                                      width:250px; position: absolute; top: 0; left: 0; right: 0;margin:0 auto; text-align: center;
+                                                                      .owl-item{
+                                                                          height:28px; font-size: 25px; color: $color-black;
+                                                                          .item-cnt{z-index: 99999;
+                                                                                    span{
+                                                                                        background-color: $color-white; 
+                                                                                    }
+                                                                          }
+                                                                      }
+                                                                      .owl-nav{ position: absolute; top: -5px; width: 100%; height: 0;
+                                                                                .owl-prev, .owl-next{background: transparent; padding: 0; margin:0;}
+                                                                                .owl-prev{ float: left; }
+                                                                                .owl-next{ float: right;}
+                                                                      }
+                                                                  }
+
+                                                     }
+                                                     .day{ 
+                                                         margin:25px 30px 30px;  position: relative; 
+
+                                                         .item-cnt{
+                                                             a{
+                                                                 text-align: center; text-decoration: none;padding: 15px;color:$color-666; background-color: $color-white; border: 2px solid #F0F0F0;
+                                                                 display:block; height: 109px;
+                                                                 &:hover, &:active, &:focus{
+                                                                     border-color:#F9AE39; 
+                                                                 }
+                                                                 .date-number{
+                                                                     font-size: 25px; font-family: $avantgarde-md;
+                                                                 }
+                                                                 .day-name{
+                                                                     font-family: $brandon-grotesque-r; font-size: 16px; display: block;
+                                                                 }
+
+                                                             }
+                                                         }
+                                                         .owl-nav{ position: absolute; top: 30px; width: 100%; height: 0;
+                                                                   .owl-prev, .owl-next{background: transparent; padding: 0; margin:0;}
+                                                                   .owl-prev{ float: left; position: relative; left: -30px; }
+                                                                   .owl-next{ float: right;position: relative; right: -30px;}
+                                                         }
+                                                     }
+
+                                                     .time{ 
+                                                         margin:50px 30px 30px;  position: relative; 
+
+                                                         .item-cnt{
+                                                             a{
+                                                                 text-align: center; text-decoration: none;padding: 20px 0 0px;color:$color-666; background-color: $color-white; border: 2px solid #F0F0F0;
+                                                                 display:block; height: 80px; 
+                                                                 &:hover, &:active, &:focus{
+                                                                     border-color:#F9AE39; 
+                                                                 }
+                                                                 .time-number{
+                                                                     font-size: 22px; font-family: $avantgarde-md; color: $color-666;
+                                                                 }
+
+
+                                                             }
+                                                         }
+                                                         .owl-nav{ position: absolute; top: 17px; width: 100%; height: 0;
+                                                                   .owl-prev, .owl-next{background: transparent; padding: 0; margin:0;}
+                                                                   .owl-prev{ float: left; position: relative; left: -30px; }
+                                                                   .owl-next{ float: right;position: relative; right: -30px;}
+                                                         }
+                                                     }
+                           }
+
+}

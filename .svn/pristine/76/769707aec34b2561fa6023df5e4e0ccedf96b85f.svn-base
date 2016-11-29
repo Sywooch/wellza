@@ -1,0 +1,32 @@
+.add-product-modal{
+    .modal-body{ 
+        @media(min-width:$screen-lg-min){
+            padding: 65px !important;
+        }
+        .addproduct-box{
+            .upload-product-img{
+                @media(max-width:$screen-md-max){
+                    margin-bottom:15px;
+                }
+                background:#F8F8F8;   border: 1px solid #D6D6D6; text-align:center;padding:15px; 
+                img{
+                    display: block;text-align:center;margin:0 auto;
+                    @media(min-width:$screen-xs-max) and (max-width:$screen-md-min){
+                        width:150px;
+                    }
+                }
+            }
+            .btn-info{
+                @media(max-width:$screen-md-max){
+                    display: block; width:100%;
+                }
+            }
+        }   
+    }
+
+
+}
+
+
+
+

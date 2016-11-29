@@ -1,0 +1,114 @@
+<?php
+
+namespace backend\controllers;
+
+use Yii;
+use yii\base\InvalidParamException;
+use yii\web\BadRequestHttpException;
+use yii\web\Response;
+use yii\widgets\ActiveForm;
+use yii\data\ActiveDataProvider;
+use yii\web\UploadedFile;
+
+class ProviderDetailController extends \backend\components\Controller
+{
+    public function actionIndex($id = null)
+    {   $model = new \common\models\User();
+        $data = \common\models\User::findAllByIdentity($id);
+        $province = \common\components\Utility::provinceData('CA');
+        $cities = \common\components\Utility::cityData('CA');
+        return $this->render('provider-detail',['model' => $model,'data' => $data,'province' => $province,'cities' => $cities]);
+    }
+    
+    /***
+     * Manages the customer details
+     * 
+     * ***/
+    public function actionEditDetail($id = null)
+    {   
+        $model = new \common\models\User();
+        $post = Yii::$app->request->post();
+        $model->load($post);       
+        if (Yii::$app->request->isAjax && $model->load($post)) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return ActiveForm::validate($model);
+        }        
+        $model->load($post);
+        
+        $model->gender = $post['User']['gender'];
+        $model->profile_image = UploadedFile::getInstanceByName('profile_image');
+        $model->profile_image_thumb = UploadedFile::getInstanceByName('profile_image_thumb');
+        $isadmin = '';
+        if(!empty($post['originalimg'])) {
+            $image_array = explode('base64,',$post['originalimg']);
+            $img = $image_array[1];
+            $model->originalimg = base64_decode($img);
+            $isadmin = 'isadmin';
+        } 
+        
+        if(!empty($post['profile_thumbimg'])) {
+            $imagethumb_array = explode('base64,',$post['profile_thumbimg']);
+            $imgthumb = $imagethumb_array[1];
+            $model->profile_thumbimg = base64_decode($imgthumb);
+            $isadmin = 'isadmin';
+        }                
+               
+        $data = \common\models\User::findIdentity($id);
+        $province = \common\components\Utility::provinceData('CA');
+        $cities = \common\components\Utility::cityData('CA');
+        
+        $model->scenario = 'adminEditProfile';        
+        
+        $returndata = $model->setUserData($id,null ,null,'isadmin');
+        if(!empty($returndata)) {
+            Yii::$app->session->setFlash('customer_message', 'Profile edited!');
+            return $this->redirect(Yii::$app->urlManager->createUrl('provider-detail').'/'.$id);        
+        } else {
+            Yii::$app->session->setFlash('customer_message', 'Failed to edit profile!');
+            return $this->redirect(Yii::$app->urlManager->createUrl('provider-detail').'/'.$id);
+        }          
+    }
+    
+    /***
+     * Manages the customer details
+     * 
+     * ***/
+    public function actionProvinceCity()
+    {   
+        $data = Yii::$app->request->post();
+        
+        $cities = \common\models\MasterCities::getCitiesByProvince($data['state_id']);
+        echo json_encode($cities);
+        die;
+        //return $this->render('_edit-detail',['model' => $model,'data' => $data,'province' => $province,'cities' => $cities]);
+    }
+    
+    /********************************************** Ajax Driven functions ********************************************************************/
+    /****************************************************************************************************************************************/
+    
+    /**
+     * Change the customer status from Active to Inactive and vice versa
+     *
+     */
+    public function actionChangeStatus() {
+        
+        $data = Yii::$app->request->post();
+        
+        if($data['status'] == 'false') {
+            $status = 0;
+        } else {
+            $status = 10;
+        }
+        $user_id = $data['user_id'];
+        $returndata = \common\models\User::updateStatus($user_id, $status);
+        
+        if(!empty($returndata)) {
+            Yii::$app->session->setFlash('customer_message', 'Status Updated!');
+            
+        } else {
+            Yii::$app->session->setFlash('customer_message', 'Failed to updated status!');            
+        }
+        die;
+    }
+
+}

@@ -1,0 +1,81 @@
+<?php
+
+return [
+    'language' => 'en-US',
+    'components' => [
+        'db' => [
+            'class' => 'yii\db\Connection',
+            //'dsn' => 'mysql:host=localhost;dbname=welza',
+            'dsn' => 'mysql:host=ubuntu;dbname=welza',
+            'username' => 'root',
+            //'password' => '',
+            'password' => 'root',
+            'charset' => 'utf8'           
+        ],
+        'mailer' => [
+            'class' => 'yii\swiftmailer\Mailer',
+            'viewPath' => '@common/mail',
+            // send all mails to a file by default. You have to set
+            // 'useFileTransport' to false and configure a transport
+            // for the mailer to send real emails.
+            'useFileTransport' => true,
+        ],
+        'mail' => [
+            'class' => 'yii\swiftmailer\Mailer',
+            'viewPath' => '@common/mail',
+            'useFileTransport' => false, //set this property to false to send mails to real email addresses
+            'transport' => [
+                'class' => 'Swift_SmtpTransport',
+                'host' => 'mail.codiant.com',
+                'username' => 'testing@codiant.com',
+                'password' => 'test123',
+                'port' => '587'
+            ],
+        ],        
+        'user' => [
+            'class' => 'common\components\WebUser',
+            'identityClass' => 'common\models\User',
+        ],
+        'urlManagerBackend' => [
+            'class' => 'yii\web\urlManager',
+            'baseUrl' => '/backend/web',
+            'enablePrettyUrl' => true,
+            'showScriptName' => false,
+        ],
+        'urlManagerFrontEnd' => [
+            'class' => 'yii\web\urlManager',
+            'baseUrl' => '/frontend/web',
+            'enablePrettyUrl' => true,
+            'showScriptName' => false,
+        ],
+        'authClientCollection' => [
+            'class' => 'yii\authclient\Collection',
+            'clients' => [
+                'facebook' => [
+                    'class' => 'yii\authclient\clients\Facebook',
+                    'authUrl' => 'https://www.facebook.com/dialog/oauth?display=popup',
+                    'clientId' => '1573956009576871',
+                    'clientSecret' => '989b39986da73f2e6f0184922c4d0111',
+                ]
+                /*
+                'twitter' => [
+                    'class' => 'yii\authclient\clients\Twitter',
+                    'attributeParams' => [
+                      'include_email' => 'true'
+                    ],
+                    'consumerKey' => 'UUYOy0G3bHvDBqcodVpJ9KEt9',
+                    'consumerSecret' => 'NTnEUk8Kv06Ga7XlIN8k59hla60RkDLvQc4GtyLnbCrgDutbZ3',
+                ],
+                'linkedin' => [
+                    'class' => 'yii\authclient\clients\LinkedIn',
+                    'clientId' => '81ovxr31ovp55a',
+                    'clientSecret' => '0vMmdhhrhQgqWfkY',
+                ],*/
+            ],
+        ],
+        'cart' => [
+            'class' => 'yz\shoppingcart\ShoppingCart',
+            'cartId' => 'wellza_cart',
+        ]        
+    ],
+];

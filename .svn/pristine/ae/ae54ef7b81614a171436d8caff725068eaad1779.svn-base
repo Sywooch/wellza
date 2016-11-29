@@ -1,0 +1,38 @@
+Message-ID: <72a46b08ce75b838c148db80eab5f209@localhost>
+Date: Tue, 13 Sep 2016 11:15:54 +0530
+Subject: Reset Password Link
+From: Wellza <neerajs@neuronsolutions.com>
+To: jayantg@mailinator.com
+MIME-Version: 1.0
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+<table style=3D"border-collapse: collapse; padding: 50px;" border=3D"1" bor=
+dercolor=3D"#331F46" width=3D"730px" align=3D"center">
+    <tbody>
+        <tr bgcolor=3D"#331F46">
+            <td style=3D"border-bottom: 2px solid #ff3483; padding: 15px 0 =
+10px 10px;" align=3D"center" valign=3D"middle">
+   <img src=3D"http://localhost/wellza//images/logo.png" >
+            </td>
+        </tr>
+        <tr>
+            <td style=3D"padding: 10px 20px;">
+                <p style=3D"font-family: Tahoma, Geneva, sans-serif; font-s=
+ize: 14px;">Hi <strong> Myfirstname Mylastname </strong></p>
+                <p style=3D"font-family: Tahoma, Geneva, sans-serif; font-s=
+ize: 14px;">
+<p> <a href=3D"http://localhost/wellza/resetpassword?token=3Dm6VGQKAmRjJq37=
+98Y6bEt6X9daPqT-6q_1473745554">Click Here</a> to reset your password </p>  =
+ <p>Poshrite Team</p>                      <p style=3D"font-family: Tahoma,=
+ Geneva, sans-serif; color: #d76691; margin-top: 5px; font-size: 14px;"><a =
+href=3D"http://connect1on1.whatall.com" >www.poshrite.com</a></p>
+            </td>
+        </tr>
+        <tr bgcolor=3D"#331F46">
+            <td style=3D"padding: 15px 20px; color: #fff; font-family: Taho=
+ma, Geneva, sans-serif; " align=3D"center">&copy; 2016 -poshrite.com All ri=
+ghts reserved.</td>
+        </tr>
+    </tbody>
+</table>

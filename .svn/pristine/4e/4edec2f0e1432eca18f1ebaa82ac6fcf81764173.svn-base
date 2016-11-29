@@ -1,0 +1,125 @@
+.wellza-provider-section{
+    .inner-heading{
+        text-align: left; font-size: 25px;
+    } 
+    .top-headline{ padding: 18px 15px;box-shadow: 0 0 3px -1px rgba(0, 0, 0, 0.2); background-color: $color-white;
+                   .left{
+                       float: left; font-size: 18px; color: $color-666;
+                   }
+                   .right{
+                       float: right;
+                       a{
+                           text-decoration: none; color: #A1A1A1; font-size: 12px; letter-spacing: 0.4px; text-transform: uppercase;
+                           font-family: $avantgarde-md;  padding: 0 4px;font-weight: bold;
+                       }
+                   }
+    }
+    .wellza-provider-list{margin-top: 30px; 
+                          & > .row{
+                              @media(min-width:$screen-lg-min){
+                                  margin: 0 -23px;    
+                              }
+
+                          }
+
+                          .resize-box{
+                              @media(max-width:480px){
+                                  width: 100% !important; 
+                              }
+                              @media(max-width:$screen-xs-max){
+                                  width: 50%; float: left;
+                              }
+                          }
+
+
+                          .list-box{position: relative; margin: 0 8px 50px;text-align: center; padding: 60px 0px 60px; background-color: $color-white;box-shadow: 0 0 3px -1px rgba(0, 0, 0, 0.2);
+                                    .info-photo-video{ position: absolute; width:100%; padding: 19px 15px 0; top: 0;
+                                                       .photo, .video{
+                                                           font-size: 16px; color: $color-black; padding: 8px 25px;  border: 1px solid #F0F0F0; 
+                                                           background-color: #F9F9F9; border-radius: 25px;
+                                                           @media(max-width:$screen-xs-max){
+                                                               font-size: 13px;  padding: 8px 15px;
+                                                           }
+                                                       }         
+
+                                                       .photo{
+                                                           display: block; float: left; 
+                                                       }
+                                                       .video{
+                                                           display: block; float: right;
+                                                       }
+                                    }
+                                    .img-box{ position: relative; height: 171px; width: 171px;margin: 0 auto; border:4px solid $color-green;border-radius: 50%;
+                                              .provider-image{height: 100%; width: 100%; border-radius: 50%; border:5px solid $color-white;
+                                                              img{
+                                                                  height:100%; width: 100%; margin:0 auto;
+                                                              }  
+                                              }
+
+                                              &.check{
+                                                  border-color:$color-orange; 
+                                              }
+
+                                              .checkbox{display: inline-block; position: absolute; right:-11px; z-index: 999; top:15px;
+                                                        input[type=checkbox]:checked {
+                                                            + label{ 
+                                                                span{ background-image: url('../images/like.png');  }
+                                                            }
+                                                        }
+                                                        label{ padding: 0px !important;
+                                                               span{
+                                                                   background-image: url('../images/unlike.png'); height:40px; width: 40px;  background-repeat: no-repeat; 
+                                                                   display: inline-block; vertical-align: middle;
+                                                               }
+                                                        }
+                                                        .checkbox, .radio { width: 100%; margin:0;}
+                                                        input[type=checkbox] {display: none;}
+                                                        label{
+                                                            &:before{
+                                                                content:"";display: inline-block;position:absolute;left: 0; background-color:#F5F7FA;      
+                                                            }
+                                                        }
+                                                        input[type=checkbox]:checked + label{  }
+
+                                              }
+
+                                    }
+                                    .provider-info{ padding:0px 15px;
+                                                    .provider-name{
+                                                        font-size: 26px; color: #333; margin-top: 15px;
+                                                        @media(max-width:$screen-xs-max){
+                                                            font-size: 24px;
+                                                        }
+                                                    }
+                                                    .address{ font-size: 17px; color: #A1A1A1;
+                                                              @media(max-width:$screen-xs-max){
+                                                                  font-size: 15px;
+                                                              }
+                                                    }
+
+                                                    .rating{margin: 6px 0; 
+                                                            .review{
+                                                                font-size: 20px; color: #A1A1A1; text-decoration: none; font-family: $avantgardestd-bk; font-weight: 600; margin-top: 5px;
+                                                                @media(max-width:$screen-xs-max){
+                                                                    font-size: 18px;
+                                                                }
+                                                            }
+                                                    }
+
+                                    }
+                                    .book-appointment{ margin-top: 10px; position:absolute; width:100%; bottom:0;   
+                                                       .btn{
+                                                           font-size: 16px; color: $color-black; font-family: $avantgardestd-bk; padding: 15px; border-radius: 0px;
+                                                           &:after{
+                                                               position: absolute; top: 0;height: 2px; background-color: #F0F0F0; width: 132px; left: 0; right: 0; margin: 0 auto;
+                                                               content: '';
+                                                           }
+                                                           &:hover, &:active, &:focus{
+                                                               background-color: $color-green; color: $color-white;
+                                                               &:after{ background-color: transparent;} 
+                                                           }
+                                                       }
+                                    }
+                          }
+    }
+}

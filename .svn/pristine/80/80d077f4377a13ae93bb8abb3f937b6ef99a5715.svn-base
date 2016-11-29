@@ -1,0 +1,245 @@
+<?php
+
+namespace common\models;
+
+use Yii;
+use common\models\base\BasePortfolio;
+use common\models\query\PortfolioQuery;
+use yii\web\UploadedFile;
+use yii\base\NotSupportedException;
+use yii\behaviors\TimestampBehavior;
+use yii\db\Expression;
+use yii\helpers\ArrayHelper;
+
+/**
+ * This is the model class for table "portfolio".
+ *
+ * @property integer $id
+ * @property integer $user_id
+ * @property string $media_type
+ * @property string $media_url
+ * @property string $created_at
+ * @property string $updated_at
+ *
+ * @property User $user
+ */
+class Portfolio extends BasePortfolio {
+
+    /**
+     * @inheritdoc
+     */
+    public function rules() {
+        return ArrayHelper::merge(
+                        parent::rules(), [
+                    [['media_url'], 'checkMediaValidate'],
+                    [['id'], 'required', 'on' => 'delete'],
+                    [['id'], 'integer', 'on' => 'delete'],
+        ]);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function attributeLabels() {
+        return ArrayHelper::merge(
+                        parent::attributeLabels(), [
+        ]);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function scenarios() {
+        $scenarios = parent::scenarios();
+        $scenarios['delete'] = ['id'];
+        return $scenarios;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function behaviors() {
+        return [
+            [
+                'class' => TimestampBehavior::className(),
+                'createdAtAttribute' => 'created_at',
+                'updatedAtAttribute' => 'updated_at',
+                'attributes' => [
+                    \yii\db\ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
+                    \yii\db\ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
+                ],
+                'value' => new Expression('NOW()'),
+            ],
+        ];
+    }
+    
+    public function fields() {
+        return array_merge(parent::fields(),[
+            'media_url'=>function($model){
+                $url = \yii\helpers\Url::to('@web', true);
+                if (!empty($model->media_url) && file_exists( './'.$model->media_url)) {
+                    return $url . '/' . $model->media_url;
+                } else {
+                    return $url . '/uploads/portfolio/default-image.png';
+                }
+            },
+            'video_thumbnails'=>function($model){
+                $url = \yii\helpers\Url::to('@web', true);
+                if (!empty($model->video_thumbnails) && file_exists( './'.$model->video_thumbnails)) {
+                    return   $url . '/' . $model->video_thumbnails;
+                } else {
+                    return   $url . '/uploads/portfolio/default-video-thumbnail.png';
+                }
+            },
+        ]);
+    }
+
+    /**
+     * Validation to validate the uploaded media image or video 
+     */
+    public function checkMediaValidate($attribute, $params) {
+        $type = $this->media_type;
+
+        $media_url = $this->media_url;
+
+        if ($type == 'Image') {
+            if (!preg_match("/\.(png|jpg|jpeg)$/", $media_url)) {
+                $this->addError($attribute, 'Uploaded media is not valid.');
+            }
+        }
+
+        if ($type == 'Video') {
+
+            if (!preg_match("/\.(mp4|quicktime|mov|3gpp|mpeg|x-quicktime|x-m4v)$/", $media_url)) {
+                $this->addError($attribute, 'Uploaded media is not valid.');
+            }
+        }
+    }
+
+    /**
+     * @inheritdoc
+     * @return \common\models\query\PortfolioQuery the active query used by this AR class.
+     */
+    public static function find() {
+        return new \common\models\query\PortfolioQuery(get_called_class());
+    }
+
+    /**
+     * Get the portfolio of the client or service provider
+     */
+    public static function getPortfolioData($id) {
+        $returndata = self::find()->select("id as media_id,media_type,media_url,video_thumbnails")->ById($id)->asArray()->all();
+        $url = \yii\helpers\Url::to('@web', true);
+
+        for ($i = 0; $i < count($returndata); $i++) {
+            $returndata[$i]['media_url'] = $url . $returndata[$i]['media_url'];
+            $data = getimagesize($returndata[$i]['media_url']);
+            $returndata[$i]['media_height'] = $data[1];
+            $returndata[$i]['media_width'] = $data[0];
+            $video_thumbnail = $returndata[$i]['video_thumbnails'];
+            if (!empty($video_thumbnail)) {
+                $returndata[$i]['video_thumbnails'] = $url . $returndata[$i]['video_thumbnails'];
+            }
+        }
+
+        return $returndata;
+    }
+
+    /**
+     * Add the portfolio data for the client or service provider
+     */
+    public function addPortfolioData($id, $media_type = null, $file) {
+        $portfolio = new Portfolio();
+        $media_type = $this->media_type;
+        $dir = './uploads/portfolio/' . $id . '/';
+        $dirpath = '';
+
+        if ($media_type == "Image") {
+            $dirpath = $dir . 'images/';
+
+            if (!is_dir($dirpath)) {
+
+                \yii\helpers\FileHelper::createDirectory($dirpath, 0755, true);
+            }
+        }
+
+        if ($media_type == "Video") {
+            $dirpath = $dir . 'videos/';
+
+            $dirpath_vthumb = $dir . 'videos/thumbnail/';
+            if (!is_dir($dirpath)) {
+
+                \yii\helpers\FileHelper::createDirectory($dirpath, 0777, true);
+            }
+            if (!is_dir($dirpath_vthumb)) {
+
+                \yii\helpers\FileHelper::createDirectory($dirpath_vthumb, 0777, true);
+            }
+        }
+
+        $dirpath = $dirpath . time() . '_';
+        $basename = preg_replace('/\s+/', '_', $file->baseName);
+
+        $file->saveAs($dirpath . $basename . '.' . $file->extension);
+
+        $portfolio->user_id = $id;
+        $portfolio->media_type = $media_type;
+        $dirpath = ltrim($dirpath, '.');
+        $portfolio->media_url = $dirpath . $basename . '.' . $file->extension;
+
+        if ($media_type == "Video") {
+            $video = $dirpath . $basename . '.' . $file->extension;
+            $video_thumbnails = $this->createVideoThubnails($dirpath_vthumb, $video);
+            if (!empty($video_thumbnails)) {
+                $portfolio->video_thumbnails = $video_thumbnails;
+            }
+        }
+
+        if ($portfolio->save()) {
+
+            $returndata = self::getPortfolioData($id, $media_type);
+            return $returndata;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * create video thumbnails
+     */
+    public function createVideoThubnails($dirpath_vthumb, $video) {
+        $path = \Yii::getAlias('@webroot');
+        $video = $path . $video;
+        $dirpath_vthumb = ltrim($dirpath_vthumb, '.');
+        $upload_dir = $dirpath_vthumb . time() . '_videothumb.jpg';
+        $thumbnail = $path . $upload_dir;
+        $second = 15; //specify the time to get the screen shot at (can easily be randomly generated)
+        //codiant server ffmpeg path
+        $ffmpeg = "C:\\ffmpeg\\bin\\ffmpeg.exe";
+        //echo "ffmpeg -i $video -an -ss $second -t 00:00:01 -r 1 -y -s 320x240 -vcodec mjpeg -f mjpeg $thumbnail 2>&1";die;
+        //echo "$ffmpeg -i $video -an -ss $second -t 00:00:01 -r 1 -y -s 320x240 -vcodec mjpeg -f mjpeg $thumbnail 2>&1";die;
+        //ffmpeg -i input.flv -ss 00:00:14.435 -vframes 1 out.png
+        $command = "$ffmpeg -i $video -an -ss $second -t 00:00:01 -r 1 -y -s 320x240 -vcodec mjpeg -f mjpeg $thumbnail 2>&1";
+
+        if (exec($command)) {
+            return $upload_dir;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Delete portfolio of a provider
+     */
+    public static function deletePortfolioItem($item_id, $access_token) {
+        $auth = \common\models\Authtoken::findIdentityByAccessToken($access_token);
+        $model = self::find()->ByItemId($auth->user_id, $item_id)->one();
+        if (!empty($model)) {
+            return $model->delete();
+        } else {
+            return null;
+        }
+        return;
+    }
+
+}

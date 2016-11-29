@@ -1,0 +1,59 @@
+//@import 'compass';
+@import '../vendor/bootstrap-sass/assets/stylesheets/bootstrap';
+@import '../vendor/font-awesome/scss/font-awesome'; 
+
+@import 'variables/customvariables';
+
+//==============admin-css===============//
+@import 'admin/admin-left-menu'; 
+@import 'admin/admin-header'; 
+@import 'admin/admin-footer'; 
+@import 'admin/admin-login';  
+@import 'admin/admin-category'; 
+@import 'admin/admin-sub-category';
+@import 'admin/admin-customer-detail';
+@import 'admin/admin-service-provider';
+@import 'admin/admin-wellza-package';
+@import 'admin/admin-product-list'; 
+@import 'admin/admin-giftcard'; 
+
+
+//==============Customer-Frontend-css===============//
+@import 'pages/home';  
+@import 'pages/login';
+@import 'pages/client-signup';
+@import 'pages/serviceprovider-signup';
+@import 'pages/select-category'; 
+@import 'pages/wellza-bundle'; 
+@import 'pages/service-package';
+@import 'pages/location';
+@import 'pages/wellza-provider';
+@import 'pages/appointment-history';
+@import 'pages/my-favorite';
+@import 'pages/my-referral';
+@import 'pages/service-provider-detail';
+@import 'pages/startup';
+@import 'pages/inbox';
+@import 'pages/wellza-product';
+@import 'pages/wellza-memebership-popup'; 
+@import 'pages/wellza-blog';
+@import 'pages/gift-card';   
+@import 'pages/about-us';
+@import 'pages/view-cart';   
+@import 'pages/our-services';   
+@import 'pages/order-detail';   
+
+//==============ServiceProvider-Frontend-css===============//
+@import 'serviceprovider/add-services';
+@import 'serviceprovider/sp-appointment-history';
+@import 'serviceprovider/sales-history';
+@import 'serviceprovider/spwellza-store';
+@import 'serviceprovider/product-purchased';
+@import 'serviceprovider/review-order-and-payment-detail';
+
+//==============Common css===============//
+@import 'admin/admin-common'; 
+@import 'helper/common';  
+@import 'helper/all-modal'; 
+@import 'admin/admin-appointments'; 
+

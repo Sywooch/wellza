@@ -1,0 +1,56 @@
+<?php
+
+/*
+ * This api will get or set the data for a user
+ */
+
+namespace api\modules\v1\controllers;
+
+use Yii;
+use api\components\Controller;
+use common\models\User;
+use common\models\base\BaseLoginForm;
+use yii\web\NotFoundHttpException;
+use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
+use common\models\Product;
+use common\models\Bundles;
+use common\models\MasterMembershipPlan;
+
+/**
+ * User Controller API
+ *
+ */
+class ProductController extends Controller {
+
+    /**
+     * To get all the records from the user table
+     *
+     * * */
+    public $serializer = [
+        'class' => 'yii\rest\Serializer',
+        'collectionEnvelope' => 'items',
+    ];
+    public function behaviors() {
+        return ArrayHelper::merge(parent::behaviors(), [
+                    'authenticator' => [
+                        'except' => []
+                    ],
+        ]);
+    }
+
+    public function actionIndex() {
+        $params = \Yii::$app->request->get();
+        return Product::searchProduct($params);
+    }
+    public function actionView($id) {
+        return Product::productDetail($id);
+    }
+    public function actionWellzaBundles() {
+        return Bundles::allBundles();
+    }
+    public function actionMembershipPlan() {
+        return MasterMembershipPlan::getPlan();
+    }
+
+}

@@ -1,0 +1,158 @@
+.wellza-about-us{  
+  .wellza-aboutus-banner{
+    background: url('#{$imageurl}/about-us-banner.jpg');    background-size:cover;    background-position:center center; height:600px; position:relative;
+    @media (max-width:480px){
+      height:250px !important;
+    }
+    @media (max-width:$screen-xs-max){
+      height:400px;
+    }
+    .wellza-aboutus-content{
+        text-align: center; position:absolute; bottom:30px; left:0; right:0; margin-left:auto; margin-right:auto;
+          p{font-size:35px;color: $color-orange;@include text-shadow(0,3px,10px,rgba(#000,0.8)); font-weight:bold;
+              @media (max-width:480px){
+                 font-size:20px !important;
+              }
+
+              @media (max-width:$screen-xs-max){
+                 font-size:26px;
+              }
+          }
+
+          h2{
+          font:70px $avantgarde-md; color:$color-white; @include text-shadow(0,3px,10px,rgba(#000,0.8));margin:0;
+          @media (max-width:480px){
+             font-size:25px !important;
+          }
+          @media (max-width:$screen-xs-max){
+             font-size:35px;
+          }
+        
+         }
+      }
+  }
+
+  // xxxx
+
+  .aboutus-heading{
+    color:$color-green; font: 35px $avantgarde-md;margin-top:35px;
+      span{color:$color-666;}
+       @media (max-width:480px){
+         font-size: 20px !important; margin-top:15px !important;
+       }
+       @media (max-width:$screen-xs-max){
+            font-size: 24px; margin-top:20px;
+        }
+
+        @media(min-width:$screen-sm-min) and (max-width:$screen-md-max){
+          font-size: 28px; margin-top:20px;
+        }
+
+    + p{
+      color:$color-A1; font:19px/200% $avantgardestd-bk;text-align: justify; max-width:80%;
+      @media(max-width:$screen-md-max){
+        font:16px/150% $avantgardestd-bk; max-width:100%; 
+      }
+     }
+  }
+
+  // xxxx
+
+  .big-heading{
+    h2{font:70px $avantgarde-md; color: rgba($color-green,0.3);text-align:right; font-weight:bold; position:relative;top:178px;
+      @media(max-width:$screen-xs-max){
+        font:38px $avantgarde-md;text-align:left;top:0px;
+      }
+
+      @media(min-width:$screen-sm-min) and (max-width:$screen-md-max){
+        font:38px $avantgarde-md;top:127px;
+      }
+    }
+  }
+
+  // xxxx
+
+  .img-grp{
+    padding:0;margin-bottom:25px;
+    @media(min-width:$screen-sm-min) and (max-width:$screen-md-max){
+      padding:30px 0;
+    }
+  }
+
+  .img-grp2{
+    margin-top: 75px;
+  }
+
+  // xxx
+
+  .services-detail{
+    .service{
+      position:relative;padding-left:105px;margin-top:55px;
+      @media (max-width:480px){
+         padding-left:0px;margin-top:85px;padding-bottom:25px;
+      }
+      h2{color:$color-orange;font:26px $avantgarde-md;margin-bottom:0;
+        @media (max-width:480px){
+          font-size: 22px;
+         }
+      }
+      h3{color:$color-green;margin-top:8px; font-size:18px;}
+      p{color:$color-A1;text-align:justify;font:18px/150% $avantgardestd-bk;
+         @media (max-width:480px){
+          font-size: 14px;
+         }
+      }
+
+      &:before{
+        content: ''; position:absolute; display:block; width:80px; height:80px; background:url(#{$imageurl}/hair-icon-white.png) $color-green;
+        background-position:center center; background-repeat:no-repeat;background-size:65px;@include border-radius(100); left:0;
+
+        @media (max-width:480px){
+            left:0;top:-85px;
+          }
+      }
+
+      &:nth-child(2){
+          &:before{
+          content: ''; position:absolute; display:block; width:80px; height:80px; background:url(#{$imageurl}/training-icon-white.png) $color-green;
+          background-position:center center; background-repeat:no-repeat;background-size:65px;@include border-radius(100); left:0;
+        }
+      }
+      &:nth-child(3){
+          &:before{
+          content: ''; position:absolute; display:block; width:80px; height:80px; background:url(#{$imageurl}/nails.png) $color-green;
+          background-position:center center; background-repeat:no-repeat;background-size:70px;@include border-radius(100); left:0;
+        }
+      }
+      &:nth-child(4){
+          &:before{
+          content: ''; position:absolute; display:block; width:80px; height:80px; background:url(#{$imageurl}/skin.png) $color-green;
+          background-position:center center; background-repeat:no-repeat;background-size:65px;@include border-radius(100); left:0;
+        }
+      }
+      &:nth-child(5){
+          &:before{
+          content: ''; position:absolute; display:block; width:80px; height:80px; background:url(#{$imageurl}/massage-icon-lgwh.png) $color-green;
+          background-position:center center; background-repeat:no-repeat;background-size:65px;@include border-radius(100); left:0;
+        }
+      }
+      &:nth-child(6){
+          &:before{
+          content: ''; position:absolute; display:block; width:80px; height:80px; background:url(#{$imageurl}/wellza-bundle.png) $color-green;
+          background-position:center center; background-repeat:no-repeat;background-size:65px;@include border-radius(100); left:0;
+        }
+      }
+
+
+    }
+  }
+
+  // xxx
+  
+}
+
+
+
+
+
+   

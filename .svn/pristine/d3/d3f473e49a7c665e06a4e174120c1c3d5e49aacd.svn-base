@@ -1,0 +1,154 @@
+<?php
+namespace common\models\base;
+
+use Yii;
+use \yii\db\ActiveRecord;
+use common\models\User;
+use common\models\Authtoken;
+//use yii\base\Model;
+use yii\db\Connection;
+/**
+ * User Model handles all the CRUD and basic operations for user 
+ *
+ */
+class BaseLoginForm extends ActiveRecord
+{   const SCENARIO_APILOGIN = 'apilogin';
+    public $email;
+    public $password;
+    public $device_id;
+    public $device_type;
+    public $dev_certificate;
+    public $access_token;
+    public $rememberMe = true;
+    public $message;
+
+
+    private $_user;
+    
+    /**
+     * @inheritdoc
+     */
+    public static function tableName()
+    {
+        return '{{%user}}';
+    }
+    
+    /**
+     * Define rules for validation
+     */
+    public function rules()
+    {
+        return [
+            [['email','password','device_id','device_type','dev_certificate','access_token'],'trim'],
+            [['email','password'],'required'],
+            ['email', 'string', 'max' => 100],
+            ['email', 'email'],
+            ['password', 'string', 'min' => 6,'max' => 25],
+            ['password', 'validatePassword'],
+        ];
+    }
+    
+    /**
+     * Scenario for edit profile
+     */
+    
+     public function scenarios()
+    {           
+        $scenarios = parent::scenarios();
+        $scenarios[self::SCENARIO_APILOGIN] = ['user_type', 'social_id','social_type','first_name','last_name','email','password','about_me','device_id','device_type','dev_certificate'];
+        return $scenarios;
+    }
+    /**
+     * Validates the password.
+     *
+     * @param string $attribute the attribute currently being validated
+     * @param array $params the additional name-value pairs given in the rule
+     */
+    public function validatePassword($attribute, $params)
+    {
+        if (!$this->hasErrors()) {
+            $user = $this->getUser();
+            
+            if (!$user || !$user->validatePassword($this->password)) {
+                $this->addError($attribute, 'Incorrect email or password.');
+            } elseif ($user && $user->status == 'inactive') {
+                $this->addError($attribute, 'Your account is Inactive.');
+            }
+        }
+    }
+    
+    /**
+     * Logs in a user using the provided email and password.
+     *
+     * @return boolean whether the user is logged in successfully
+     */
+    public function login()
+    {
+        $bool = $this->getUser();
+                       
+        if(!empty($bool)) {
+            $bool = Yii::$app->user->login($bool, $this->rememberMe ? 3600 * 24 * 30 : 0);
+            $auth_token = new Authtoken();
+            $auth_token->generateAccessToken();
+            $user_id = Yii::$app->user->getId();
+            if(!empty(Authtoken::findOne(['user_id' => $user_id]))) {
+                return Authtoken::updateAll(['access_token' => $auth_token->getAccessTokens()], "user_id = {$user_id}");
+            } else {
+                    
+                $auth_token->user_id         = $user_id;
+                $auth_token->device_id       = $this->device_id;
+                $auth_token->device_type     = $this->device_type;
+                $auth_token->dev_certificate = $this->dev_certificate;
+                $auth_token->access_token    = $auth_token->getAccessTokens();
+                return $auth_token->save();
+            }
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Finds user by [[username]]
+     *
+     * @return User|null
+     */
+    protected function getUser()
+    {   
+        
+        if ($this->_user === null) {
+            //$this->_user = User::findByUsername($this->username);
+            $this->_user = User::findByEmail($this->email);
+        }
+        
+        return $this->_user;
+    }
+       
+    /**
+     * remove the access token on logout
+     *
+     */
+    public static function removeAccessToken($access_token)
+    {  
+        $auth_token = Authtoken::findOne(['access_token' => $access_token]);
+       
+        $auth_token->delete();
+        $returndata['access_token'] = $access_token;
+        return $returndata;
+    }
+        
+    /**
+     * Get the data fpr Creating a relation of user with the authtoken
+     *
+     */
+    public function getLoggedUserDetails()
+    {
+        return User::find()
+        ->select('user.id,user.first_name,user.last_name,user.email,user.address,user.address2,user.city,user.province,user.country,user.profile_image as image_url,user.id,user_type,authtoken.access_token,authtoken.device_id,authtoken.device_type,authtoken.dev_certificate,user.latitude,user.longitude')
+        ->leftJoin('authtoken', '`authtoken`.`user_id` = `user`.`id`')
+        ->where('authtoken.user_id = :id',[':id' => Yii::$app->user->getId()])
+        ->asArray()         
+        ->one();
+    }
+    
+}
+

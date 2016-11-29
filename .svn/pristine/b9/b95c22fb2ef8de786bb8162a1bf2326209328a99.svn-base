@@ -1,0 +1,37 @@
+<?php
+/************************************************************************************************************************//**
+ *  Controller Name: MyAvailabilityController.php
+ *  Created: Codian Team
+ *  Description: This will manage the data of a provider's availability.Manages the ajax calls functions.
+ 
+ ***************************************************************************************************************************/
+
+namespace frontend\modules\provider\controllers;
+
+use Yii;
+use yii\base\InvalidParamException;
+use yii\web\BadRequestHttpException;
+use yii\web\Response;
+use yii\widgets\ActiveForm;
+use yii\web\Session;
+
+class MyAvailabilityController extends \frontend\modules\provider\components\Controller
+{
+    public function actionIndex()
+    {
+        return $this->render('my-availability');
+    }
+    
+    /**
+     * Load availability data for the provider
+     */
+    
+    public function loadAvailabilityData() {
+        
+    }
+
+}
+
+/*************************************************************************************************************************************/
+// EOF: MyAvailabilityController.php
+/*************************************************************************************************************************************/

@@ -1,0 +1,120 @@
+
+.wellza-bundle-section{ 
+    .inner-heading{
+        font-size: 48px;  font-family: $avantgardestd-bk; color: $color-666; text-align:left; padding-bottom: 0px;
+        @media(max-width:$screen-xs-max){
+            font-size: 24px;padding:0px;  
+        }
+    }
+    .inner-subheading{
+        font-size: 21px; text-align:left;
+        @media(max-width:$screen-xs-max){
+            font-size:16px;
+        }
+    }
+    .wellzabundle-tabs{margin-top: 20px;
+                       .btn-bottom{
+                           margin-bottom: 75px;
+                           @media(max-width:$screen-xs-max){
+                                 margin-bottom: 20px;
+                            } 
+                       }
+                       ul{  box-shadow: 0 0 4px -1px rgba(0,0,0,0.2); border: none;
+                            @media(max-width:$screen-xs-max){
+                                overflow-x: auto; overflow-y: hidden; white-space: nowrap;  
+                            } 
+                            li{  text-align: center;
+                                 @media(min-width:$screen-lg-min){
+                                     width:16.666%; 
+                                 }
+                                 @media(max-width:$screen-xs-max){display: inline-block; float: none; width: auto;}
+                                 &.active{
+                                     a{
+                                         background-color: transparent; color: $color-green; border:none; position: relative;
+                                         &:after{
+                                             content: ''; height: 2px; background-color: $color-green; bottom: 0; position: absolute; width: 100%; left: 0; right: 0;
+                                         }
+                                     }  
+                                 }
+                                 a{ 
+                                     color: $color-666; font-size: 18px; color:$color-666;font-family: $avantgarde-md; padding: 15px 20px; border:none;
+                                     @media(max-width:$screen-lg-max){
+                                         font-size: 16px;padding: 15px 10px;  
+                                     }
+                                     @media(max-width:$screen-xs-max){
+                                         font-size: 16px;padding: 15px 10px;  
+                                     }
+                                     &:hover{
+                                         background-color: transparent; color: $color-green; border:none;
+                                     }
+                                 }
+                            }
+                       }
+    }
+    .tab-content{
+        padding: 50px 0 0px;
+        @media(max-width:$screen-xs-max){
+            padding: 20px 0 0px;
+        }
+    }
+    .bundle-category.gray-box{
+        .icon-box{
+            background-color: #666666;
+        }
+        .price-box{
+            .detail, .save span{
+                color: #F9AE39;
+            }
+        }
+    }
+    .bundle-category.orange-box{
+        .icon-box{
+            background-color:#F9AE39; 
+        }
+    }
+    .bundle-category.green-box{
+        .icon-box{
+            background-color:#52BFB8; 
+        }
+    }
+    .bundle-category{ text-align:center; box-shadow: 0 0 4px -1px rgba(0,0,0,0.2); background-color: $color-white; margin-bottom: 50px;
+                      @media(max-width:$screen-xs-max){
+                          margin-bottom:15px;
+                      }
+
+                      .icon-box{ font-family: $avantgarde-md; color:$color-white;
+                                 padding: 30px; min-height: 207px;max-height: 207px;
+                                 .name{
+                                     font-size:25px; margin-top: 20px; 
+                                     @media(max-width:$screen-xs-max){
+                                         font-size:16px;
+                                     }
+                                 }
+                      } 
+
+                      .price-box{font-size: $avantgardestd-bk;
+                                 padding: 15px 0px;
+                                 .price{
+                                     color: $color-666; font-size: 33px; 
+                                     @media(max-width:$screen-xs-max){
+                                         font-size: 25px; 
+                                     }
+                                 }
+                                 .detail{
+                                     font-size: 18px; color:#A0A0A0;
+                                 }
+                                 .save{
+                                     font-size: 28px; color: #22272C; margin-top:30px; position: relative;
+                                     @media(max-width:$screen-xs-max){
+                                         font-size: 25px; 
+                                     }
+                                     &:after{
+                                         width: 100%; content: ''; position: absolute; top: 19px; height: 2px; background-color:#D6D6D6; left: 0; right: 0;
+                                     }
+                                     span{
+                                         background-color: $color-white; position: relative; z-index: 1; padding: 0 10px; color: $color-666;
+                                     }
+                                 }
+                      }
+    }
+}

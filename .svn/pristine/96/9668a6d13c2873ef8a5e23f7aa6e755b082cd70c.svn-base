@@ -1,0 +1,159 @@
+<?php
+/* * ********************************************************************************************************************* *//**
+ *  Model Name: ReviewRating.php
+ *  Created: Codian Team
+ *  Description: Manages the crud operations for review and rating for both providers and client.It inherits the properties
+ *  of the base class rules and attributlabels. 
+ * ************************************************************************************************************************* */
+
+namespace common\models;
+
+use Yii;
+use common\models\base\BaseReviewRating;
+use common\models\query\RequestServiceQuery;
+use yii\helpers\ArrayHelper;
+use yii\base\NotSupportedException;
+use yii\db\ActiveRecord;
+use yii\behaviors\TimestampBehavior;
+use yii\db\Expression;
+/**
+ * This is the model class for table "appointment_review_rating".
+ *
+ * @property integer $id
+ * @property string $rating
+ * @property string $review
+ * @property string $rating_date
+ * @property integer $provider_by
+ * @property integer $provider_to
+ * @property string $rating_given_by
+ * @property string $created_at
+ * @property string $updated_at
+ *
+ * @property User $providerTo
+ * @property User $providerBy
+ */
+class ReviewRating extends BaseReviewRating
+{    
+     public function rules() {
+        return ArrayHelper::merge(
+                    parent::rules(), [
+                       
+        ]);
+    }
+
+    public function attributeLabels() {
+        return ArrayHelper::merge(
+                        parent::attributeLabels(), [
+                            
+        ]);
+    }
+    
+    /**
+     * @inheritdoc
+     */
+    public function behaviors() {
+        return [
+            [
+                'class' => TimestampBehavior::className(),
+                'createdAtAttribute' => 'created_at',
+                'updatedAtAttribute' => 'updated_at',
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
+                    ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
+                ],
+                'value' => new Expression('NOW()'),
+            ],
+        ];
+    }
+    
+     /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUserClient()
+    {
+        return $this->hasOne(User::className(), ['id' => 'provider_to']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUserProvider()
+    {
+        return $this->hasOne(User::className(), ['id' => 'provider_by']);
+    }
+    
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAppointmentId()
+    {
+        return $this->hasOne(\common\models\Appointment::className(), ['appointment_id' => 'id']);
+    }
+    
+    /**
+     * @inheritdoc
+     * @return \common\models\query\BaseReviewRatingQuery the active query used by this AR class.
+     */
+    public static function find()
+    {
+        return new \common\models\query\ReviewRatingQuery(get_called_class());
+    }
+    
+    /**
+     * Save the data for the rating given by client to provider
+     * @params user_id,rating_given_by
+     * @return True|False
+     */
+    public function saveReiewRating($user_id = null,$rating_given_by = null) {
+        $model = new ReviewRating();
+        $model->appointment_id = $this->appointment_id;
+        $model->rating = $this->rating;
+        $model->review = $this->review;
+        $model->provided_by = $user_id;
+        $model->provided_to = $this->provided_to;
+        $currentdate = date('Y-m-d');
+        $model->rating_date = $currentdate;
+        $model->rating_given_by = $rating_given_by;
+        $model->status = 'rated';
+       
+        if($model->save()) {
+            return true;
+        }
+        return null;
+    }
+    
+    /**
+     * Get all the reviews count for the provider giben by cleint
+     * @params provider_id,rating_given_by
+     * @return count
+     */
+    public static function getProviderReviews($provider_id = null,$rating_given_by = null) {
+        $returndata = array();
+        $results = self::find()->ByIDNRating($provider_id,$rating_given_by)->all();
+        $i=0;
+        foreach ($results as $data) {
+            $returndata[$i]['rating'] = $data->rating;
+            $user_data = User::findOne(['id' => $data->provided_by]);
+            $provider_data = User::findOne(['id' => $data->provided_to]);
+            $returndata[$i]['review_by'] = $user_data->first_name.' '.$user_data->last_name ;
+            $returndata[$i]['review'] = $data->review;
+            $profile_image = !empty($provider_data->profile_image) ? '../backend/'.$provider_data->profile_image : $site_url . '/images/default-profile.png';
+            $returndata[$i]['provider_image'] = $profile_image;
+            if(!empty($data->rating_date)) {
+                $date=date_create($data->rating_date);
+                $returndata[$i]['rating_date'] = date_format($date,"d M,Y ");
+            } else {
+                $returndata[$i]['rating_date'] = '';
+            }           
+            
+            $i++;
+        }
+                
+        return $returndata;
+    }
+    
+    
+}
+/* * ********************************************************************************************************************************** */
+// EOF: ReviewRating.php
+/* * ********************************************************************************************************************************** */

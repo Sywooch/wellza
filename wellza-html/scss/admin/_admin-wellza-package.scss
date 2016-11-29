@@ -1,0 +1,51 @@
+.admin-page{
+    .add_pacakge, .view_add_pacakge{ 
+        .modal-body{
+            padding: 65px 50px !important; 
+            .form-control{
+                font-size: 16px;
+            }
+            .dropdown-toggle{
+                font-size: 16px;
+            }
+            .edit_package{
+                ul{ margin: 0; text-align: left; margin: 0 auto;
+                    li{ padding: 0px;
+                        a{
+                            display: block; padding: 11px 4px; 
+                        }
+                    }
+                }
+            }
+            .time_duration{
+                .start_time, .end_time{
+                    width:45.83335%;
+                }
+                .to{
+                    position: relative; text-align: center; top: 12px;
+                }
+            }
+            .filled{
+                .form-control{ background-color: $color-orange; color: $color-white; border-color:$color-orange !important; } 
+
+
+                ::-webkit-input-placeholder {color: $color-white;} 
+                :-moz-placeholder { /* Firefox 18- */
+                    color: $color-white;  
+                }
+                ::-moz-placeholder {  /* Firefox 19+ */
+                    color: $color-white;   
+                }
+                :-ms-input-placeholder {  
+                    color: $color-white; 
+                }
+            }
+            .watch_icon_white{background-image:url(../images/clock-ic.png);background-position:right;background-repeat:no-repeat; padding-right: 45px;}
+            .watch_icon_gray{background-image:url(../images/clock-ic-gray.png);background-position:right;background-repeat:no-repeat;    padding-right: 45px;}
+        }
+    }
+}
+
+
+
+

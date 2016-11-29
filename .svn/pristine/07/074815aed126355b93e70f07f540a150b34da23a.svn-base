@@ -1,0 +1,275 @@
+<?php
+
+return [
+    'paths' => [
+        "/cart" => [
+            "post" => [
+                "tags" => [
+                    "cart"
+                ],
+                "summary" => "Add product to Cart",
+                "description" => "Add product to Cart",
+                "operationId" => "add_product_to_cart",
+                "produces" => [
+                    "application/xml",
+                    "application/json"
+                ],
+                "parameters" => [
+                    [
+                        "in" => "header",
+                        "name" => "access-token",
+                        "description" => "Access token of the user",
+                        "required" => true,
+                        "schema" => [
+                            'type' => 'string'
+                        ]
+                    ],
+                    [
+                        "in" => "body",
+                        "name" => "body",
+                        "description" => "Add product to cart  (appointment, product, giftcard, wellza_bundle,wellza_membership) Types",
+                        "required" => false,
+                        "schema" => [
+                            '$ref' => "#/definitions/addproducttocart"
+                        ]
+                    ]
+                ],
+                "responses" => [
+                    "default" => [
+                        "description" => "successful operation"
+                    ]
+                ]
+            ]
+        ],
+        "/cart/my-cart" => [
+            "get" => [
+                "tags" => [
+                    "cart"
+                ],
+                "summary" => "View Cart",
+                "description" => "View Cart",
+                "operationId" => "view_cart",
+                "produces" => [
+                    "application/xml",
+                    "application/json"
+                ],
+                "parameters" => [
+                    [
+                        "in" => "header",
+                        "name" => "access-token",
+                        "description" => "Access token of the user",
+                        "required" => true,
+                        "schema" => [
+                            'type' => 'string'
+                        ]
+                    ]
+                    
+                ],
+                "responses" => [
+                    "default" => [
+                        "description" => "successful operation"
+                    ]
+                ]
+            ]
+        ],
+        "/cart/{id}" => [
+            "delete" => [
+                "tags" => [
+                    "cart"
+                ],
+                "summary" => "Delete item from cart",
+                "description" => "Delete item from cart",
+                "operationId" => "delete_from_cart",
+                "produces" => [
+                    "application/xml",
+                    "application/json"
+                ],
+                "parameters" => [
+                    [
+                        "in" => "header",
+                        "name" => "access-token",
+                        "description" => "Access token of the user",
+                        "required" => true,
+                        "schema" => [
+                            'type' => 'string'
+                        ]
+                    ],
+                    [
+                        "in" => "path",
+                        "name" => "id",
+                        "description" => "Id of Item thant you want to delete from cart",
+                        "required" => true,
+                        "type"=>"integer"
+                    ]
+                ],
+                "responses" => [
+                    "default" => [
+                        "description" => "successful operation"
+                    ]
+                ]
+            ]
+        ],
+        "/cart/add-giftcard" => [
+            "post" => [
+                "tags" => [
+                    "cart"
+                ],
+                "summary" => "Add giftcard to cart",
+                "description" => "Add giftcard to cart",
+                "operationId" => "add_giftcard",
+                "produces" => [
+                    "application/xml",
+                    "application/json"
+                ],
+                "parameters" => [
+                    [
+                        "in" => "header",
+                        "name" => "access-token",
+                        "description" => "Access token of the user",
+                        "required" => true,
+                        "schema" => [
+                            'type' => 'string'
+                        ]
+                    ],
+                    [
+                        "in" => "body",
+                        "name" => "body",
+                        "description" => "Add Giftcard to cart",
+                        "required" => false,
+                        "schema" => [
+                            '$ref' => "#/definitions/addgiftcardtocart"
+                        ]
+                    ]
+                    
+                ],
+                "responses" => [
+                    "default" => [
+                        "description" => "successful operation"
+                    ]
+                ]
+            ]
+        ],
+//        "/cart/checkout" => [
+//            "post" => [
+//                "tags" => [
+//                    "cart"
+//                ],
+//                "summary" => "Checkout",
+//                "description" => "Checkout Cart",
+//                "operationId" => "checkout",
+//                "produces" => [
+//                    "application/xml",
+//                    "application/json"
+//                ],
+//                "parameters" => [
+//                    [
+//                        "in" => "header",
+//                        "name" => "access-token",
+//                        "description" => "Access token of the user",
+//                        "required" => true,
+//                        "schema" => [
+//                            'type' => 'string'
+//                        ]
+//                    ],
+//                    [
+//                        "in" => "body",
+//                        "name" => "body",
+//                        "description" => "Add product to cart  (appointment, product, giftcard, wellza_bundle,wellza_membership) Types",
+//                        "required" => false,
+//                        "schema" => [
+//                            '$ref' => "#/definitions/checkout"
+//                        ]
+//                    ]
+//                ],
+//                "responses" => [
+//                    "default" => [
+//                        "description" => "successful operation"
+//                    ]
+//                ]
+//            ]
+//        ]
+    ],
+    'definitions' => [
+        'addproducttocart' => [
+            'type' => "object",
+            'properties' => [
+                'type_id'=>[
+                    'type'=>'integer'
+                ],
+                'type'=>[
+                    'type'=>'string'
+                ],
+                'quantity'=>[
+                    'type'=>'integer'
+                ]
+            ],
+            'xml' => [
+                'name' => "addproducttocart"
+            ]
+        ],
+        'addgiftcardtocart' => [
+            'type' => "object",
+            'properties' => [
+                'amount'=>[
+                    'type'=>'integer'
+                ],
+                'delivery_date'=>[
+                    'type'=>'string'
+                ],
+                'to_email'=>[
+                    'type'=>'string'
+                ],
+                'to_name'=>[
+                    'type'=>'string'
+                ],
+                'message'=>[
+                    'type'=>'string'
+                ],
+                'from_email'=>[
+                    'type'=>'string'
+                ],
+                'from_name'=>[
+                    'type'=>'string'
+                ]
+            ],
+            'xml' => [
+                'name' => "addproducttocart"
+            ]
+        ],
+        'checkout' => [
+            'type' => "object",
+            'properties' => [
+                'name'=>[
+                    'type'=>'string'
+                ],
+                'shipping_address1'=>[
+                    'type'=>'string'
+                ],
+                'shipping_address2'=>[
+                    'type'=>'string'
+                ],
+                'email'=>[
+                    'type'=>'string'
+                ],
+                'city'=>[
+                    'type'=>'string'
+                ],
+                'zip'=>[
+                    'type'=>'string'
+                ],
+                'phone'=>[
+                    'type'=>'string'
+                ],
+                'personal_message'=>[
+                    'type'=>'string'
+                ],
+            ],
+            'xml' => [
+                'name' => "checkout"
+            ]
+        ],
+    ]
+];
+
+
+

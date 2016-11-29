@@ -1,0 +1,23 @@
+{
+  "name": "wellza",
+  "version": "1.0.0",
+  "description": "test",
+  "main": "Gruntfile.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "test"
+  },
+  "keywords": [
+    "test"
+  ],
+  "author": "devesh gour",
+  "license": "ISC",
+  "dependencies": {
+    "grunt-contrib-compass": "^1.1.1",
+    "grunt-contrib-cssmin": "^1.0.1",
+    "grunt-contrib-watch": "^1.0.0"
+  }
+}

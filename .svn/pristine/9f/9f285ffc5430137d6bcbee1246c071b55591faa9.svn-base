@@ -1,0 +1,13 @@
+.admin-footer{
+    transition: padding-left 0.3s ease;padding: 15px 15px 15px 15px; text-align: center; color:#fff; background-color: #333; width: 100%;  left: 0; right:0;  color:#a5a5a5;
+    @media(max-width:$screen-xs-max){
+       padding:15px;  
+    }
+    ul{ margin: 0px;
+    li{
+        a{
+            color:#a5a5a5;
+        }
+    }
+    }
+}

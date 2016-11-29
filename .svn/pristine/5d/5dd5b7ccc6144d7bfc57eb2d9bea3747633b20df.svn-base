@@ -1,0 +1,126 @@
+<aside class="customer-side-menu">
+    <div class="orange_box">
+        <a id="close_menu" href="javascript:void(0);">
+            <img src="../resource/images/sidebar_close_icon.png" alt="close-icon"/>
+        </a>
+    </div>
+    <div class="side-menu-content">
+        <div class="menu-list">
+            <ul id="menu-content" class="menu-content list-unstyled">
+                <li class="icon profile plus-icio arrow-white" data-toggle="collapse" data-target="#manageprofile-menu" aria-expanded="true">
+                    <a href="javascript:void(0);" id="manage_profile" data-target=".manage-profile-modal" data-toggle="modal">
+                        MANAGE PROFILE
+                    </a>
+                   
+                </li>
+                
+                <?php
+                        if(!Yii::$app->user->isGuest && Yii::$app->user->isProvider){
+                ?>
+                <ul class="sub-menu list-unstyled collapse in" id="manageprofile-menu" aria-expanded="true" style="">
+                    <li class=""><a href="javascript:void(0);" id="manage_profilemodal" data-target=".manage-profile-modal" data-toggle="modal">MY PROFILE</a></li>
+                    <li class=""><a href="<?php echo Yii::$app->urlManager->createUrl('provider/service')?>">ADD SERVICES</a></li>
+                    <li class=""><a href="javascript:void(0);">ADD PORTFOLIO</a></li>
+                    <li class=""><a href="javascript:void(0);">MY AVAILABILITY</a></li>
+                </ul>
+               
+                <?php
+                       }
+                ?>
+                <li class="icon appointment plus-icio" data-toggle="collapse" data-target="#appointment-menu">
+                    <a href="javascript:void(0);">
+                        APPOINTMENT
+                    </a>
+                </li>
+                <ul class="sub-menu collapse list-unstyled" id="appointment-menu">
+                    <li class=""><a href="javascript:void(0);">COMPLETED</a></li>
+                    <li class=""><a href="javascript:void(0);">UPCOMING</a></li>
+                </ul>
+                <li class="icon product plus-icio" data-toggle="collapse" data-target="#wellza-product">
+                    <a href="javascript:void(0);">
+                        PRODUCTS
+                    </a>
+                </li>
+                <ul class="sub-menu collapse list-unstyled" id="wellza-product">
+                    <li class=""><a href="javascript:void(0);">WELLZA STORE</a></li>
+                    <li class=""><a href="javascript:void(0);">MY CART</a></li>
+                    <li class=""><a href="javascript:void(0);">PRODUCT PURCHASED</a></li>
+                    <li class=""><a href="javascript:void(0);">Gift Card</a></li>
+                </ul>
+                <?php
+                if(!Yii::$app->user->isGuest && Yii::$app->user->isClient){    
+                ?>
+                <li class="icon membership">
+                    <a href="javascript:void(0);">
+                        WELLZA BUNDLES
+                    </a>
+                </li>
+                <?php
+                }
+                ?>
+                <li class="icon notification">
+                    <a href="#">
+                        NOTIFICATION <div class="count">06</div>
+                    </a>
+                </li>
+                <li class="icon inbox">
+                    <a href="javascript:void(0);">
+                        INBOX
+                    </a>
+                </li>
+                <?php
+                if(!Yii::$app->user->isGuest && Yii::$app->user->isClient){    
+                ?>
+                <li class="icon favourite">
+                    <a href="javascript:void(0);">
+                        FAVORITES
+                    </a>
+                </li>
+                
+                <li class="icon blog">
+                    <a href="javascript:void(0);">
+                        BLOG
+                    </a>
+                </li>
+                <li class="icon membership">
+                    <a data-target=".wellza-memebership-popup" data-toggle="modal" href="javascript:void(0);" id="wellza_membership">
+                        WELLZA MEMBERSHIP
+                    </a>
+                </li>
+                <?php
+                }
+                ?>
+                <li class="icon referral plus-icio" data-toggle="collapse" data-target="#myrefferal">
+                    <a href="javascript:void(0);">
+                        REFERRAL
+                    </a>
+                </li>
+                <li class="icon blog">
+                    <a href="javascript:void(0);">
+                        WELLZA SUPPORT
+                    </a>
+                </li>
+                <ul class="sub-menu collapse list-unstyled" id="myrefferal">
+                    <li class=""><a href="javascript:void(0);" data-target=".refer-client-friend" data-toggle="modal" id="invite_friend">INVITE A FRIEND</a></li>
+                    <li class=""><a href="javascript:void(0);">MY REFERRAL</a></li>
+                </ul>
+                <li class="icon aboutus plus-icio" data-toggle="collapse" data-target="#aboutus-menu"> 
+                    <a href="javascript:void(0);">
+                        ABOUT US
+                    </a>
+                </li>
+                  <ul class="sub-menu collapse list-unstyled" id="aboutus-menu">
+                    <li class=""><a href="javascript:void(0);">PRIVACY POLICY</a></li>
+                    <li class=""><a href="javascript:void(0);">TERM AND CONDITIONS</a></li>
+                    <li class=""><a href="javascript:void(0);">FAQ</a></li>
+                    <li class=""><a href="javascript:void(0);">CONTACT US</a></li>
+                </ul>
+            </ul>
+        </div>
+    </div>
+</aside>
+
+
+<div class="body-overlay"></div>
+
+

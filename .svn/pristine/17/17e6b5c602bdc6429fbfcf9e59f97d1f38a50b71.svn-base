@@ -1,0 +1,271 @@
+<?php
+/* * ********************************************************************************************************************* *//**
+ *  Model Name: Bundles.php
+ *  Created: Codian Team
+ *  Description: Manages the crud operations for wellza bundles.It inherits the properties
+ *  of the base class rules and attribute labels. 
+ * ************************************************************************************************************************* */
+
+namespace common\models;
+
+use Yii;
+use common\models\base\BaseBundles;
+use yii\helpers\ArrayHelper;
+use yii\web\NotFoundHttpException;
+use yii\behaviors\TimestampBehavior;
+use yii\db\Expression;
+use yii\web\UploadedFile;
+use yii\data\ActiveDataProvider;
+
+/**
+ * This is the model class for table "bundles".
+ *
+ * @property integer $bundle_id
+ * @property string $bundle_name
+ * @property integer $savings
+ * @property string $price
+ * @property string $status
+ * @property string $created_at
+ * @property string $updated_at
+ *
+ * @property BundleCategories[] $bundleCategories
+ */
+class Bundles extends BaseBundles {
+
+    public $category_name = array();
+    public function rules() {
+        return ArrayHelper::merge(
+                        parent::rules(), [
+                            [['bundle_name','savings','price'], 'trim'],
+                            ['category_name', 'each','rule' => ['required']],
+                            [['bundle_name'], 'required'],
+                            [['savings'], 'required'],
+                            [['price'], 'required']
+        ]);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function attributeLabels() {
+        return ArrayHelper::merge(
+                        parent::attributeLabels(), [
+        ]);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function behaviors() {
+        return [
+            [
+                'class' => TimestampBehavior::className(),
+                'createdAtAttribute' => 'created_at',
+                'updatedAtAttribute' => 'updated_at',
+                'attributes' => [
+                    \yii\db\ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
+                    \yii\db\ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
+                ],
+                'value' => new Expression('NOW()'),
+            ],
+        ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getBundleCategories() {
+        return $this->hasMany(BundlesCategories::className(), ['bundle_id' => 'bundle_id']);
+    }
+    /**
+     * 
+     */
+    public function extraFields() {
+        return ArrayHelper::merge(parent::extraFields(), [
+            'bundle_categories'=>function($model) {
+                return $model->bundleCategories;
+            }
+        ]);
+    }
+
+    /**
+     * @inheritdoc
+     * @return \common\models\query\BundlesQuery the active query used by this AR class.
+     */
+    public static function find() {
+        return new \common\models\query\BundlesQuery(get_called_class());
+    }
+    
+    /**
+     * Save the bundle data
+     * @param type $param
+     * @return type Bundle|Null
+     */
+    public function saveBundle($edit = null) {
+       $model = new Bundles();
+
+        Yii::$app->db->createCommand('set foreign_key_checks=0')->execute();
+        
+        if (!empty($edit)) {
+            
+            self::deleteAll('bundle_id = :bundle_id', [':bundle_id' => $this->bundle_id]);
+            BundlesCategories::deleteAll('bundle_id = :bundle_id', [':bundle_id' => $this->bundle_id]);            
+        }
+
+        $model = $this->setBundleData($model);
+
+        if ($model->save(false)) {
+            $model_bundle_categories = new BundlesCategories();
+            $return = $this->setBundleCategories($model_bundle_categories, $model->bundle_id);
+
+            Yii::$app->db->createCommand('set foreign_key_checks=1')->execute();
+            if ($return) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        return false; 
+    }
+    
+    /**
+     * Set data for a bundle
+     * @param type $param
+     * @return type Bundle|Null
+     */
+    public function setBundleData($model = null) {
+        $model->bundle_name = !empty($this->bundle_name) ? $this->bundle_name : '';
+        $model->savings = !empty($this->savings) ? $this->savings : '';
+        $model->price = !empty($this->price) ? $this->price : '';
+        $model->status = 'Active';
+        
+        return $model;
+    }
+    
+    /** *
+     * Set the data for package for both save and update
+     * ** */
+
+    public function setBundleCategories($model = null, $bundle_id = null) {
+        
+        $bool = 0;
+        
+        for ($i = 0; $i < count($this->category_name); $i++) {
+            $model->id = NULL; //primary key(auto increment id) id
+            $model->isNewRecord = true;
+            $model->bundle_id = !empty($bundle_id) ? $bundle_id : '';
+            if(!empty($this->category_name[$i])) {
+                $model->category_id =  $this->category_name[$i];
+            }
+                      
+            if ($model->save(false)) {
+                $bool = 1;
+            } else {
+                $bool = 0;
+            }
+        }
+
+        return $bool;
+    }
+    
+    /** *
+     * Get all the bundles
+     * @param type $param
+     * @return type Bundle|Null
+     * ** */
+
+    public static function getAllBundle($search = null,$isadmin = null) {
+        $sort = self::setSortData();
+        if(!empty($isadmin)) {
+            $query = self::find();
+        } else {
+            $query = self::find()->where(['status' => 'Active']);
+        }
+        
+        if (!empty($search)) {
+            $query = self::find()->BySearch($search);
+        } 
+        //echo '<pre/>';print_r($sort->orders);
+        $query->orderBy($sort->orders);
+        //echo '<br/><pre/>'; print_r($query);die('..');
+        return $query;        
+    }
+    
+    /**
+     * To set the data for sorting
+     *
+     * @return sort
+     */
+    public static function setSortData() {
+        $sort = new \yii\data\Sort([
+            'defaultOrder' => ['updated_at' => SORT_DESC],
+            'attributes' => [
+                'bundle_name' => [
+                    'asc' => ['bundle_name' => SORT_ASC],
+                    'desc' => ['bundle_name' => SORT_DESC],
+                    'label' => 'WELLZA BUNDLE NAME',
+                    'default' => SORT_DESC
+                ],
+                'price' => [
+                    'asc' => ['price' => SORT_ASC],
+                    'desc' => ['price' => SORT_DESC],
+                    'label' => 'PRICE',
+                    'default' => SORT_DESC
+                ],
+                'updated_at'
+                
+            ]
+            
+        ]);
+       
+        return $sort;
+    }
+
+    /** *
+     * Get a the bundles
+     * @param type $param
+     * @return type Bundle|Null
+     * ** */
+
+    public static function getBundleData($bundle_id = null) {
+        return self::find()->ById($bundle_id)->asArray()->all();        
+    }
+    
+    /**
+     * Update the status of a bundle
+     * @param type package_id, status
+     * @return True|False
+     */
+    public static function updateStatus($bundle_id = null, $status = null) {
+        return self::updateAll(['status' => $status], "bundle_id = {$bundle_id}");
+    }
+    
+    /**
+     * Deletes a package
+     * @param type package_id
+     * @return True|Null
+     */
+    public static function deleteBundle($bundle_id = null) {
+        return self::deleteAll('bundle_id = :bundle_id', [':bundle_id' => $bundle_id]);
+    }
+    
+    /**
+     * Gat all the bundles
+     * @param type null
+     * @return dataprovider|Null
+     */
+    public static function allBundles(){
+        $query = self::find()->byStatus('Active');
+        return $dataProvider = new \yii\data\ActiveDataProvider([
+            'query' => $query,
+            'pagination' => [
+                'pageSize' => $query->count(),
+            ],
+        ]);
+    }
+    
+}
+/* * ********************************************************************************************************************************** */
+// EOF: Bundles.php
+/* * ********************************************************************************************************************************** */

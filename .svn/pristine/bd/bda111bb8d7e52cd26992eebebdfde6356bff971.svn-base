@@ -1,0 +1,33 @@
+.login-admin{display: table;height: 100%;left: 0;margin: 0;padding: 0; position: absolute;top: 0;width: 100%; font-family:$avantgarde-md;
+.table-cell{display: table-cell;margin: 0;padding: 0;vertical-align: middle;
+.outer-panel .inner-panel .panel{border-color:#F9AE39;margin-bottom:0px;}
+.panel-heading{ background-color:#F9AE39;border-color:#F9AE39;} 
+.panel-title{font-size:24px; }
+.panel-body .form-group .form-control{ border-radius:0px;}
+}
+}
+
+
+.showhide-menu{
+    .nav-side-menu{ 
+      left:-250px;
+         @media(max-width:$screen-xs-max){
+        left:0px; z-index:9999;
+           }
+    }
+    .content{
+        margin-left: 0px; 
+        
+    }
+}
+
+.content{
+    background-color:#f9f9f9; margin-left: 250px; @include transition(margin-left 0.3s ease); padding: 95px 15px 15px 15px; position: relative;
+    background-image: url('../images/admin-heading-map.png'); background-repeat: no-repeat; background-position: center top;
+    
+      @media(max-width:$screen-xs-max){
+      margin-left:0px;
+  }
+} 
+
+

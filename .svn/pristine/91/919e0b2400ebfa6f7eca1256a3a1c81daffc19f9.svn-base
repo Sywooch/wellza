@@ -1,0 +1,105 @@
+<?php
+
+namespace frontend\modules\client\controllers;
+
+use Yii;
+use yii\base\InvalidParamException;
+use yii\web\BadRequestHttpException;
+use yii\web\Response;
+use yii\widgets\ActiveForm;
+use yii\data\ActiveDataProvider;
+use  yii\web\Session;
+
+class ServicePackageController extends \frontend\modules\client\components\Controller {
+          
+    public function actionIndex() {
+        
+        $model = new \common\models\Services();
+        $data = Yii::$app->request->post();
+        $session = Yii::$app->session;
+        $appointment_data = '';
+                
+        if(!empty($session->get('appointment_id'))) {
+            $appointment_id = $session->get('appointment_id');
+            $appointment_data = \common\models\Appointment::findOne(['id' => $appointment_id]);            
+        }
+        
+        $slots_data = \common\models\Packages::getPackageSlots($session->get('categoryid'), $session->get('subcategoryid'));
+                       
+        $content = $model->customContent();
+        if(isset($appointment_data)) {
+            $ap_date = $appointment_data->appointment_date;
+            $appointment_date_array = explode('-',$ap_date);
+            $day_slider = $model->customCalenderSlider($appointment_date_array[2],$appointment_date_array[1],$appointment_date_array[0]);
+        } else {
+            $day_slider = $model->customCalenderSlider();
+        }
+        
+        $time_slider = \common\models\Services::timeSlider($slots_data,$appointment_data);
+        
+        if(!empty($appointment_data)) {
+            return $this->render('service-package', ['content' => $content, 'day_slider' => $day_slider, 'time_slider' => $time_slider, 'slots_data' => $slots_data,'appointment_data' => $appointment_data]);
+        }
+        return $this->render('service-package', ['content' => $content, 'day_slider' => $day_slider, 'time_slider' => $time_slider, 'slots_data' => $slots_data]);
+    }
+    
+     /**
+     * save the data in the session for service package
+     */
+    public function actionLoadLocation() {
+        $data = Yii::$app->request->post();
+        $session = Yii::$app->session;
+        
+        $session['appointment_minutes'] = $data['appointment_minutes'];
+        $session['appointment_price'] = $data['appointment_price'];
+        $session['appointment_date'] = $data['appointment_date'];
+        $session['appointment_time'] = $data['appointment_time'];
+        return $this->redirect(['/client/service-location']);
+        //return $this->render('@frontend/client/service-location');
+        //return $this->render('/'.$url);
+    }
+
+    /********************************************** Ajax Driven functions ******************************************************************* */
+    /*************************************************************************************************************************************** */
+
+    /***
+     * Load calender dates for a particular month with its weekday
+     * *** */
+
+    public function actionLoadCalender() {
+        $data = Yii::$app->request->post();
+        $model = new \common\models\Services();
+        $content = $model->customContent($data['month'], $data['year']);
+        $day_slider = $model->customCalenderSlider($data['month'], $data['year']);
+        $returndata = $content . '####' . $day_slider;
+        echo $returndata;
+        die();
+    }
+    
+    /***
+     * Check for available time slot
+     * *** */
+
+    public function actionCheckSlots() {
+        $session = Yii::$app->session;
+        $data = Yii::$app->request->post();
+        $model = new \common\models\Services();
+        $params['customer_id'] = Yii::$app->user->id;
+        $params['categoryid'] = $session->get('categoryid');
+        $params['subcategoryid'] = $session->get('subcategoryid');
+        $params['appointment_minutes'] = $data['appointment_minutes'];
+        $date_time = $data['appointment_date'].' '. $data['appointment_time'];
+        $appointment_time = date('g:i A', strtotime($date_time));
+        $params['appointment_date'] = $data['appointment_date'];
+        $params['appointment_time'] = $appointment_time;
+        $params['appointment_price'] = $data['appointment_price'];
+        $returdsata = \common\models\Packages::IsPackageExist($params);
+        
+        if($returdsata) {
+            echo 1;
+        } else {
+            echo 0;
+        }        
+        die();
+    }
+}

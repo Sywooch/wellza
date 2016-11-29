@@ -1,0 +1,201 @@
+<?php
+/* * ********************************************************************************************************************* *//**
+ *  Model Name: BaseAppointment.php
+ *  Created: Codian Team
+ *  Description: It mainly consists of the properties rules and attributlabels.Contains the relations with other models and 
+ * the query model for queries.Its a base class will be inherited by its child classes whenever needed 
+ * ************************************************************************************************************************* */
+
+namespace common\models\base;
+
+use Yii;
+use common\models\User;
+use common\models\Packages;
+
+/**
+ * This is the model class for table "appointment".
+ *
+ * @property integer $id
+ * @property integer $customer_id
+ * @property integer $provider_id
+ * @property integer $package_id
+ * @property string $address1
+ * @property string $address2
+ * @property string $city
+ * @property string $province
+ * @property string $telephone_number
+ * @property integer $postal_code
+ * @property string $personal_information
+ * @property string $appointment_time
+ * @property string $appointment_endtime
+ * @property string $appointment_date
+ * @property string $appointment_price
+ * @property integer $appointment_duration
+ * @property string $status
+ * @property integer $cancelled_by
+ * @property string $created_at
+ * @property string $updated_at
+ *
+ * @property User $customer
+ * @property User $provider
+ * @property Packages $package
+ * @property Message[] $messages
+ * @property OrderDetail[] $orderDetails
+ */
+class BaseAppointment extends \yii\db\ActiveRecord
+{
+    /**
+     * @inheritdoc
+     */
+    public static function tableName()
+    {
+        return 'appointment';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function rules()
+    {
+        return [
+            [['customer_id'], 'required'],
+            [['customer_id', 'provider_id', 'package_id', 'postal_code', 'appointment_duration', 'cancelled_by'], 'integer'],
+            [['address1', 'address2', 'status'], 'string'],
+            [['preparation_instruction', 'additional_information', 'status'], 'string'],
+            [['appointment_time', 'appointment_endtime', 'appointment_date', 'created_at', 'updated_at'], 'safe'],
+            [['appointment_price'], 'number'],
+            [['location'], 'string', 'max' => 255],
+            [['city', 'province'], 'string', 'max' => 80],
+            [['telephone_number'], 'string', 'max' => 14],
+            [['personal_information'], 'string', 'max' => 350],
+            //[['service_id'], 'exist', 'skipOnError' => true, 'targetClass' => \common\models\Services::className(), 'targetAttribute' => ['service_id' => 'category_id']],
+            [['customer_id'], 'exist', 'skipOnError' => true, 'targetClass' => \common\models\User::className(), 'targetAttribute' => ['customer_id' => 'id']],
+            [['provider_id'], 'exist', 'skipOnError' => true, 'targetClass' => \common\models\User::className(), 'targetAttribute' => ['provider_id' => 'id']],
+            [['package_id'], 'exist', 'skipOnError' => true, 'targetClass' => \common\models\Packages::className(), 'targetAttribute' => ['package_id' => 'package_id']],
+
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function attributeLabels()
+    {
+        return [
+            'id' => 'ID',
+            'customer_id' => 'Customer ID',
+            'provider_id' => 'Provider ID',
+            'package_id' => 'Package ID',
+            'address1' => 'Address1',
+            'address2' => 'Address2',
+            'preferred_location' => 'Preferred Location',
+            'city' => 'City',
+            'province' => 'Province',
+            'telephone_number' => 'Telephone Number',
+            'postal_code' => 'Postal Code',
+            'personal_information' => 'Personal Information',
+            'appointment_time' => 'Appointment Time',
+            'appointment_endtime' => 'Appointment Endtime',
+            'appointment_date' => 'Appointment Date',
+            'appointment_price' => 'Appointment Price',
+            'appointment_duration' => 'Appointment Duration',
+            'latitude' => 'Latitude',
+            'longitude' => 'Longitude',
+            'status' => 'Status',
+            'cancelled_by' => 'Cancelled By',
+            'created_at' => 'Created At',
+            'updated_at' => 'Updated At',
+        ];
+    }
+
+     /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getService()
+    {
+        return $this->hasOne(\common\models\Services::className(), ['category_id' => 'service_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCustomer()
+    {
+        return $this->hasOne(\common\models\User::className(), ['id' => 'customer_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProvider()
+    {
+        return $this->hasOne(User::className(), ['id' => 'provider_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPackage()
+    {
+        return $this->hasOne(Packages::className(), ['package_id' => 'package_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMessages()
+    {
+        return $this->hasMany(Message::className(), ['appointment_id' => 'id']);
+    }    
+    
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getOrderDetails()
+    {
+        return $this->hasMany(OrderDetail::className(), ['product_id' => 'id']);
+    }
+    
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPackages()
+    {
+        return $this->hasOne(\common\models\Packages::className(), ['package_id' => 'package_id']);
+    }
+    
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPackageService()
+    {
+        return $this->hasOne(\common\models\PackageServices::className(), ['package_id' => 'package_id']);
+    }
+    
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getOrderDetail()
+    {
+        return $this->hasOne(\common\models\OrderDetail::className(), ['product_id' => 'id']);
+    }
+    
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCarts()
+    {
+        return $this->hasMany(\common\models\Cart::className(), ['appointment_id' => 'id']);
+    }    
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getReviewRating()
+    {
+        return $this->hasOne(\common\models\ReviewRating::className(), ['provided_to' => 'provider_id']);
+    }
+}
+
+/* * ********************************************************************************************************************************** */
+// EOF: BaseAppointment.php
+/* * ********************************************************************************************************************************** */

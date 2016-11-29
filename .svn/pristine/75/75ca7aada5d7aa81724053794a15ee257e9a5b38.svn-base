@@ -1,0 +1,851 @@
+.box-shadow{
+    box-shadow:0 0 4px 0 rgba(0, 0, 0, 0.1);
+}
+
+/*=================Admin modal css=========================*/
+
+.admin-modal{background-color: rgba(0,0,0,0.5);
+             .modal-lg{
+                 @media(min-width:$screen-lg-min){
+                     width: 1011px;
+                 }
+             }
+             .modal-content{
+                 border-radius: 0px;
+                 .modal-body{
+                     @media(min-width:$screen-lg-min){
+                         padding: 65px 144px;
+                     }
+                 }
+                 .modal-header{
+                     font-family:$avantgarde-md;  text-align: center; border-bottom: 1px solid rgba(0,0,0,0.1); 
+                     @media(min-width:$screen-lg-min){
+                         margin-left:65px; margin-right:65px;
+                     }
+                     @media(max-width:$screen-xs-max){
+                         padding:10px;
+                     }
+                     .modal-title{ text-transform: uppercase;
+                                   @media(max-width:$screen-xs-max){
+                                       font-size:18px;
+                                   }
+                     }
+                     .close{
+                         background-color: #f9ae39;border-radius: 50%; color: #ffffff;  height: 24px; opacity: 1;  position: absolute; right: 6px; top: 6px;  width: 24px;
+                     } 
+
+                 }
+                 .modal-footer{
+                     text-align: center; border-top: none;
+                 }
+
+             }  
+             .form-group{ margin-bottom: 20px;
+                          @media(max-width:$screen-xs-max){
+                              margin-bottom:15px;
+                          }
+                          input[type='text']{
+                              height: 50px;
+                              @media(max-width:$screen-xs-max){
+                                  height:35px; 
+                              }
+                          }
+                          .bootstrap-select{ width: 100% !important; height: 50px; color: #9F9F9F; text-transform: capitalize; 
+                                             .dropdown-toggle{
+                                                 height: 50px;color: #9F9F9F;border-radius: 0px; border-color: #D6D6D6;text-transform: capitalize; 
+                                             }
+                          }
+                          label{
+                              margin-bottom: 10px;
+                          }
+                          .form-control{
+                              border-radius: 0px; box-shadow: none; border: 1px solid #D6D6D6;
+                              @media(max-width:$screen-xs-max){
+                                  font-size:14px;
+                              }
+                          }
+
+             }
+             .btn{
+                 padding:10px 20px; font-size:20px; font-family:$avantgarde-md; letter-spacing: 0.3px; text-transform: uppercase;
+                 @media(max-width:$screen-xs-max){
+                     padding:10px 10px; font-size:14px;
+                 }
+             }
+
+}
+
+/*=================toggle=========================*/
+.toggle.btn{
+    min-height: 27px !important; height: 26px !important;
+}
+.off{
+    .toggle-group{
+        span.btn-default{left: 12px;} 
+    }
+}
+.toggle-group{
+    .btn{
+        font-size: 14px; padding: 2px;
+    }
+    span.btn-default{
+        right: 12px;width:26px;
+    }
+}
+/*====================toggle=========================*/
+
+/*====================pagination=========================*/
+
+.admin_pagination{background-color:$pagination-bg; margin: 20px 0; 
+                  .pagination{margin: 0px;
+                              li{
+                                  a{ padding: 13px 20px 10px 20px; position: relative; background-color: #E4E4E6; border-radius: 0px;color:#333; font-size: 16px; border-left:1px solid #c9c9c9;
+                                     @media(max-width:$screen-xs-max){
+                                      padding: 6px 10px; font-size:14px;
+                                     }
+                                     &:after{
+                                         content:''; position: absolute; bottom: -1px; height: 3px; width: 100%; background-color: $color-green; left: 0; right: 0; display: none;
+                                     }
+                                     &:hover, &:focus, &:active{ border-color:#c9c9c9; border-top:1px solid transparent; background-color: #fff;
+                                                                 &:after{ display: block;} 
+                                     }
+                                  }
+                                  a.prev{
+                                      background-color: $color-white; border: none;
+                                      @media(max-width:$screen-xs-max){
+                                       font-size: 12px;
+                                      }
+                                  }
+                                  a.next{
+                                      background-color: $color-white; border: none;
+                                      @media(max-width:$screen-xs-max){
+                                       font-size: 12px;
+                                      }
+                                  }
+                                  &:first-child,  &:last-child{
+                                      a{
+                                          &:after{ background-color: transparent;} 
+                                      }
+                                  }
+                              }
+                              li.active{
+                                  a{
+                                      background-color: #fff; color:#333; border:none; border-left:1px solid #c9c9c9;border-right:1px solid #c9c9c9;
+                                      &:after{ bottom:-2px;display: block;}  
+                                  }
+                              }
+                  }
+
+}
+/*====================end pagination=========================*/
+.content{
+    background-color:#f9f9f9;@include transition(margin-left 0.3s ease); padding: 95px 15px 15px 15px; position: relative;
+    background-image: url('../images/admin-heading-map.png'); background-repeat: no-repeat; background-position: center top;
+
+    @media(max-width:$screen-xs-max){
+        margin-left:0px; padding:60px 15px 15px;
+    }
+} 
+
+
+.admin-page{
+/*================bootstrap-switch=====================*/
+    .bootstrap-switch{border-radius: 22px; width: 100px !important; border: none;
+                      .bootstrap-switch-handle-on{ border-radius: 22px; margin-right: -24px; width: 32px; background-color: transparent !important; }
+                      .bootstrap-switch-label{ border-radius: 22px !important; display: inline-block; background-color: #fff !important; width: 84px; padding: 4px !important;}
+                      .bootstrap-switch-handle-off{width: 28px; background-color: transparent !important;}
+    }
+    .bootstrap-switch-off{
+        .bootstrap-switch-container{
+            margin-left: -5px !important;  
+        }
+        .bootstrap-switch-container{ background-color: #D6D6D6;}
+    }
+    .bootstrap-switch-on{
+        .bootstrap-switch-label{
+            margin-left: 5px !important;  
+        }
+        .bootstrap-switch-container{ background-color: #52BFB8;}
+    }  
+  
+/*================xxxxxxxxxxxxxxxx=====================*/
+
+    .main-container{
+        padding-left:$padding-large*3+25;
+    }
+    .tabpanel{
+        .panel-body{
+            @media(max-width:$screen-xs-max){
+                padding:0px;
+            }
+            .admintable{
+                /*box-shadow: 0 0px 4px 0 rgba(0, 0, 0, 0.2);*/
+            }
+            .table-container{border-radius:0px; border:none; 
+                             min-height: 500px;
+                             .panel-heading{
+                                 border-bottom:1px solid #e2e2e2;text-align:right; padding: 0 0 15px;
+                                 @media(max-width:$screen-xs-max){
+                                     padding:0px; margin-bottom:15px;
+                                 }
+                                 .main-heading{ text-align: left;
+                                                @media(max-width:$screen-sm-max){ 
+                                                    display: block; width:100%;
+                                                }
+                                                h4{
+                                                    font-size: 35px; margin: 0px; margin-bottom: 8px;font-family: $avantgarde-md; 
+                                                    @media(max-width:$screen-md-max){
+                                                        font-size:30px; 
+                                                    }
+                                                    @media(max-width:$screen-xs-max){
+                                                        font-size:20px; 
+                                                    }
+                                                }
+                                                .subline{
+                                                    font-size: 20px; color:$color-666;
+                                                    @media(max-width:$screen-md-max){
+                                                        font-size:18px; 
+                                                    }
+                                                    @media(max-width:$screen-xs-max){
+                                                        font-size:16px; 
+                                                    }
+                                                }
+                                 }
+
+                                 .search-box{ float: right;
+                                                      @media(max-width:$screen-xs-max){
+                                                          float:none;
+                                                      }
+                                                      .form-group{
+                                                          float: left;margin-right:10px;
+                                                          @media(max-width:$screen-xs-max){
+                                                              width: 100%;
+                                                          }
+                                                          .bootstrap-select{
+                                                              @media(max-width:$screen-md-max){
+                                                                  width: 200px;margin-right:0px;
+                                                              }
+                                                              @media(max-width:$screen-xs-max){ 
+                                                                  width:100%;
+                                                              }
+                                                              .btn-default{
+                                                                  height: 50px; border-radius:0;font:16px  $avantgarde-md; color:#A0A0A0;
+                                                                  @media(max-width:$screen-md-max){ 
+                                                                      height: 45px;
+                                                                  }
+                                                              }
+                                                          }
+
+                                                      }
+                                                      a.btn{
+                                                          float: left;margin-right:10px;
+                                                          @media(max-width:$screen-md-max){
+                                                              margin-bottom:10px;
+                                                          }
+                                                      }
+                                                      .btn-warning{  margin-right: 0px;}
+                                 }
+
+                                 .search { 
+                                     display: inline-block; vertical-align: top;
+                                     @media(max-width:480px){
+                                         display: block;
+                                     }
+
+                                     
+                                    .input-group, input {
+                                         height: 48px; background-color: #F9AE39;border: none;color: #fff;padding-left: 5px;font-family: $avantgarde-md; letter-spacing: 0.3px;
+                                         @media(max-width:$screen-xs-max){
+                                             width:100%;
+                                         }
+                                     }
+                                     .input-group-addon {
+                                         border: none;background-color: transparent;
+                                         i {
+                                             color: #fff;font-size: 18px;
+                                         }
+                                     }
+                                     ::-webkit-input-placeholder{color: #fff; opacity: 0.5;}
+                                     :-moz-placeholder { /* Firefox 18- */color: #fff; }
+                                     ::-moz-placeholder {  /* Firefox 19+ */color: #fff; }
+                                     :-ms-input-placeholder {color: #fff; }
+                                 }
+                                 .btn-info{font-family: $avantgarde-md; font-size: 18px; padding: 10px 15px; margin-bottom:5px;
+                                           
+                                           @media(max-width:480px){ 
+                                               font-size:15px;  display:block;
+                                           }
+
+                                 } 
+                                 .btn-warning{
+                                     font-family: $avantgarde-md; font-size: 18px; padding: 10px 15px;
+                                     @media(max-width:$screen-md-max){
+                                         font-size:16px;
+                                     }
+                                     @media(max-width:$screen-xs-max){ 
+                                         font-size: 15px; display:inline-block; float:left;
+                                     }
+
+                                 } 
+                             }
+                             .admintable{
+                                 .table{ 
+                                     margin-bottom:0px; 
+                                     th{
+                                         background-color:$color-green;letter-spacing: 0.6px; padding:15px; font-weight:normal;border-bottom:1px solid #dddddd; color: $color-white; font-family: $avantgarde-md; font-size: 16px;
+                                         a{
+                                             color: $color-white; text-decoration: none;
+                                         }
+                                     }
+                                     tr{
+                                         &:nth-child(odd){
+                                             background-color:$color-white;
+                                         }
+                                         &:nth-child(even){
+                                             background-color:#fbfbfb;
+                                         }
+                                         td{
+                                             border-top:0px; vertical-align:middle; padding: 5px 15px;font-family: $avantgarde-md; color:$color-666;
+                                             border-bottom:1px solid #e8e8e8; white-space: nowrap;
+                                             .category-name{
+                                                 .img-box, .name{
+                                                     display: table-cell; vertical-align: middle;
+                                                 }
+                                                 .name{ padding-left:10px;}
+                                                 .customer-image{
+                                                     height: 50px; width: 50px; border: 2px solid #52BFB8; border-radius: 50%; padding: 2px; 
+                                                 }
+                                             }
+
+                                         }
+
+                                     }
+                                 } 
+                             }
+                             .admintable02{ padding: 1px;
+                                            .table{ background-color:$color-white; 
+                                                    &:first-child{
+                                                        margin-bottom: 0px;background-color: transparent; 
+                                                    }
+                                                    th{
+                                                        color:#A0A0A0; font-size: 16px; letter-spacing: 0.8px; border-bottom: none; padding: 15px 10px; text-align: center; width: 300px; white-space: nowrap;
+                                                        @media(max-width:$screen-xs-max){
+                                                            font-size:15px; padding:10px;
+                                                        }
+                                                        &:first-child{
+                                                            text-align: left;
+                                                        }
+                                                    }
+
+                                                    tbody{
+                                                        tr{
+                                                            border  :1px solid #e2e2e2; 
+                                                            &:nth-child(odd){
+                                                                background-color:$color-white;
+                                                            }
+                                                            &:nth-child(even){
+                                                                background-color:#fbfbfb;
+                                                            }
+                                                        }
+                                                        td{
+                                                            border: none; vertical-align: middle; font-size: 18px;color:#A2A2A2; padding: 15px; text-align:center;width: 300px;  white-space: nowrap;
+                                                            position: relative;
+                                                            &:after{
+                                                                content: ''; height: 65px; position: absolute; background-color: #EBEBEB; width: 1px; top:30px; right: 0;
+                                                            }
+                                                            &:last-child{
+                                                                &:after{ opacity: 0;}  
+                                                            }
+                                                            .category-name{
+                                                                .category-icon, .name{
+                                                                    display: table-cell; vertical-align: middle;
+                                                                }
+                                                                .name{ padding-left:10px;font-family: $avantgarde-md;}
+                                                                .icon{
+                                                                    height: 92px; width: 92px;background-color: #F0F0F0; border: 1px solid #cdcdcd; border-radius: 50%; padding: 9px 3px;
+                                                                }
+                                                            }
+                                                            .product-name{
+                                                                .product-icon{
+                                                                    .icon{
+
+                                                                        border-radius:50%;
+                                                                        border:2px solid #BDBCBD;
+                                                                        width: 65px;
+                                                                        margin: 0 auto;
+                                                                        img{
+                                                                            width: 60px;
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+
+                                                            .discription-area{  padding:0; }
+                                                            .discription{white-space: normal !important;font-size:16px; }
+                                                            .cate-no{
+                                                                font-size: 30px;
+                                                                @media(max-width:$screen-xs-max){
+                                                                  font-size: 22px;
+                                                                }
+                                                            }
+                                                            a.view-more{ text-decoration: none; display: block;
+                                                                         img{
+                                                                             padding: 10px; 
+                                                                         } 
+                                                            }
+
+                                                        } 
+                                                    }
+
+                                            }   
+
+                             }
+
+            }
+        }
+    }
+    .table{
+        ul{
+            margin: 0px;
+            li{ text-align: center;
+                .view-btn{
+                    height: 30px; width: 30px; border-radius: 50%; background-color: #F9AE39; line-height: 30px; display: block;
+                    &:hover{ background-color: lighten(#F9AE39,10);}
+                }
+                .delete-btn{
+                    height: 30px; width: 30px; border-radius: 50%; line-height: 30px; display: block;background-color: #C8C8C8;
+                    &:hover{ background-color:lighten(#C8C8C8,5);}
+                }
+            }
+        } 
+    }
+/*================xxxxxxxxxxxxxxxx=====================*/
+    .admin-tabs{margin-top: 20px;
+                ul.nav-tabs{ box-shadow: 0 0 4px -1px rgba(0,0,0,0.2); border: none; background-color: $color-white; 
+                             @media(max-width:$screen-lg-max){
+                                 overflow-x: auto; overflow-y: hidden; white-space: nowrap;  
+                             } 
+                             & > li{text-align: center; white-space: nowrap;
+                                    @media(max-width:$screen-xs-max){display: inline-block; float: none; width: auto;}
+                                    &.active{
+                                        & > a{
+                                            background-color: transparent; color: $color-green; border:none; position: relative;
+                                            &:after{
+                                                content: ''; height: 3px; background-color: $color-green; bottom: 0; position: absolute; width: 100%; left: 0; right: 0;
+                                            }
+                                        }  
+                                    }
+                                    & > a{ 
+                                        color: $color-666; font-size: 18px; font-family: $avantgarde-md; padding: 15px 20px; border:none;
+                                        @media(max-width:$screen-lg-max){
+                                            font-size: 16px;padding: 15px 10px;  
+                                        }
+                                        @media(max-width:$screen-xs-max){
+                                            font-size: 16px;padding: 15px 10px;  
+                                        }
+                                        &:hover{
+                                            background-color: transparent; color: $color-green; border:none;
+                                        }
+                                    }
+                             }
+                             li.dropdown{
+                                 .dropdown-menu{ width: 100%; padding: 0; border-radius: 0;
+                                                 li{
+                                                     a{
+                                                         color: $color-666; font-size: 18px; font-family: $avantgarde-md; background-color: transparent !important; border:none; position: relative; padding: 10px 15px; text-align: center !important;
+                                                         &:hover, &:focus, &:active, &:visited{ 
+                                                             background-color: transparent !important; color: $color-green;
+                                                         }
+                                                     }
+                                                     &.active{
+                                                         a{
+                                                             background-color: transparent !important; border:none; position: relative; padding: 10px 15px; text-align: center !important;
+                                                             &:hover, &:focus, &:active, &:visited{ 
+                                                                 background-color: transparent !important; color: $color-green;
+                                                             }
+                                                         } 
+
+                                                     }
+                                                 } 
+                                 }
+                             }
+                }
+    }
+}
+
+
+
+/*================xxxxxxxxxxxxxxxx=====================*/
+
+.admin-modal{
+    .item{
+        .checkbox{   
+            input[type=checkbox]:checked, input[type=radio]:checked {
+                + label{
+                    span{
+                        background-color: $color-green; 
+                    }
+                    span.hair-icon{ 
+                        background-image: url('../images/hair-icon-white.png');
+                    }
+                    span.training-icon{
+                        background-image: url('../images/training-icon-white.png');
+                    }
+                    span.skin-icon{
+                        background-image: url('../images/skin-icon-white.png'); 
+                    } 
+                    span.nails-icon{
+                        background-image: url('../images/nails-icon-white.png');
+                    } 
+                    span.massage-icon{
+                        background-image: url('../images/massage-icon-white.png');
+                    } 
+                    span.bundle-icon{
+                        background-image: url('../images/bundle-icon-white.png');
+                    } 
+                    span.airbrush_icon{
+                        background-image: url('../images/airbrush_whiteicon.png');
+                    } 
+                    span.brow_shaping_icon{
+                        background-image: url('../images/brow_shaping_whiteicon.png');
+                    } 
+                    span.children_haircut_icon{
+                        background-image: url('../images/children_haircut_whiteicon.png');
+                    } 
+                    span.full_mink_icon{
+                        background-image: url('../images/full_mink_whiteicon.png');
+                    } 
+                    span.makeup_application_conter_icon{
+                        background-image: url('../images/makeup_application_conter_whiteicon.png');
+                    } 
+                    span.makeup_application_icon{
+                        background-image: url('../images/makeup_application_whiteicon.png');
+                    } 
+                    span.makeup_lesson_icon{
+                        background-image: url('../images/makeup_lesson_whiteicon.png');
+                    } 
+                    span.mink_lesh_icon{
+                        background-image: url('../images/mink_lesh_whiteicon.png');
+                    } 
+                    span.silk_lesh_icon{
+                        background-image: url('../images/silk_lesh_whiteicon.png');
+                    } 
+                    span.threding_icon{
+                        background-image: url('../images/threding_whiteicon.png');
+                    } 
+                    span.woman_haircut_icon{
+                        background-image: url('../images/woman_haircut_whiteicon.png');
+                    } 
+
+                    span.upper_body_icon{
+                        background-image: url('../images/upper_body_whiteicon.png');
+                    }
+                    span.mustache_icon{
+                        background-image: url('../images/mustache_whiteicon.png');
+                    }
+                    span.beared_trim_style_icon{
+                        background-image: url('../images/beared_trim_style_whiteicon.png');
+                    }
+                    span.shave_icon{
+                        background-image: url('../images/shave_whiteicon.png');
+                    }
+                    span.haircut_straight_shave_icon{
+                        background-image: url('../images/haircut_straight_shave_whiteicon.png');
+                    }
+                    span.personal_trainer_icon{
+                        background-image: url('../images/personal_trainer_whiteicon.png');
+                    }
+                    span.trainer_icon{
+                        background-image: url('../images/trainer_whiteicon.png');
+                    }
+                    span.yoga_icon{
+                        background-image: url('../images/yoga_whiteicon.png');
+                    }
+                    span.group_yoga_icon{
+                        background-image: url('../images/group_yoga_whiteicon.png');
+                    }
+                    span.piletes_icon{
+                        background-image: url('../images/piletes_whiteicon.png');
+                    }
+                    span.kick_boxing_icon{
+                        background-image: url('../images/kick_boxing_whiteicon.png');
+                    }
+                    span.defanse_icon{
+                        background-image: url('../images/defanse_whiteicon.png');
+                    }
+                    span.gymnastics_icon{
+                        background-image: url('../images/gymnastics_whiteicon.png');
+                    }
+                    span.ki_hara_icon{
+                        background-image: url('../images/ki_hara_whiteicon.png');
+                    }
+                    span.surf_icon{
+                        background-image: url('../images/surf_whiteicon.png');
+                    }
+                    span.cardio_run_icon{
+                        background-image: url('../images/cardio_run_whiteicon.png');
+                    }
+                    span.dance_cardio_icon{
+                        background-image: url('../images/dance_cardio_whiteicon.png');
+                    }
+                    span.beach_body_icon{
+                        background-image: url('../images/beach_body_whiteicon.png');
+                    }
+                    span.zumba_icon{
+                        background-image: url('../images/zumba_whiteicon.png');
+                    }
+                    span.mani_pedi_icon{
+                        background-image: url('../images/mani_pedi_whiteicon.png');
+                    }
+                    span.manicure_icon{
+                        background-image: url('../images/manicure_whiteicon.png');
+                    }
+                    span.galicure_icon{
+                        background-image: url('../images/galicure_whiteicon.png');
+                    }
+                    span.manicure_nailart_icon{
+                        background-image: url('../images/manicure_nailart_whiteicon.png');
+                    }
+                    span.galicure_nailart_icon{
+                        background-image: url('../images/galicure_nailart_whiteicon.png');
+                    }
+                    span.galicure_and_drypadicure_icon{
+                        background-image: url('../images/galicure_and_drypadicure_whiteicon.png');
+                    }
+                    span.dry_pedicure_icon{
+                        background-image: url('../images/dry_pedicure_whiteicon.png');
+                    }
+                    span.spa_pedicure_icon{
+                        background-image: url('../images/spa_pedicure_whiteicon.png');
+                    }
+                    span.reflexology_icon{
+                        background-image: url('../images/reflexology_whiteicon.png');
+                    }
+                    span.side_desk_icon{
+                        background-image: url('../images/side_desk_whiteicon.png');
+                    }
+                    span.no_table_icon{
+                        background-image: url('../images/no_table_whiteicon.png');
+                    }
+                    span.min60_prental_icon{
+                        background-image: url('../images/min60_prental_whiteicon.png');
+                    }
+                    span.min90_prental_icon{
+                        background-image: url('../images/min90_prental_whiteicon.png');
+                    }
+                    span.clip_icon{
+                        background-image: url('../images/clip_whiteicon.png');
+                    }
+                    span.pc40_icon{
+                        background-image: url('../images/pc40_whiteicon.png');
+                    }
+                    span.pc20_icon{
+                        background-image: url('../images/pc20_whiteicon.png');
+                    }
+                    span.hot_tool_icon{
+                        background-image: url('../images/hot_tool_whiteicon.png');
+                    }
+                    span.blow_icon{
+                        background-image: url('../images/blow_whiteicon.png');
+                    }
+                    span.brainded_icon{
+                        background-image: url('../images/brainded_whiteicon.png');
+                    }
+                    span.airbrush_body_tone_icon{
+                        background-image: url('../images/airbrush_body_tone_whiteicon.png');
+                    }
+                    span.men_hair_cut_icon{
+                        background-image: url('../images/men_hair_cut_whiteicon.png');
+                    }
+                    span.on_table_icon{
+                        background-image: url('../images/on_table_whiteicon.png');
+                    }
+                }
+
+            }
+
+        }
+
+        .category_icon{
+            .hair-icon{
+                background-image: url('../images/hair-icon.png'); 
+            }
+            .training-icon{
+                background-image: url('../images/training-icon.png');
+            }
+            .skin-icon{
+                background-image: url('../images/skin-icon.png');
+            } 
+            .nails-icon{
+                background-image: url('../images/nails-icon.png');
+            } 
+            .massage-icon{
+                background-image: url('../images/massage-icon.png');
+            } 
+            .bundle-icon{
+                background-image: url('../images/bundle-icon.png');
+            } 
+            .airbrush_icon{
+                background-image: url('../images/airbrush_icon.png');
+            } 
+            .brow_shaping_icon{
+                background-image: url('../images/brow_shaping_icon.png');
+            } 
+            .children_haircut_icon{
+                background-image: url('../images/children_haircut_icon.png');
+            } 
+            .full_mink_icon{
+                background-image: url('../images/full_mink_icon.png');
+            } 
+            .makeup_application_conter_icon{
+                background-image: url('../images/makeup_application_conter_icon.png');
+            } 
+            .makeup_application_icon{
+                background-image: url('../images/makeup_application_icon.png');
+            } 
+            .makeup_lesson_icon{
+                background-image: url('../images/makeup_lesson_icon.png');
+            } 
+            .mink_lesh_icon{
+                background-image: url('../images/mink_lesh_icon.png');
+            } 
+            .silk_lesh_icon{
+                background-image: url('../images/silk_lesh_icon.png');
+            } 
+            .threding_icon{
+                background-image: url('../images/threding_icon.png');
+            } 
+            .woman_haircut_icon{
+                background-image: url('../images/woman_haircut_icon.png');
+            }  
+
+            .upper_body_icon{
+                background-image: url('../images/upper_body_icon.png');
+            }
+            .mustache_icon{
+                background-image: url('../images/mustache_icon.png');
+            }
+            .beared_trim_style_icon{
+                background-image: url('../images/beared_trim_style_icon.png');
+            }
+            .shave_icon{
+                background-image: url('../images/shave_icon.png');
+            }
+            .haircut_straight_shave_icon{
+                background-image: url('../images/haircut_straight_shave_icon.png');
+            }
+            .personal_trainer_icon{
+                background-image: url('../images/personal_trainer_icon.png');
+            }
+            .trainer_icon{
+                background-image: url('../images/trainer_icon.png'); 
+            }
+            .yoga_icon{
+                background-image: url('../images/yoga_icon.png');
+            }
+            .group_yoga_icon{
+                background-image: url('../images/group_yoga_icon.png');
+            }
+            .piletes_icon{
+                background-image: url('../images/piletes_icon.png');
+            }
+            .kick_boxing_icon{
+                background-image: url('../images/kick_boxing_icon.png');
+            }
+            .defanse_icon{
+                background-image: url('../images/defanse_icon.png');
+            }
+            .gymnastics_icon{
+                background-image: url('../images/gymnastics_icon.png');
+            }
+            .ki_hara_icon{
+                background-image: url('../images/ki_hara_icon.png');
+            }
+            .surf_icon{
+                background-image: url('../images/surf_icon.png');
+            }
+            .cardio_run_icon{
+                background-image: url('../images/cardio_run_icon.png');
+            }
+            .dance_cardio_icon{
+                background-image: url('../images/dance_cardio_icon.png');
+            }
+            .beach_body_icon{
+                background-image: url('../images/beach_body_icon.png');
+            }
+            .zumba_icon{
+                background-image: url('../images/zumba_icon.png');
+            }
+            .mani_pedi_icon{
+                background-image: url('../images/mani_pedi_icon.png');
+            }
+            .manicure_icon{
+                background-image: url('../images/manicure_icon.png');
+            }
+            .galicure_icon{
+                background-image: url('../images/galicure_icon.png');
+            }
+            .manicure_nailart_icon{
+                background-image: url('../images/manicure_nailart_icon.png');
+            }
+            .galicure_nailart_icon{
+                background-image: url('../images/galicure_nailart_icon.png');
+            }
+            .galicure_and_drypadicure_icon{
+                background-image: url('../images/galicure_and_drypadicure_icon.png');
+            }
+            .dry_pedicure_icon{
+                background-image: url('../images/dry_pedicure_icon.png');
+            }
+            .spa_pedicure_icon{
+                background-image: url('../images/spa_pedicure_icon.png');
+            }
+            .reflexology_icon{
+                background-image: url('../images/reflexology_icon.png');
+            }
+            .side_desk_icon{
+                background-image: url('../images/side_desk_icon.png');
+            }
+            .no_table_icon{
+                background-image: url('../images/no_table_icon.png');
+            }
+            .min60_prental_icon{
+                background-image: url('../images/min60_prental_icon.png');
+            }
+            .min90_prental_icon{
+                background-image: url('../images/min90_prental_icon.png');
+            }
+            .clip_icon{
+                background-image: url('../images/clip_icon.png');
+            }
+            .pc40_icon{
+                background-image: url('../images/pc40_icon.png');
+            }
+            .pc20_icon{
+                background-image: url('../images/pc20_icon.png');
+            }
+            .hot_tool_icon{
+                background-image: url('../images/hot_tool_icon.png');
+            }
+            .blow_icon{
+                background-image: url('../images/blow_icon.png');
+            }
+            .brainded_icon{
+                background-image: url('../images/brainded_icon.png');
+            }
+            .airbrush_body_tone_icon{
+                background-image: url('../images/airbrush_body_tone_icon.png');
+            }
+            .men_hair_cut_icon{
+                background-image: url('../images/men_hair_cut_icon.png');
+            }
+            .on_table_icon{
+                background-image: url('../images/on_table_icon.png');
+            }
+
+        }  
+    } 
+}
+
+
+

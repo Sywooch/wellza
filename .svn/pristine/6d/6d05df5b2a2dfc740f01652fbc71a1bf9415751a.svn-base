@@ -1,0 +1,81 @@
+<?php
+
+/*
+ * This api will get or set the data for a user
+ */
+
+namespace api\modules\v1\controllers;
+
+use Yii;
+use api\components\Controller;
+use yii\web\NotFoundHttpException;
+use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
+use common\models\Message;
+use common\models\MessageRecipient;
+use common\models\User;
+
+/**
+ * User Controller API
+ *
+ */
+class MessageController extends Controller {
+
+    /**
+     * To get all the records from the user table
+     *
+     * * */
+    public $serializer = [
+        'class' => 'yii\rest\Serializer',
+        'collectionEnvelope' => 'items',
+    ];
+    public function behaviors() {
+        return ArrayHelper::merge(parent::behaviors(), [
+                    'authenticator' => [
+                        'except' => ['create']
+                    ],
+        ]);
+    }
+    
+    
+    public function actionCreate(){
+        $post  = $this->requestParams;
+        $messageModel = new Message;
+        $messageRecipientModel = new MessageRecipient;
+        $messageModel->load($post,'');
+        $messageRecipientModel->load($post,'');
+        $messageData = $messageModel->saveMessage($post);
+        $messageRecipientData= $messageRecipientModel->saveMessageRecipient($messageData->id);
+        $fromUserData = User::findIdentity($messageRecipientData->from_user_id);
+        $toUserData = User::findIdentity($messageRecipientData->to_user_id);
+        return [
+            'message_id' => $messageData->id,
+            'thread_id' => $messageData->thread_id,
+            'message' => $messageData->message,
+            'from_user_id' => $messageRecipientData->from_user_id,
+            'to_user_id' => $messageRecipientData->to_user_id,
+            'from_user_name' => $fromUserData->first_name.' '.$fromUserData->last_name,
+            'to_user_name' => $toUserData->first_name.' '.$toUserData->last_name,
+            'to_profile_image' => '',
+            'from_profile_image' => '',
+            'message_date' => $messageData->created_at
+        ];
+    }
+    public function actionInboxList(){
+        $userId = Yii::$app->user->id;
+        return $messageDataProvider = Message::getInboxList($userId);
+        
+    }
+    public function actionConversation(){
+        $post = Yii::$app->request->get();
+        return $messageDataProvider =  Message::getConversationMessage($post['thread_id']);
+    }
+    public function actionDelete($id){
+       $userId = Yii::$app->user->id;
+        if(Message::deleteConversation($id,$userId)) 
+        {
+            return [];
+        }
+    }
+
+}

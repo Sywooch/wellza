@@ -1,0 +1,229 @@
+.serviceprovider-review-payment-section{
+  padding-top:60px;
+    .review-section-containet{
+      color: #fff;
+      background: #383838;
+      .container{
+        width: 100% !important;
+          .border-custom{
+              border-bottom: 1px solid rgba(0,0,0,0.2);
+              .p-l{
+                font-size: 18px;
+                padding-top:15px;
+                padding-left:15px;
+                @media(min-width:$screen-md-min) and (max-width:$screen-lg-max){
+                  font-size: 16px;
+                }
+              }
+              .input-group{
+                margin-right: -15px;
+                input{
+                    padding: 0px 10px;
+                    border-radius: 0;
+                    background:#292929;
+                    border:1px solid #292929;
+                    font-size: 17px;
+                    border-right:2px solid #131313;
+                    height: 58px;
+                }
+                .input-group-btn{
+                  button{
+                    padding: 15px 30px;
+                    height: 58px;
+                    border-radius: 0;
+                    background:#292929;
+                    color: #A4A4A4;
+                    font-size: 20px;
+                    border-left: 1px solid #363636;
+                    @media(min-width:$screen-md-min) and (max-width:$screen-lg-max){
+                      padding: 15px ;
+                    }
+                  }
+                }
+              }
+            }
+            .border-custom2{
+              background:$color-orange;
+
+              .p-l{
+                  font-size: 21px;
+                  font-weight: bold;
+                  padding:15px 0 0 15px;
+                  @media(min-width:1280px) and (max-width:1400px){
+                  font-size: 17px;
+                }
+              }
+              .p-r{
+                font-size: 30px;
+                font-weight: bold;
+                text-align: right;
+                padding:15px 15px 0 0;
+                @media(max-width:$screen-xs-max){
+                  font-size: 30px;
+                  font-weight: bold;
+                  text-align: left;
+                  padding:15px ;
+                 }
+                 
+              }
+            }
+            .border{
+              border-bottom: 1px solid rgba(0,0,0,0.2);
+              padding: 10px 0;
+              h2{
+                padding-left: 15px;
+              }
+              .p-l{
+                font-size: 18px;
+                padding-left:15px;
+                
+              }
+              
+              .p-r{
+                font-size: 20px;
+                text-align: right;
+                padding-right:15px; 
+                 @media(max-width:$screen-xs-max){
+                  padding-right:0;
+                  text-align: left;
+                  padding-left:15px;
+                  font-size: 22px;
+                 }
+                 
+                span{
+                  font-size: 16px;
+                  display: block;
+                  @media(max-width:$screen-xs-max){
+                    text-align: left !important;
+                  }
+                  
+                }
+              }
+
+            }
+      }
+      
+    }
+
+
+    
+      
+    .payment-section-containt{
+      border:1px solid #ECECEC;
+      background:#fff;
+      @media(max-width:$screen-xs-max){margin-top:50px;}
+      @media(min-width:$screen-sm-min) and (max-width:$screen-sm-max){margin-top:50px;}
+      .container{
+        width: 100% !important;
+        .containt-top{
+          padding: 20px;
+          h2{
+            font-family: $avantgardestd-bk;
+            font-size: 39px;
+            color: $color-666;
+            margin-top: 0;
+          }
+          p{
+            font-family: $avantgardestd-bk;
+            font-size: 20px;
+            color:#A0A0A0;
+          }
+          .form-group{
+            input{
+              height: 50px;
+              border:2px solid #D6D6D6;
+              border-radius:0;
+            }
+
+            .bootstrap-select{
+              width: 100%;
+              .btn-default{
+                border:2px solid #D6D6D6; color: #A0A0A0; height: 50px; padding-left: 25px; border-radius:0;
+                .bs-caret{
+                  .caret{
+                    border-top: 7px dashed;    border-right: 7px solid transparent;    border-left: 7px solid transparent;
+                  }
+                }
+              }
+            }
+        
+
+            label{
+              color: $color-666;
+              font-family: $avantgardestd-bk;
+              font-size: 19px;
+              margin-top: 25px;
+              font-weight: normal;
+            }
+          }
+          img{
+            margin-top: 25px;
+            @media(min-width:$screen-md-min) and (max-width:1400px){
+                margin: 40px 0;
+              }
+            
+            @media(min-width:1401px) and (max-width:1700px){
+                margin: 40px 0;
+              }
+
+          }
+        }
+
+        .container-bottom{
+          .pad0{
+            padding:0;
+          }
+         .save{
+          display: block;
+          width: 50%;
+          background:$color-orange;
+          color:#fff;
+          text-align: center;
+          display: inline-block;
+          float: left;
+          font-family: $avantgarde-md;
+          font-size: 21px;
+          padding:19px 0;
+          margin-top: 4px;
+          text-decoration: none;
+          &:hover{
+            background:lighten($color-orange, 5%);
+          }
+         } 
+         .pay{
+          background:$color-green;
+          display: block;
+          width: 50%;
+          color:#fff;
+          text-align: center;
+          display: inline-block;
+          font-family: $avantgarde-md;
+          font-size: 21px;
+          padding:19px 0;
+          margin-top: 4px;
+          text-decoration: none;
+          &:hover{
+            background:lighten($color-green, 5%);
+          }
+         }
+        }
+      }
+    }
+  
+  
+    .add-info{
+      margin: 50px 0;
+      p:first-child{
+        font-family: $avantgarde-md;
+        font-size: 22px;
+      }
+
+      p:last-child{
+        font-family: $avantgardestd-bk;
+        font-size: 18px;
+        color: $color-666;
+        max-width: 550px;
+      }
+    }
+
+}

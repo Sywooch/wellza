@@ -1,0 +1,172 @@
+<?php
+
+namespace common\models;
+
+use Yii;
+
+use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
+use yii\db\Expression;
+use common\models\query;
+use yii\base\NotSupportedException;
+use yii\helpers\ArrayHelper;
+use common\models\UserMembership;
+
+/**
+ * This is the model class for table "user_membership".
+ *
+ * @property integer $id
+ * @property integer $user_id
+ * @property integer $plan_id
+ * @property string $price
+ * @property string $off_percent
+ * @property string $start_date
+ * @property string $end_date
+ * @property string $plan_detail
+ * @property integer $is_active
+ * @property string $duration
+ * @property string $created_at
+ * @property string $updated_at
+ *
+ * @property MasterMembershipPlan $plan
+ * @property User $user
+ */
+class UserMembership extends base\BaseUserMembership implements \yz\shoppingcart\CartPositionInterface
+{    
+     use \yz\shoppingcart\CartPositionTrait;
+    /**
+     * @inheritdoc
+     */
+    public function rules() {
+        return ArrayHelper::merge(
+                        parent::rules(), [                    
+        ]);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function attributeLabels() {
+        return ArrayHelper::merge(
+                        parent::attributeLabels(), [
+        ]);
+    }
+    /**
+     * @inheritdoc
+     */
+    public function behaviors() {
+        return [
+            [
+                'class' => TimestampBehavior::className(),
+                'createdAtAttribute' => 'created_at',
+                'updatedAtAttribute' => 'updated_at',
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
+                    ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
+                ],
+                'value' => new Expression('NOW()'),
+            ],
+        ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPlan()
+    {
+        return $this->hasOne(MasterMembershipPlan::className(), ['id' => 'plan_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUser()
+    {
+        return $this->hasOne(User::className(), ['id' => 'user_id']);
+    }
+
+    /**
+     * @inheritdoc
+     * @return \common\models\query\UserMembershipQuery the active query used by this AR class.
+     */
+    public static function find()
+    {
+        return new \common\models\query\UserMembershipQuery(get_called_class());
+    }
+    
+    /**
+     * Saves the data for the client membership
+     * @param array $params 
+     * @return Id|Null
+     */
+    public function add_membership($params = null) {
+        $model = new UserMembership();
+        $model->user_id = $params['user_id']; 
+        $model->plan_id = $params['plan_id']; 
+        $model->price = $params['price']; 
+        $model->off_percent = $params['off_percent']; 
+        $model->start_date = $params['start_date']; 
+        $model->plan_detail = $params['plan_detail']; 
+        $model->is_active = 0; 
+        $model->duration = $params['billing_cycle']; 
+        
+        if($model->save(false)) {
+            return $model->id;
+        }
+        return null;
+    }
+    
+    /**
+     * Override methods from cartinterface
+     * @return type
+     */
+    public function getPrice() {
+        return $this->price;
+    }
+    
+    /**
+     * Override methods from cartinterface
+     * @return type
+     */
+    public function getId() {
+        return $this->id;
+    }
+  
+
+    /**
+     * Override methods from cartinterface
+     * @return type
+     */
+    public function getType() {
+        return 'wellza_membership';
+    }   
+        
+    public static function saveMembership($userId,$planData){
+        $model = new UserMembership;
+        $model->user_id = $userId;
+        $model->plan_id = $planData->id;
+        $model->price = $planData->price;
+        $model->off_percent = $planData->off_percent;
+        $model->start_date = date('Y-m-d H:i:s');
+        if($planData->duration == 'monthly') {
+            $time = strtotime($model->start_date);
+            $model->end_date = date("Y-m-d", strtotime("+1 month", $time));
+        } else {
+            $time = strtotime($model->start_date);
+            $model->end_date = date("Y-m-d", strtotime("+1 year", $time));
+        }
+        $model->is_active = 1;
+        $model->duration = $planData->duration;
+        return $model->save(false);
+    }
+    
+    public static function isMember($userId){
+        $memberData = self::find()->where(['user_id'=>$userId,'is_active'=>1])->one();
+        if(!empty($memberData)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+}

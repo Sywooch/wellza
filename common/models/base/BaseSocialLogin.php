@@ -1,0 +1,270 @@
+<?php
+
+namespace common\models\base;
+
+use Yii;
+use common\components\CheckEmailValidator;
+
+/**
+ * This is the model class for table "user".
+ *
+ * @property integer $id
+ * @property string $auth_key
+ * @property string $password_hash
+ * @property string $password_reset_token
+ * @property string $email
+ * @property string $first_name
+ * @property string $last_name
+ * @property string $gender
+ * @property string $profile_image
+ * @property string $dob
+ * @property string $address
+ * @property string $zip
+ * @property string $country
+ * @property string $phone_number
+ * @property string $aboutme
+ * @property string $user_type
+ * @property string $social_id
+ * @property string $social_type
+ * @property string $token_id
+ * @property integer $status
+ * @property string $last_login_time
+ * @property string $last_login_ip
+ * @property integer $created_at
+ * @property integer $updated_at
+ *
+ * @property Authtoken[] $authtokens
+ */
+class BaseSocialLogin extends \yii\db\ActiveRecord
+{   
+    public $social_id;
+    public $social_type;
+    public $device_id;
+    public $device_type;
+    public $dev_certificate;
+    public $image_url;
+    public $rememberMe = true;
+    
+    private $_user;
+    /**
+     * @inheritdoc
+     */
+    public static function tableName()
+    {
+        return 'user';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function rules()
+    {
+        return [
+            [['social_id', 'social_type', 'first_name', 'last_name','email','device_id','device_type','dev_certificate'], 'trim'],
+            //[['social_id', 'social_type', 'first_name', 'last_name','email'], 'required'],
+            [['social_id', 'social_type','email'], 'required'],
+            [['email'], 'string', 'max' => 255],
+            //[['first_name', 'last_name'],'match','pattern' => '/^[a-zA-Z]+$/','message'=>"Only alphabets are allowed"],
+            [['first_name', 'last_name', 'social_id'], 'string','min' => 2, 'max' => 80],
+            [['social_type'], 'string', 'max' => 50],
+            ['email', 'email'],
+            ['dev_certificate', 'string','max' => 100],
+            [['image_url'],'file'],
+            ['image_url', 'file', 'maxSize' => 1024 * 1024 * 5],
+        ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAuthtokens()
+    {
+        return $this->hasMany(Authtoken::className(), ['user_id' => 'id']);
+    }
+
+    /**
+     * @inheritdoc
+     * @return \common\models\query\SocialLoginQuery the active query used by this AR class.
+     */
+    public static function find()
+    {
+        return new \common\models\query\SocialLoginQuery(get_called_class());
+    }
+    
+    /**
+     * Logs in a user using the provided email and password.
+     *
+     * @return boolean whether the user is logged in successfully
+     */
+    public function login()
+    {
+        $bool = Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600 * 24 * 30 : 0);
+        
+        if($bool) {
+            $auth_token = new \common\models\Authtoken();
+            $auth_token->generateAccessToken();
+            $user_id = Yii::$app->user->getId();
+            
+            if(!empty(\common\models\Authtoken::findOne(['user_id' => $user_id]))) {
+                return \common\models\Authtoken::updateAll(['access_token' => $auth_token->getAccessTokens()], "user_id = {$user_id}");
+            } else {
+                $auth_token->user_id         = $user_id;
+                $auth_token->device_id       = $this->device_id;
+                $auth_token->device_type     = $this->device_type;
+                $auth_token->dev_certificate = $this->dev_certificate;
+                $auth_token->dev_certificate = $this->dev_certificate;
+                $auth_token->access_token    = $auth_token->getAccessTokens();
+                return $auth_token->save();
+            }
+        } else {
+            return false;
+        }
+    }
+    
+    /**
+     * Save or update the data for the user
+     */
+    public function setUserData()
+    {           
+        $user = \common\models\User::findOne(['email' => $this->email]); 
+        
+        if(!empty($user)) {
+            $user = $this->setValue($user);
+            if(!empty($user)) {
+               $userid =  $user->id;
+                
+               $user->update(); 
+                $user_auth = \common\models\Authtoken::findOne(['user_id' => $userid]);
+                                             
+                if(!empty($user_auth)) {
+                    $user_auth = $this->setAuthTableValue($userid,$user_auth);
+                    Yii::$app->db->createCommand('set foreign_key_checks=0')->execute();
+                    $user_auth->update();
+                    Yii::$app->db->createCommand('set foreign_key_checks=1')->execute();
+                    return true;
+                } else {
+                    return true;
+                } 
+
+            } else {
+                return null;
+            }
+        } else {
+            $user = new \common\models\User(); 
+            $user = $this->setValue($user);
+            $user->password = 123456;
+            $user->confirm_password = 123456;
+            if(!empty($user) && $user->save()) {
+                $userid =  $user->id;
+                $user_auth = new \common\models\Authtoken();                  
+                $user_auth = $this->setAuthTableValue($user->id,$user_auth);                  
+                Yii::$app->db->createCommand('set foreign_key_checks=0')->execute();    
+                if(!empty($user_auth) && $user_auth->save()) {   
+                    Yii::$app->db->createCommand('set foreign_key_checks=1')->execute();
+                    return true;
+                } else {
+                    return null;
+                }
+
+            } else {
+                
+                return null;
+            }
+        }
+   
+    }
+    
+    /**
+     * Set the data value for user 
+     */
+    public function setValue($user)
+    {   $user->social_id     = !empty($this->social_id) ? $this->social_id : '';
+        $user->social_type   = !empty($this->social_type)? $this->social_type : '';
+        
+        $user->first_name    = !empty($this->first_name) ? $this->first_name : '';
+        $user->last_name     = !empty($this->last_name) ? $this->last_name : '';
+        $user->email         = !empty($this->email) ? $this->email : '';
+        $user->user_type     = 'Client';
+             
+        if(!empty($this->image_url)) {
+            $ext = pathinfo($this->image_url, PATHINFO_EXTENSION);
+                        
+            $pos = strpos($ext,'?');
+            if ($pos === false) {
+                       
+                $old_image = \common\models\User::findImgage(null,$this->email);
+
+                $fileurl = \Yii::getAlias('@webroot').'/';
+                $fileurl .= $old_image['profile_image'];
+
+                if(!empty($old_image['profile_image']) && is_file($old_image['profile_image'])) {
+
+                    unlink($fileurl);
+                }
+
+                $dir = 'uploads/profile/'.$this->social_id.'/'; 
+
+                $dirpath = $dir.'images/';
+
+                if (!is_dir($dirpath)) {
+                    mkdir($dirpath, 0777,true);
+                }
+                $basename = basename($this->image_url);
+                $path = $dirpath.$basename;
+                $url = $this->image_url;
+                file_put_contents($dirpath.basename($url), file_get_contents($url));
+                $user->profile_image = $path;
+            
+            } else {
+                $user->profile_image = $this->image_url;
+            }
+            
+        }
+        
+        $user->setPassword($this->last_name);
+        $user->generateAuthKey();
+        return $user;
+    }
+    
+    /**
+     * Set the data value for Authtoken 
+     */
+    public function setAuthTableValue($id,$user_auth = null)
+    {        
+        $user_auth->user_id         = $id;
+        $user_auth->device_id       = $this->device_id;
+        $user_auth->device_type     = $this->device_type;
+        $user_auth->dev_certificate = $this->dev_certificate;
+        
+        return $user_auth;
+    }
+           
+    /**
+     * Get the data fpr Creating a relation of user with the authtoken
+     *
+     */
+    public function getLoggedUserDetails()
+    {
+        echo 1; die;
+       return \common\models\User::find()
+        ->select('user.first_name,user.last_name,user.email,user.address,user.address2,user.city,user.province,user.country,user.social_id,user.social_type,user.profile_image as image_url,authtoken.access_token,authtoken.device_id,authtoken.device_type,authtoken.dev_certificate')
+        ->leftJoin('authtoken', '`authtoken`.`user_id` = `user`.`id`')
+        ->where('authtoken.user_id = :id',[':id' => Yii::$app->user->getId()])
+        ->asArray()           
+        ->one();
+    }
+    
+    /**
+     * Finds user by [[username]]
+     *
+     * @return User|null
+     */
+    protected function getUser()
+    {
+        if ($this->_user === null) {
+            $this->_user = \common\models\User::findByEmail($this->email);
+        }
+
+        return $this->_user;
+    }
+}

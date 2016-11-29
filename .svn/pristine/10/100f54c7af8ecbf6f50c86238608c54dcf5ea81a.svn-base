@@ -1,0 +1,35 @@
+.viewgiftcard-modal{
+    .modal-body{
+        padding:65px 50px !important;
+        @media(max-width:$screen-xs-max){
+              padding:15px !important;
+            }
+    }
+    .left{
+        img{
+            margin-top: 70px;
+            @media(max-width:$screen-xs-max){
+                margin-top:0px; margin-bottom:20px; width:60px;
+            }
+        }
+    }
+    .user-text-detail{
+        .text-gray{
+            color: #A0A0A0; font-family: $avantgardestd-bk; font-size:18px;margin-bottom:30px; 
+            @media(min-width:$screen-sm-min) and (max-width:$screen-md-max){
+                font-size:14px; 
+            }
+            @media(max-width:$screen-xs-max){
+                font-size:14px; margin-bottom:15px; 
+            }
+            span{color: $color-666; font-family: $avantgardestd-bk; font-size:20px;
+                 @media(min-width:$screen-sm-min) and (max-width:$screen-md-max){
+                     font-size:16px; 
+                 }
+                 @media(max-width:$screen-xs-max){
+                     font-size:16px; 
+                 }
+            } 
+        }
+    }
+}

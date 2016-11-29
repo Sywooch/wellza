@@ -1,0 +1,636 @@
+<?php
+/* @var $this yii\web\View */
+
+use yii\helpers\Html;
+use yii\bootstrap\ActiveForm;
+use yii\base\view;
+use yii\web\UrlManager;
+
+$this->title = 'Shopping Cart';
+$appointment = '';
+$gift_card = '';
+$wellza_membership = '';
+$subtotal = 0;
+$total = 0;
+if (count(Yii::$app->cart->getPositions()) > 0) {
+
+    foreach (Yii::$app->cart->getPositions() as $cart) {
+        $commodity_type = $cart->getType();
+        if ($commodity_type == 'appointment') {
+            $appointment = 'appointment';
+        }
+        if ($commodity_type == 'giftcard') {
+            $gift_card = 'giftcard';
+        }
+        if ($commodity_type == 'wellza_membership') {
+            $wellza_membership = 'wellza_membership';
+        }
+    }
+}
+?>
+<main class="inner-content" id="inner-content">
+    <div class="view-cart-section">
+        <div class="container">
+            <h1 class="inner-heading"><?= $this->title ?></h1>
+            <div class="col-md-12 cart_box">
+                <div class="row table-responsive">
+                    <!--<h3>Product</h3>
+                    <table class="table product_table">
+                        <thead>
+                            <tr>
+                                <th class="product_info">Product</th>
+                                <th class="price_info">Price</th>
+                                <th class="qty_info">Quantity</th>
+                                <th class="totalprice_info">Total</th>
+                                <th class="action"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="pro_cnt">
+                                        <div class="pro_image">
+                                            <div class="img_box item_image" style="background-image:url('assets/images/product01.jpg');">
+                                            </div>
+                                        </div>
+                                        <div class="product_detail">
+                                            <div class="name">Ceramic Mug (350 ml)</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>$50</td>
+                                <td>
+                                    <div class="input-group  checkout-spinner">
+                                        <span class="input-group-btn data-dwn">
+                                            <button type="button" class="btn btn-default" data-dir="dwn"><span class="glyphicon glyphicon-minus"></span></button>
+                                        </span>
+                                        <input class="form-control text-center" readonly="" name="quantity" value="1" min="1" max="40" type="text">    
+                                        <span class="input-group-btn data-up">
+                                            <button type="button" class="btn btn-default" data-dir="up"><span class="glyphicon glyphicon-plus"></span></button>
+                                        </span>
+                                    </div>
+                                </td>
+                                <td>$250</td>
+                                <td class="text-center">
+                                    <ul class="list-inline">
+                                        <li>
+                                            <a href="javascript:void(0);" class="delete-btn" data-toggle="tooltip" title="Delete"><img src="assets/images/delete-icon-btn.png"></a>  
+                                        </li>
+                                       
+                                    </ul>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>-->
+                    <?php
+                        if(!empty($appointment)) {
+                    ?>
+                    <h3>Service Package</h3>
+                    <table class="table appointment_table">
+                        <thead>
+                            <tr>
+                                <th class="name">Service Name</th>
+                                <th class="address_info">Address</th>
+                                <th class="date_info">Date</th>
+                                <th class="time_info">Service Time</th>
+                                <th>Price</th>
+                                <th class="action"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            <?php
+                            
+                            if (count(Yii::$app->cart->getPositions()) > 0) {
+
+                                foreach (Yii::$app->cart->getPositions() as $cart) {
+                                    $commodity_type = $cart->getType();
+                                    if ($commodity_type == 'appointment') {
+                                        $id = $cart->getId();
+
+                                        $category_data = \common\models\Packages::getPackageName($id);
+                                        $subcategory_data = \common\models\Packages::getPackageSubName($id);
+                                        $category_name = $category_data->parent0->category_name;
+                                        $subcategory_name = $subcategory_data->service->category_name;
+                                        $category_image = '../' . $subcategory_data->service->category_thumbnail;
+                                        $appointment_date = $cart->appointment_date;
+                                        $appointment_date_arr = explode('-', $appointment_date);
+                                        $appointment_date = $appointment_date_arr[2] . '-' . $appointment_date_arr[1] . '-' . $appointment_date_arr[0];
+                                        $total = $total + (int) $cart->appointment_price;
+                                        $subtotal = $subtotal + (int) $cart->appointment_price;
+                                        ?>
+                                        <tr>
+                                            <td>
+                                                <div class="pro_cnt">
+                                                    <div class="pro_image">
+                                                        <div class="img_box service_icon">
+                                                            <img src = "<?= $category_image ?>">
+                                                        </div>
+                                                    </div>
+                                                    <div class="product_detail">
+                                                        <div class="name">
+                                                            <h4><?= $category_name ?></h4>
+                                                            <p><?= $subcategory_name ?></p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td><?= $cart->address1 ?></td>
+                                            <td><?= $appointment_date ?></td>
+                                            <td><?= $cart->appointment_duration ?></td>
+                                            <td><?= $cart->appointment_price ?></td>
+                                            <td class="text-center">
+                                                <ul class="list-inline">
+                                                    <li>
+                                                        <!--<a onclick="removeFromCart('< ?= $cart->getId(); ?>','viewcart');" href="javascript:void(0);" class="delete-btn" data-toggle="tooltip" title="Delete"><img src="./../resource/images/delete-icon-btn.png"></a>-->
+                                                        <a onclick="removeFromCart('<?= $cart->getId(); ?>', 'appointment');" href="javascript:void(0);" class="delete-btn" data-toggle="tooltip" title="Delete"><img src="./../resource/images/delete-icon-btn.png"></a>
+                                                    </li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                        <?php
+                                    }
+                                }
+                            } else {
+                                ?>
+                                <tr>
+                                    <td>
+                                        No Item in Cart
+                                    </td>                                
+                                </tr>
+                                <?php
+                            }
+                            ?>
+                        </tbody>
+                    </table>
+                    <?php
+                        }
+                    
+                    if(!empty($gift_card)) {
+                    
+                    ?>
+                    <h3 class="item_haeding">Gift  Card</h3>
+                    <table class="table bundle_table">
+                        <thead>
+                            <tr>
+                                <th class="width20">Gift Card</th>
+                                <th class="width20">Receiver Name</th>
+                                <th class="width25">Message</th>
+                                <th class="width10">Delivery Date</th>
+                                <th class="width10">Amount</th>
+                                <th class="width10">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            if (count(Yii::$app->cart->getPositions()) > 0) {
+
+                                foreach (Yii::$app->cart->getPositions() as $cart) {
+                                    $commodity_type = $cart->getType();
+
+                                    if ($commodity_type == 'giftcard') {
+                                        $total = $total + (int) $cart->amount;
+                                        $subtotal = $subtotal + (int) $cart->amount;
+                                        ?>
+                                        <tr>
+                                            <td>
+                                                <div class="pro_cnt">
+                                                    <div class="pro_image">
+                                                        <div class="img_box service_icon" style="background-image:url('../resource/images/giftcard.png');">
+                                                        </div>
+                                                    </div>
+                                                    <div class="product_detail">
+                                                        <div class="name">Gift card</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td><?= $cart->to_name ?></td>
+                                            <td><?= $cart->message ?></td>
+                                            <td><?php
+                                                $date = $cart->delivery_date;
+                                                $date_array = explode('-', $date);
+                                                echo $date_array[2] . '-' . $date_array[1] . '-' . $date_array[0];
+                                                ?></td>
+                                            <td>$<?= $cart->amount ?></td>
+                                            <td class="text-center">
+                                                <ul class="list-inline">
+                                                    <li>
+                                                        <!--<a onclick="removeFromCart('< ?= $cart->getId(); ?>','viewcart');" href="javascript:void(0);" class="delete-btn" data-toggle="tooltip" title="Delete"><img src="./../resource/images/delete-icon-btn.png"></a>-->
+                                                        <a onclick="removeFromCart('<?= $cart->getId(); ?>', 'giftcard');" href="javascript:void(0);" class="delete-btn" data-toggle="tooltip" title="Delete"><img src="./../resource/images/delete-icon-btn.png"></a>
+                                                    </li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                        <?php
+                                    }
+                                }
+                            } else {
+                                ?>
+                                <tr>
+                                    <td>
+                                        No Item in Cart
+                                    </td>                                
+                                </tr>
+                                <?php
+                            }
+                            ?>
+                        </tbody>
+                    </table>
+                    <?php
+                    }
+                    if(!empty($wellza_membership)) {
+                    ?>
+                    <h3 class="item_haeding">Wellza Membership</h3>
+                    <table class="table bundle_table">
+                        <thead>
+                            <tr>
+                                <th class="width20">Memberhsip</th>
+                                <th class="width10">Start Date</th>
+                                <th class="width10">Billing Cycle</th>
+                                <th class="width10">Discount</th>
+                                <th class="width10">Price</th>
+                                <th class="width10">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            if (count(Yii::$app->cart->getPositions()) > 0) {
+
+                                foreach (Yii::$app->cart->getPositions() as $cart) {
+                                    $commodity_type = $cart->getType();
+
+                                    if ($commodity_type == 'wellza_membership') {
+                                        $total = $total + (int) $cart->price;
+                                        $subtotal = $subtotal + (int) $cart->price;
+                                        ?>
+                                        <tr>
+                                            <td>
+                                                <div class="pro_cnt">
+                                                    <div class="pro_image">
+                                                        <div class="img_box service_icon" style="background-image:url('../resource/images/giftcard.png');">
+                                                        </div>
+                                                    </div>
+                                                    <div class="product_detail">
+                                                        <div class="name"><?= $cart->plan_detail ?></div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td><?php
+                                                $date = $cart->start_date;
+                                                $date_array = explode('-', $date);
+                                                echo $date_array[2] . '-' . $date_array[1] . '-' . $date_array[0];
+                                            ?></td>
+                                            <td><?= ucfirst($cart->duration) ?></td>
+                                            <td><?= $cart->off_percent ?>%</td>
+                                            <td>$<?= $cart->price ?></td>
+                                            
+                                            <td class="text-center">
+                                                <ul class="list-inline">
+                                                    <li>
+                                                        
+                                                        <a onclick="removeFromCart('<?= $cart->getId(); ?>', 'wellza_membership');" href="javascript:void(0);" class="delete-btn" data-toggle="tooltip" title="Delete"><img src="./../resource/images/delete-icon-btn.png"></a>
+                                                    </li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                        <?php
+                                    }
+                                }
+                            } else {
+                                ?>
+                                <tr>
+                                    <td>
+                                        No Item in Cart 
+                                    </td>                                
+                                </tr>
+                                <?php
+                            }
+                            ?>
+                        </tbody>
+                    </table>
+                    <?php
+                    }
+                    ?>
+                    <!--<h3>Wellza  Bundle</h3>
+                    <table class="table bundle_table">
+                        <thead>
+                            <tr>
+                                <th class="name">Bundle Name</th>
+                                <th class="address_info">Total Number of Services</th>
+                                <th class="date_info">Total saving</th>
+                                <th>Price</th>
+                                <th class="action"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="pro_cnt">
+                                        <div class="pro_image">
+                                            <div class="img_box service_icon" style="background-image:url('assets/images/hair-icon.png');">
+                                            </div>
+                                        </div>
+                                        <div class="product_detail">
+                                            <div class="name">Wedding</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>5</td>
+                                <td>50%</td>
+                                <td>$60</td>
+                                <td class="text-center">
+                                    <ul class="list-inline">
+                                        <li>
+                                            <a href="javascript:void(0);" class="delete-btn" data-toggle="tooltip" title="Delete"><img src="assets/images/delete-icon-btn.png"></a>  
+                                        </li>
+                                    </ul>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>-->
+
+                </div>
+            </div>
+            <div class="clearfix"></div>
+            <div class="row">
+                <div class="col-lg-6 col-xs-12 col-sm-6 couponform">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-sm-6 col-md-5">
+                                <input class="form-control input-lg" name="coupon" id="input-coupon" placeholder="Enter Coupon Code" type="text">
+                            </div>
+                            <div class="col-sm-6 col-md-4">
+                                <button type="button" class="btn btn-primary btn-lg btn-block" id="button-coupon">APPLY COUPON</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--<div class="col-lg-6 col-xs-12 col-sm-6 couponform">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-sm-6 col-md-4 col-md-offset-8">
+                                <button type="button" class="btn btn-info btn-lg btn-block" id="button-coupon">UPDATE CART</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>-->
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12 col-xs-12 col-sm-12">
+                    <table class="table crattoal-table">
+                        <tbody>
+                            <tr>
+                                <td class="text-right" align="right">
+                                    <div class="form-horizontal crattoal-table">
+                                        <div class="row">
+                                            <label class="col-xs-6 col-sm-9 col-md-10 control-label cart-totalprice">Sub-Total :</label>
+                                            <div class="col-sm-3 col-md-2 col-xs-6 pro-price"> $<?= $subtotal ?></div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tfoot>   
+                            <tr>
+                                <td class="pro_total_price text-right" align="right">
+                                    <div class="form-horizontal crattoal-table">
+                                        <div class="row">
+                                            <label class="col-xs-6 col-sm-9 col-md-10 control-label cart-totalprice">Total :</label>
+                                            <div class="col-sm-3 col-md-2 col-xs-6 pro-price color-orange"> $<?= $total ?></div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tfoot> 
+                    </table>
+                </div>
+
+                <div class="col-lg-6 col-xs-12 col-md-7 col-sm-9 col-sm-offset-3 couponform col-md-offset-5 col-lg-offset-6">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <a type="button" class="btn btn-warning btn-block btn-lg" data-target=".our-services-modal" data-toggle="modal">CONTINUE SHOPPING</a>
+                        </div>
+                        <div class="col-sm-6">
+                            <!--<a href="<?php echo Yii::$app->urlManager->createUrl('cart/check-out') ?>" class="btn btn-info btn-block btn-lg">PROCEED TO CHECKOUT</a>-->
+                            <a href="javascript:void(0);" class="btn btn-info btn-block btn-lg" data-toggle='modal' data-target='.checkout-modal'>PROCEED TO CHECKOUT</a>
+                        </div>
+                    </div>
+                </div> 
+            </div>
+        </div>
+    </div>
+
+    <!--</div>-->
+    <div class="modal admin-modal fade our-services-modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="row">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><img src="../resource/images/cross.png" alt="close"></button>
+                        <div class="continue-with">
+                            <div class="heading">
+                                <h2>OUR SERVICES</h2>
+                            </div>
+                            <div class="wrapper">
+                                <a href="<?php echo Yii::$app->urlManager->createUrl('client/book-appointment') ?>" class="col-md-4 col-sm-6 align">
+                                    <div class="icon">
+                                        <img src="../resource/images/appointment_greenicon.png" class="center-block animated pulse infinite" alt="hair">
+                                        <h3>Appointment</h3>
+                                        <p>It is not just a job, it is art and pleasure to work with woman’s hair
+                                        </p>
+                                    </div>
+                                </a>
+
+                                <a href="javascript:void(0);" class="col-md-4 col-sm-6 align">
+                                    <div class="icon">
+                                        <img src="../resource/images/product_greenicon.png" class="center-block animated pulse infinite" alt="training">
+                                        <h3>Wellza Product</h3>
+                                        <p>Beauty sometimes requires pain, but depilation with us can be pain-free
+                                        </p>
+                                    </div>
+                                </a>
+                                <a href="javascript:void(0);" class="col-md-4 col-sm-6 align">
+                                    <div class="icon">
+                                        <img src="../resource/images/membership_greenicon.png" class="center-block animated pulse infinite" alt="nails">
+                                        <h3>Wellza Membership</h3>
+                                        <p>Hands and feet work for you a lot, sometimes they need vacation, too
+                                        </p>
+                                    </div>
+                                </a>
+
+                                <a href="<?php echo Yii::$app->urlManager->createUrl('client/gift-card') ?>" class="col-md-4 col-sm-6 align">
+                                    <div class="icon">
+                                        <img src="../resource/images/giftcard_greenicon.png" class="center-block animated pulse infinite" alt="massage">
+                                        <h3>Gift Cart</h3>
+                                        <p>Relaxation and enjoyment make you a different and happier person
+                                        </p>
+                                    </div>
+                                </a>
+                                <a href="javascript:void(0);" class="col-md-4 col-sm-6 align">
+                                    <div class="icon">
+                                        <img src="../resource/images/wellza_bundlegreen.png" class="center-block animated pulse infinite" alt="skin">
+                                        <h3>Wellza Bundle</h3>
+                                        <p>makeup can have a magical effect when performed by real masters
+                                        </p>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+</main>
+<div class="modal admin-modal fade checkout-modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            
+            <div class="modal-body clearfix">
+                <div class="payment-section">
+                    <div class="row">
+                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><img src="../resource/images/cross.png" alt="close"></button>
+                        <div class="col-lg-12 col-md-12 col-sm-12 payment-section-body">
+                            
+                            <div class="payment-section-containt">
+                                <div class="containt-top">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <h2>Payment Detail</h2>
+                                            <p>Your card detail is 100% secure.</p>
+                                        </div>
+                                    </div>
+                                    <?php
+                                        $form = ActiveForm::begin([
+                                                    'action' => 'check-out',
+                                                    'enableAjaxValidation' => true,
+                                                    'enableClientValidation' => true,
+                                                    'method' => 'post',
+                                                    'id' => 'cart_checkout'
+                                        ]);
+                                        ?>
+                                        <div class="row">
+                                            <div class="col-lg-6 col-md-6 col-sm-6">
+                                                <div class="form-group">
+                                                    <label >Other Card</label>
+                                                    <select class="selectpicker">
+                                                        <option>Choose your card </option>                                                        
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-6 col-md-6 col-sm-6">
+                                                <div class="form-group">
+                                                    <label >Add your Card</label>
+                                                    <?= $form->field($model, 'add_card',
+                                                    [
+                                                        'template' => "{input}\n{hint}\n{error}"                                                        
+                                                    ])->textInput(['autofocus' => true,'placeholder' => "Click to add your card here...",'maxlength'=> 60]);
+
+                                            ?>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- xxx -->
+
+                                        <div class="row">
+                                            <div class="col-lg-6 col-md-6 col-sm-6">
+                                                <div class="form-group">
+                                                    <label >Name on Card</label>
+                                                    <?= $form->field($model, 'card_name',
+                                                    [
+                                                        'template' => "{input}\n{hint}\n{error}"                                                        
+                                                    ])->textInput(['autofocus' => true,'placeholder' => "Your name on card here..." ,'maxlength'=> 60]);
+
+                                            ?>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-6 col-md-6 col-sm-6">
+                                                <div class="form-group">
+                                                    <label >Card Number</label>
+                                                    <?= $form->field($model, 'creditCard_number',
+                                                    [
+                                                        'template' => "{input}\n{hint}\n{error}"                                                        
+                                                    ])->textInput(['autofocus' => true,'placeholder' => "Your card number is here...",'maxlength'=> 16]);
+
+                                            ?>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- xxx -->
+
+                                        <div class="row">
+                                            <div class="col-lg-6 col-md-6 col-sm-6">
+                                                <?= $form->field($model, 'creditCard_expirationDate',
+                                                    [
+                                                        'template' => "<label >Exp.</label>{input}\n{hint}\n{error}"                                                        
+                                                    ])->textInput(['autofocus' => true,'placeholder' => "Expairy date of card. MM/YY",'class' => "form-control", 'id'=>"delivery_date"]);
+
+                                            ?>  
+                                            </div>
+
+                                            <div class="col-lg-6 col-md-6 col-sm-6">
+                                                <div class="form-group">
+                                                    <label >CCV</label>
+                                                    <?= $form->field($model, 'creditCard_cvv',
+                                                        [
+                                                            'template' => "{input}\n{hint}\n{error}"                                                        
+                                                        ])->textInput(['autofocus' => true,'placeholder' => "Card security Code (CCV)" ,'maxlength' => 4]);
+                                                    ?>
+                                                </div>
+                                            </div>
+                                            <?= $form->field($model, 'amount')->hiddenInput(['value'=> "{$total}",'id' => 'amount'])->label(false);?>
+                                        </div>
+
+                                        <!-- xxx -->
+
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <img src="../resource/images/card-company.jpg" alt="card-company" class="img-responsive">
+                                            </div>
+                                        </div>
+                                    
+                                </div>
+
+                                <div class="container-bottom">
+                                    <div class="col-lg-12 pad0">
+                                       
+                                        <?= Html::submitButton("SAVE YOUR CARD", [
+                                                'id' => 'save_card',
+                                                'class' => 'save',
+                                                'name' => 'save_cardbtn'                                  
+                                                
+                                            ]);
+                                        ?>
+                                        <?= Html::submitButton("PAY NOW $".$total, [
+                                                'class' => 'pay',
+                                                'name' => 'signup-button',
+                                                'data-toggle' => "modal",
+                                                'data-target' => ".payment-successful-popup",
+                                                
+                                            ]);
+                                        ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+            <?php ActiveForm::end(); ?>     
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<style>
+    .help-block-error {
+        color: #a94442 !important;
+    }
+</style>
+
+<?php $this->registerJsFile('@web/js/client/checkout.js'); ?>

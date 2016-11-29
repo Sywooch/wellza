@@ -1,0 +1,46 @@
+<?php
+/* * ********************************************************************************************************************* *//**
+ *  Controller Name: InboxController.php
+ *  Created: Codian Team
+ *  Description: This will manage client messages to provider done while chatting.Manages the ajax call functions.
+ * ************************************************************************************************************************* */
+
+namespace frontend\modules\client\controllers;
+
+use Yii;
+use yii\base\InvalidParamException;
+use yii\web\BadRequestHttpException;
+use yii\web\Response;
+use yii\widgets\ActiveForm;
+use yii\data\ActiveDataProvider;
+
+class InboxController extends \frontend\modules\client\components\Controller
+{
+    public function actionIndex()
+    {
+        $model = new \common\models\Message();
+        $providers_data = \common\models\User::getAllClientProvider();
+        $client_data = \common\models\User::findIdentity(Yii::$app->user->id);
+        $model->scenario = 'clientinbox';
+        return $this->render('inbox',['model' =>$model,'providers_data' => $providers_data,'client_data' => $client_data]);
+    }
+    /**
+     * Send message from here
+     * **/
+    public function actionGetAllMessage() {
+        $model = new \common\models\MessageRecipient(); 
+        $post = Yii::$app->request->post();
+        $current_user_id = Yii::$app->user->id;
+        $message = \common\models\MessageRecipient::getAllMessages($current_user_id,$post['user_id']);
+        echo '<pre/>';print_r($message);
+        die;
+    }
+
+}
+
+/********************************************** Ajax Driven functions ******************************************************************* */
+/*************************************************************************************************************************************** */
+
+/*************************************************************************************************************************************/
+// EOF: MyProfileController.php
+/*************************************************************************************************************************************/

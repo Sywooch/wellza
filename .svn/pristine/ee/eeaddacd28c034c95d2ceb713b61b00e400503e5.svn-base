@@ -1,0 +1,110 @@
+<?php
+
+/*
+ * This api will get or set the data for a services
+ */
+
+namespace api\modules\v1\controllers;
+
+use Yii;
+use api\components\Controller;
+use yii\helpers\ArrayHelper;
+use yii\web\NotFoundHttpException;
+use common\models\Packages;
+use common\models\PackageServices;
+
+/**
+ * Services Controller API
+ *
+ */
+class ServicesController extends Controller {
+    
+    /**
+     * To the list of all services categories
+     *
+     * * */
+    public function actionIndex() 
+    {
+        $returndata = \common\models\Services::getServices();
+        if (!empty($returndata)) {
+            return $returndata;
+        } else {
+            return  \api\components\Utility::apiError('201', 'No Record found');
+        }
+    }
+
+    /**
+     * To the list of all the subcategories
+     *
+     * * */
+    public function actionSubCategoryList() 
+    {
+        $model = new \common\models\Services();
+        $model->load(Yii::$app->request->getQueryParams(),'');
+        
+        if(!$model->validate()) {
+            return $model;
+        }
+               
+        $returndata = $model->getBySubServices();
+        if (!empty($returndata)) {
+            return $returndata;
+        } else {
+            return  \api\components\Utility::apiError('201', 'No Record found');
+        }
+     
+    }
+    
+    /**
+     * Get list of all the providers
+     *
+     */
+    public function actionGetAllProviders()
+    {       
+        $model = new \common\models\Services();
+               
+        $returndata = \common\models\Services::getAllProviders();
+        
+        if(!empty($returndata)) {
+            return $returndata;
+        }
+        return  \api\components\Utility::apiError('201', 'No Record found');
+    }
+    
+    /**
+     * Get list of all the providers
+     *
+     */
+    public function actionGetAllServices()
+    {       
+        $model = new \common\models\Services();
+        $returndata = \common\models\Services::getAllServices();
+        
+        if(!empty($returndata)) {
+            return $returndata;
+        }
+        return  \api\components\Utility::apiError('201', 'No Record found');
+    }
+    
+    /**
+     * Get praparation status for a given service
+     *
+     */
+    public function actionGetPreparationStatus()
+    {       
+        $queryParams = Yii::$app->request->getQueryParams();
+        $returndata = PackageServices::getPreparationStatus($queryParams);
+        
+        if(!empty($returndata)) {
+            
+            return $returndata;
+        }
+        return  \api\components\Utility::apiError('201', 'No Record found');
+    }
+    
+    public function actionAvailableTime(){
+        $data = \yii::$app->request->get();
+        return PackageServices::getAvailableTime($data);
+    }
+
+}

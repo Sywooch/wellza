@@ -1,0 +1,57 @@
+<?php
+/* * ********************************************************************************************************************* *//**
+ *  Controller Name: WellzaProviderController.php
+ *  Created: Codian Team
+ *  Description: This will manage the data of a wellza provider.Manages the ajax call functions.
+ * ************************************************************************************************************************* */
+
+namespace frontend\modules\client\controllers;
+
+use Yii;
+use yii\base\InvalidParamException;
+use yii\web\BadRequestHttpException;
+use yii\web\Response;
+use yii\widgets\ActiveForm;
+use yii\data\ActiveDataProvider;
+use  yii\web\Session;
+
+class WellzaProviderController extends \frontend\modules\client\components\Controller
+{
+    public function actionIndex()
+    {                   
+        $session = Yii::$app->session;
+        $data = $session->get('returndata');
+        $model_review_rating = new \common\models\ReviewRating();
+        return $this->render('wellza-provider',['dataprovider' => $data,'model_review_rating' => $model_review_rating]);
+    }
+    
+    /********************************************** Ajax Driven functions ********************************************************************/
+    /****************************************************************************************************************************************/
+    
+    /***
+     * Add the provider to client favourite list
+     * *** */
+    public function actionAddToFavourite() {
+        $params = array();
+        $data = Yii::$app->request->post();
+        $params['provider_id'] = $data['provider_id'];
+        $params['user_id'] = Yii::$app->user->id;
+        \common\models\FavouriteList::markFavourite($params,'web');        
+        die;
+    }
+    
+    /**
+     * Saves the rating and review in the database given by client to provider 
+     * */
+    public function actionGetReviews() {
+        $data = Yii::$app->request->post();
+        $returndata = \common\models\ReviewRating::getProviderReviews($data['providerid'], 'Client');
+        echo json_encode($returndata);
+        die;
+    }
+
+}
+
+/*************************************************************************************************************************************/
+// EOF: WellzaProviderController.php
+/*************************************************************************************************************************************/

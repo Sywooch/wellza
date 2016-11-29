@@ -1,0 +1,44 @@
+<?php
+
+namespace common\models\query;
+
+/**
+ * This is the ActiveQuery class for [[\common\models\base\BaseBundlesCategories]].
+ *
+ * @see \common\models\base\BaseBundlesCategories
+ */
+class BundlesCategoriesQuery extends \yii\db\ActiveQuery
+{
+    /*public function active()
+    {
+        return $this->andWhere('[[status]]=1');
+    }*/
+
+    /**
+     * @inheritdoc
+     * @return \common\models\base\BaseBundlesCategories[]|array
+     */
+    public function all($db = null)
+    {
+        return parent::all($db);
+    }
+
+    /**
+     * @inheritdoc
+     * @return \common\models\base\BaseBundlesCategories|array|null
+     */
+    public function one($db = null)
+    {
+        return parent::one($db);
+    }
+    
+    /**
+     * @inheritdoc
+     * @return \common\models\base\BaseBundlesCategories|array|null
+     */
+    public function byBundleId($bundle_id = null)
+    {        
+        $this->where('bundle_id = :bundle_id',[':bundle_id' => $bundle_id]);
+        return $this;
+    }
+}

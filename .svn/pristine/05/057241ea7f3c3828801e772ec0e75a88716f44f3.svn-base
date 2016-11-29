@@ -1,0 +1,72 @@
+<?php
+/* @var $this yii\web\View */
+use yii\helpers\Html;
+use yii\bootstrap\ActiveForm;
+use yii\base\view;
+use yii\web\UrlManager;
+
+$this->title = 'Select Wellza Provider';
+?>
+<main class="inner-content top-bg-map" id="inner-content">
+    <div class="container wellza-provider-section">
+        <h1 class="inner-heading"><?=$this->title?></h1>
+        <div class="top-headline clearfix">
+            <div class="left">
+                <span class="show-result">Showing <?=count($dataprovider)?> Results</span>
+            </div>
+            <!--<div class="right">
+                <a href="javascript:void(0);"> <img src="resource/images/location-icon.png" alt="location-icon"> MAP</a>
+            </div>-->
+        </div>
+
+        <div class="wellza-provider-list">
+            <div class="row">
+                <?php
+                    if(!empty($dataprovider)) {
+                        
+                      foreach($dataprovider as $data) {   
+                         
+                ?>
+                <div class="col-lg-4 col-md-6 col-sm-6 resize-box">
+                    <div class="list-box">
+                        <div class="info-photo-video">
+                            <span class="photo">0 Photo</span>
+                            <span class="video">0 Video</span>
+                        </div>
+                        <div class="img-box">
+                            <div class="provider-image">
+                                <img src="../backend/web/<?=$data->profile_image?>" class="img-circle img-responsive" alt="provider-image">
+                            </div>
+                            <span class="checkbox">
+                                <input type="checkbox" name="like1" id="like1" value="like1"> 
+                                <label for="like1"><span class="like"></span> </label>
+                            </span>  
+                        </div>
+                        <div class="provider-info">
+                            <div class="provider-name">
+                                <?=$data->first_name.' '.$data->last_name?>
+                            </div>
+                            <div class="address">
+                                <?=$data->address?>
+                            </div>
+                            <div class="rating">
+                                <img src="../resource/images/rating-star.png" class="img-responsive center-block" alt="">
+                                <div class="review">
+                                    17 reviews
+                                </div>
+                            </div>
+                        </div>
+                        <div class="book-appointment">
+                            <a class="btn btn-block" href="<?php echo Yii::$app->urlManager->createUrl('client/provider-detail').'/'.$data->id ?>">BOOK APPOINTMENT</a>
+                        </div>
+                    </div>
+                </div>
+                <?php
+                      }
+                    }
+                ?>                
+            </div>
+        </div>
+
+    </div>
+</main>

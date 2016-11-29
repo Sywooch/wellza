@@ -1,0 +1,23 @@
+<?php
+
+namespace frontend\modules\client\controllers;
+
+use Yii;
+use yii\base\InvalidParamException;
+use yii\web\BadRequestHttpException;
+use yii\web\Response;
+use yii\widgets\ActiveForm;
+use yii\data\ActiveDataProvider;
+use  yii\web\Session;
+
+class WellzaProviderController extends \frontend\modules\client\components\Controller
+{
+    public function actionIndex()
+    {   
+        $session = Yii::$app->session;
+        $data = $session->get('returndata');
+        
+        return $this->render('wellza-provider',['dataprovider' => $data]);
+    }
+
+}

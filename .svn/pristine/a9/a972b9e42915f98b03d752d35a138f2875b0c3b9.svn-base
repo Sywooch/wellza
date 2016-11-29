@@ -1,0 +1,133 @@
+.category-table{ padding: 1px;
+    .table{ background-color:$color-white; 
+        &:first-child{
+            margin-bottom: 0px;background-color: transparent; 
+        }
+        th{
+            color:#A0A0A0; font-size: 18px; letter-spacing: 0.8px; border-bottom: none; padding: 15px 10px; text-align: center; width: 300px; white-space: nowrap;
+            &:first-child{
+                text-align: left;
+            }
+        }
+        tbody{
+            tr{
+                border  :1px solid #e2e2e2; 
+            }
+           td{
+            border: none; vertical-align: middle; font-size: 18px;color:#A2A2A2; padding: 15px; text-align:center;width: 300px;  white-space: nowrap;
+            position: relative;
+            &:after{
+                content: ''; height: 65px; position: absolute; background-color: #EBEBEB; width: 1px; top:30px; right: 0;
+            }
+            &:last-child{
+              &:after{ opacity: 0;}  
+            }
+            .category-name{
+                .category-icon, .name{
+                    display: table-cell; vertical-align: middle;
+                }
+                .name{ padding-left:10px;font-family: $avantgarde-md;}
+                .icon{
+                       height: 92px; width: 92px;background-color: #F0F0F0; border: 1px solid #cdcdcd; border-radius: 50%; padding: 9px 3px;
+                }
+            }
+            .cate-no{
+                 font-size: 35px;
+            }
+            a{ text-decoration: none; display: block;
+                img{
+                   padding: 10px; 
+                } 
+            }
+
+        } 
+        }
+        
+    }   
+    
+}
+
+.add-category-modal{
+    .categoryslider-box{ position: relative;  margin-bottom:45px;
+          .owl-nav { position: absolute; width: 100%; top: 34%; height: 0px;
+            .owl-prev{
+                 float: left;
+            }
+            .owl-next{
+                 float: right;
+            }
+    }
+    }
+ 
+    .item{
+         .checkbox{   
+        input[type=checkbox]:checked {
+            + label{
+                    span{
+                    background-color: $color-green; 
+                    }
+                    span.hair-icon{ 
+                    background-image: url('../images/hair-icon-white.png');
+                    }
+                    span.training-icon{
+                    background-image: url('../images/training-icon-white.png');
+                       }
+                    span.skin-icon{
+                    background-image: url('../images/skin-icon-white.png'); 
+                    } 
+                    span.nails-icon{
+                    background-image: url('../images/nails-icon-white.png');
+                    } 
+                    span.massage-icon{
+                    background-image: url('../images/massage-icon-white.png');
+                    } 
+                    span.bundle-icon{
+                    background-image: url('../images/bundle-icon-white.png');
+                    } 
+            }
+          
+        }
+        
+        }
+         .checkbox, .radio{ width: 100%; display: block; margin-bottom: 10px; margin-top: 10px; position: relative; padding-left: 0px; text-align: center;
+                  }
+                         input[type=checkbox] {display: none;}
+                         label{&:before{
+                                   content:"";display: inline-block; position: absolute;left: 0; background-color:#F5F7FA;       
+                               }
+                         }  
+                         
+                    .category_icon{  padding: 0px !important;
+                    .cat-icon{transition: all 0.3s ease;height: 120px; width: 120px; background-repeat: no-repeat; background-position: center center;background-color: $color-white;text-align: center; border-radius:50%; display: block; margin: 0 auto;
+                               box-shadow:0 0px 3px 0px rgba(0, 0, 0, 0.2); 
+                             img{
+                                     margin: 0 auto;
+                             }
+                       }
+                       .hair-icon{
+                           background-image: url('../images/hair-icon.png'); 
+                       }
+                       .training-icon{
+                           background-image: url('../images/training-icon.png');
+                       }
+                       .skin-icon{
+                           background-image: url('../images/skin-icon.png');
+                       } 
+                       .nails-icon{
+                           background-image: url('../images/nails-icon.png');
+                       } 
+                       .massage-icon{
+                           background-image: url('../images/massage-icon.png');
+                       } 
+                       .bundle-icon{
+                           background-image: url('../images/bundle-icon.png');
+                       } 
+
+               
+    }  
+    }
+}
+
+
+
+

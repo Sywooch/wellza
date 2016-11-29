@@ -1,0 +1,134 @@
+<?php
+
+namespace common\models\base;
+
+use Yii;
+
+/**
+ * This is the model class for table "appointment".
+ *
+ * @property integer $id
+ * @property integer $customer_id
+ * @property integer $provider_id
+ * @property integer $service_id
+ * @property integer $sub_service_id
+ * @property string $preparation_instruction
+ * @property string $location
+ * @property string $additional_information
+ * @property string $appointment_time
+ * @property string $appointment_date
+ * @property string $appointment_price
+ * @property string $appointment_duration
+ * @property integer $appointment_distance_away
+ * @property string $appointment_time_away
+ * @property string $status
+ * @property integer $cancelled_by
+ * @property string $latitude
+ * @property string $longitude
+ * @property string $created_at
+ * @property string $updated_at
+ *
+ * @property Services $service
+ * @property User $customer
+ * @property User $provider
+ * @property Services $subService
+ * @property Cart[] $carts
+ */
+class BaseAppointment extends \yii\db\ActiveRecord
+{
+    /**
+     * @inheritdoc
+     */
+    public static function tableName()
+    {
+        return 'appointment';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function rules()
+    {
+        return [
+            [['customer_id'], 'required'],
+            [['customer_id', 'provider_id', 'service_id', 'sub_service_id', 'appointment_distance_away', 'cancelled_by'], 'integer'],
+            [['preparation_instruction', 'additional_information', 'status'], 'string'],
+            [['appointment_time', 'appointment_date', 'appointment_duration', 'appointment_time_away', 'created_at', 'updated_at'], 'safe'],
+            [['appointment_price', 'latitude', 'longitude'], 'number'],
+            [['location'], 'string', 'max' => 255],
+            [['service_id'], 'exist', 'skipOnError' => true, 'targetClass' => \common\models\Services::className(), 'targetAttribute' => ['service_id' => 'category_id']],
+            [['customer_id'], 'exist', 'skipOnError' => true, 'targetClass' => \common\models\User::className(), 'targetAttribute' => ['customer_id' => 'id']],
+            [['provider_id'], 'exist', 'skipOnError' => true, 'targetClass' => \common\models\User::className(), 'targetAttribute' => ['provider_id' => 'id']],
+            [['sub_service_id'], 'exist', 'skipOnError' => true, 'targetClass' => \common\models\Services::className(), 'targetAttribute' => ['sub_service_id' => 'category_id']],
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function attributeLabels()
+    {
+        return [
+            'id' => 'ID',
+            'customer_id' => 'Customer ID',
+            'provider_id' => 'Provider ID',
+            'service_id' => 'Service ID',
+            'sub_service_id' => 'Sub Service ID',
+            'preparation_instruction' => 'Preparation Instruction',
+            'location' => 'Location',
+            'additional_information' => 'Additional Information',
+            'appointment_time' => 'Appointment Time',
+            'appointment_date' => 'Appointment Date',
+            'appointment_price' => 'Appointment Price',
+            'appointment_duration' => 'Appointment Duration',
+            'appointment_distance_away' => 'Appointment Distance Away',
+            'appointment_time_away' => 'Appointment Time Away',
+            'status' => 'Status',
+            'cancelled_by' => 'Cancelled By',
+            'latitude' => 'Latitude',
+            'longitude' => 'Longitude',
+            'created_at' => 'Created At',
+            'updated_at' => 'Updated At',
+        ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getService()
+    {
+        return $this->hasOne(\common\models\Services::className(), ['category_id' => 'service_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCustomer()
+    {
+        return $this->hasOne(\common\models\User::className(), ['id' => 'customer_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProvider()
+    {
+        return $this->hasOne(\common\models\User::className(), ['id' => 'provider_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSubService()
+    {
+        return $this->hasOne(\common\models\Services::className(), ['category_id' => 'sub_service_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCarts()
+    {
+        return $this->hasMany(\common\models\Cart::className(), ['appointment_id' => 'id']);
+    }
+}

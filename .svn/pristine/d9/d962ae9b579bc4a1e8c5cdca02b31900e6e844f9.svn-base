@@ -1,0 +1,248 @@
+<?php include 'include/inner-header.php'; ?>
+<?php include 'include/right-menu.php'; ?>
+
+<main class="inner-content" id="inner-content">
+    <div class="view-cart-section">
+        <div class="container">
+            <h1 class="inner-heading">Shopping Cart</h1>
+            <div class="cart_box">
+                <div class="table-responsive">
+                    <h3 class="item_haeding">Product</h3>
+                    <table class="table product_table">
+                        <thead>
+                            <tr>
+                                <th class="width30">Product</th>
+                                <th class="width20">Price</th>
+                                <th class="width25">Quantity</th>
+                                <th class="">Total</th>
+                                <th class=""></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="pro_cnt">
+                                        <div class="pro_image">
+                                            <div class="img_box item_image" style="background-image:url('assets/images/product01.jpg');">
+                                            </div>
+                                        </div>
+                                        <div class="product_detail">
+                                            <div class="name">Ceramic Mug (350 ml)</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>$50</td>
+                                <td>
+                                    <div class="input-group  checkout-spinner">
+                                        <span class="input-group-btn data-dwn">
+                                            <button type="button" class="btn btn-default" data-dir="dwn"><span class="glyphicon glyphicon-minus"></span></button>
+                                        </span>
+                                        <input class="form-control text-center" readonly="" name="quantity" value="1" min="1" max="40" type="text">    
+                                        <span class="input-group-btn data-up">
+                                            <button type="button" class="btn btn-default" data-dir="up"><span class="glyphicon glyphicon-plus"></span></button>
+                                        </span>
+                                    </div>
+                                </td>
+                                <td>$250</td>
+                                <td class="text-center">
+                                    <ul class="list-inline">
+                                        <li>
+                                            <a href="javascript:void(0);" class="delete-btn" data-toggle="tooltip" title="Delete"><img src="assets/images/delete-icon-btn.png"></a>  
+                                        </li>
+<!--                                        <li>
+                                            <a href="javascript:void(0);" class="update-btn" data-toggle="tooltip" title="Update"><img src="assets/images/update_icon.png"></a>   
+                                        </li>-->
+                                    </ul>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <h3 class="item_haeding">Service Package</h3>
+                    <table class="table appointment_table">
+                        <thead>
+                            <tr>
+                                <th class="width30">Service Name</th>
+                                <th class="width20">Address</th>
+                                <th class="width25">Date/Time</th>
+                                <th>Price</th>
+                                <th class=""></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="pro_cnt">
+                                        <div class="pro_image">
+                                            <div class="img_box service_icon" style="background-image:url('assets/images/hair-icon.png');">
+                                            </div>
+                                        </div>
+                                        <div class="product_detail">
+                                            <div class="name">Hair cut</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>Chapel Hill, New York, United States</td>
+                                <td>09-05-2016, 50 min</td>
+                                <td>$60</td>
+                                <td class="text-center">
+                                    <ul class="list-inline">
+                                        <li>
+                                            <a href="javascript:void(0);" class="delete-btn" data-toggle="tooltip" title="Delete"><img src="assets/images/delete-icon-btn.png"></a>  
+                                        </li>
+                                    </ul>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <h3 class="item_haeding">Wellza  Bundle</h3>
+                    <table class="table bundle_table">
+                        <thead>
+                            <tr>
+                                <th class="width30">Bundle Name</th>
+                                <th class="width20">Total Number of Services</th>
+                                <th class="width25">Total saving</th>
+                                <th class="">Price</th>
+                                <th class=""></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="pro_cnt">
+                                        <div class="pro_image">
+                                            <div class="img_box service_icon" style="background-image:url('assets/images/hair-icon.png');">
+                                            </div>
+                                        </div>
+                                        <div class="product_detail">
+                                            <div class="name">Wedding</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>5</td>
+                                <td>50%</td>
+                                <td>$60</td>
+                                <td class="text-center">
+                                    <ul class="list-inline">
+                                        <li>
+                                            <a href="javascript:void(0);" class="delete-btn" data-toggle="tooltip" title="Delete"><img src="assets/images/delete-icon-btn.png"></a>  
+                                        </li>
+                                    </ul>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+            <div class="clearfix"></div>
+            <div class="row">
+                <div class="col-lg-6 col-xs-12 col-sm-6 couponform">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-sm-6 col-md-5">
+                                <input class="form-control input-lg" name="coupon" id="input-coupon" placeholder="Enter Coupon Code" type="text">
+                            </div>
+                            <div class="col-sm-6 col-md-4">
+                                <button type="button" class="btn btn-primary btn-lg btn-block" id="button-coupon">APPLY COUPON</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-lg-6 col-xs-12 col-sm-6 couponform">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-sm-6 col-md-4 col-md-offset-8">
+                                <button type="button" class="btn btn-info btn-lg btn-block" id="button-coupon">UPDATE CART</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12 col-xs-12 col-sm-12">
+                    <table class="table crattoal-table">
+                        <tbody>
+                            <tr>
+                                <td class="text-right" align="right">
+                                    <div class="form-horizontal crattoal-table">
+                                        <div class="row">
+                                            <label class="col-xs-6 col-sm-9 col-md-10 control-label cart-totalprice">Sub-Total :</label>
+                                            <div class="col-sm-3 col-md-2 col-xs-6 pro-price"> $3,200.00</div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tfoot>   
+                            <tr>
+                                <td class="pro_total_price text-right" align="right">
+                                    <div class="form-horizontal crattoal-table">
+                                        <div class="row">
+                                            <label class="col-xs-6 col-sm-9 col-md-10 control-label cart-totalprice">Total :</label>
+                                            <div class="col-sm-3 col-md-2 col-xs-6 pro-price color-orange"> $3,200.00</div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tfoot> 
+                    </table>
+                </div>
+
+                <div class="col-lg-6 col-xs-12 col-md-7 col-sm-9 col-sm-offset-3 couponform col-md-offset-5 col-lg-offset-6">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <a type="button" class="btn btn-warning btn-block btn-lg">CONTINUE SHOPPING</a>
+                        </div>
+                        <div class="col-sm-6">
+                            <a href="javascript:void(0);" class="btn btn-info btn-block btn-lg">PROCEED TO CHECKOUT</a>
+                        </div>
+                    </div>
+                </div> 
+            </div>
+        </div>
+    </div>
+
+</div>
+</main>
+<?php include 'include/inner-footer.php'; ?>
+<script>
+    $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+        
+  //=============== prodcut qty counter==================//
+        var action;
+        $(".checkout-spinner button").mousedown(function () {
+            btn = $(this);
+            input = btn.closest('.checkout-spinner ').find('input');
+            btn.closest('.checkout-spinner ').find('button').prop("disabled", false);
+
+            if (btn.attr('data-dir') == 'up') {
+                action = setInterval(function () {
+                    if (input.attr('max') == undefined || parseInt(input.val()) < parseInt(input.attr('max'))) {
+                        input.val(parseInt(input.val()) + 1);
+                    } else {
+                        btn.prop("disabled", true);
+                        clearInterval(action);
+                    }
+                }, 50);
+            } else {
+                action = setInterval(function () {
+                    if (input.attr('min') == undefined || parseInt(input.val()) > parseInt(input.attr('min'))) {
+                        input.val(parseInt(input.val()) - 1);
+                    } else {
+                        btn.prop("disabled", true);
+                        clearInterval(action);
+                    }
+                }, 50);
+            }
+        })
+        .mouseup(function () {
+            clearInterval(action);
+        });
+  //===============end prodcut qty counter==================//
+    });
+
+</script>
+</body>
+</html>

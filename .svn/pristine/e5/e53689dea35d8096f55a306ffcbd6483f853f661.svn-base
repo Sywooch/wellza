@@ -1,0 +1,261 @@
+$(document).ready(function () {
+    var next_month ;
+    var next_year ;
+    var prev_month;
+    var prev_year;
+        
+    var siteurl = document.getElementById("siteurl").value;
+    
+    $("#preloader").hide();
+    $(".overlay").hide();
+    $('#select-time-slider').owlCarousel({
+        loop: false,
+        margin: 0,
+        dots: false,
+        center: false,
+        lazyLoad: true,
+        stagePadding: 0,
+        responsive: {
+            0: {
+                items: 1
+            },
+            480: {
+                items: 2
+            },
+            768: {
+                items: 3
+            },
+            1000: {
+                items: 5
+            }
+        },
+        navText: ["<img src='../resource/images/nav-left-arrow.png'>", "<img src='../resource/images/nav-right-arrow.png'>"]
+
+    });
+    callDaySlider();
+    $('#month-slider').owlCarousel({
+        loop: true,
+        margin: 10,
+        dots: false,
+        //center: true,
+        nav: true,
+        responsive: {
+            0: {
+                items: 1
+            },
+            768: {
+                items: 1
+            },
+            1000: {
+                items: 1
+            }
+        },
+        navText: ["<img src='../resource/images/left-arrow.png'>", "<img src='../resource/images/right-aarow.png'>"]
+
+    });
+    
+    $('#time-slider').owlCarousel({
+        loop: false,
+        margin: 25,
+        dots: false,
+        center: false,
+        nav: true,
+        responsive: {
+            0: {
+                items: 1
+            },
+            480: {
+                items: 2
+            },
+            768: {
+                items: 4
+            },
+            1000: {
+                items: 4
+            },
+            1200: {
+                items: 7
+            }
+        },
+        navText: ["<img src='../resource/images/left-arrow.png'>", "<img src='../resource/images/right-aarow.png'>"]
+
+    });
+
+    $('.selectpicker').selectpicker();
+
+    $('#select-time-slider').on('click', '.owl-item', function (e) {
+        var carousel = $('#select-time-slider').data('owl.carousel');
+        e.preventDefault();
+        carousel.to(carousel.relative($(this).index()));
+    });
+
+    $(window).load(function () {
+        $('.no-service-popup').modal('show');
+    });
+    
+    
+
+});
+
+$(window).on("load", function() {
+    $('.item.slotsslide.selected').parent().addClass('center');
+    $('.timeslideclass.item.selected').parent().addClass('center');
+    $('.item-cnt a > .currentday').parent().addClass('selected');
+});
+
+function callDaySlider() {
+    $('#day-slider').owlCarousel({
+        loop: true,
+        margin: 25,
+        dots: false,
+        center: true,
+        nav: true,
+        responsive: {
+            0: {
+                items: 1
+            },
+            480: {
+                items: 2
+            },
+            768: {
+                items: 4
+            },
+            1000: {
+                items: 5
+            },
+            1200: {
+                items: 7
+            }
+        },
+        navText: ["<img src='../resource/images/left-arrow.png'>", "<img src='../resource/images/right-aarow.png'>"]
+
+    });
+    $("#day-slider").trigger("to.owl.carousel", [3, 1, true])
+}
+
+$(document).on('click','.next',function(e){
+    e.preventDefault();
+    
+    next_month  = $(this).attr('data-month');
+    next_year = $(this).attr('data-year');
+    
+    if(next_month != '' && next_year != '') {
+        callAjax(next_month,next_year); 
+    } else {
+        alert('Dates not available');
+    }     
+});
+
+$(document).on('click',".prev",function(e){
+    e.preventDefault();
+    prev_month  = $(this).attr('data-month');
+    prev_year = $(this).attr('data-year');
+    
+    if(prev_month != 'javascript:void(0);' && prev_year != 'javascript:void(0);') {
+        callAjax(prev_month,prev_year); 
+    } else {
+        alert('Dates not available');
+    }  
+});
+
+function callAjax(month,year) {
+    
+    var pageurl = document.getElementById("pageurl").value;
+    $(".overlay").show();
+    $("#preloader").show();
+    $.ajax({
+        url: pageurl + '/load-calender',
+        type: 'post',
+        
+        data: {'month': month,'year': year},
+        success: function (data, status) {
+            
+            //var json = $.parseJSON(data);
+            var returndata = data.split('####');
+            $(".month").html(returndata[0]);
+            $(".day").html(returndata[1]);
+            $("#preloader").hide();
+            $(".overlay").hide();
+            callDaySlider();
+        },
+        error: function (xhr, desc, err) {
+            console.log(xhr);
+            console.log("Details: " + desc + "\nError:" + err);
+        }
+    }); // end ajax call
+}
+
+$(".daysliderclass").click(function(){
+    
+    $(".daysliderclass div a").removeClass('selected');
+    $(this).find('div.item-cnt a').addClass('selected');
+    var time_number = $(this).find('div.item-cnt a').attr('id');
+    var time_number_arr = time_number.split("li-");
+    document.getElementById("appointment_date").value = time_number_arr[1];
+    
+});
+
+$(document).on('click',".timeslideclass",function(){
+    $(".timeslideclass").removeClass('selected');
+    $(this).addClass('selected');
+    
+    var time_number = $(this).find('div.item-cnt a div').text();
+    document.getElementById("appointment_time").value = time_number;
+});
+
+$(document).on('click','.slotsslide',function(){
+    
+    $(".slotsslide").parent().removeClass('center');
+    $(".slotsslide").removeClass('selected');
+    $(this).addClass('selected');
+    $(this).parent().addClass('center');
+    var slots_minute = $(this).find('.number').text();
+    slots_minute = slots_minute.trim();
+    var slots_minute_arr = slots_minute.split(' ');
+    slots_minute = slots_minute_arr[0];
+       
+    var slots_price = $(this).find('.price').text();
+    slots_price = slots_price.trim();
+    var price_arr = slots_price.split("$");
+    
+    document.getElementById("appointment_minutes").value = slots_minute;
+    document.getElementById("appointment_price").value = price_arr[1];
+});
+
+$("#select_location").click(function(e){
+   e.preventDefault();
+   var pageurl = document.getElementById("pageurl").value;
+   var appointment_minutes = $("#appointment_minutes").val();
+   var appointment_date = $("#appointment_date").val();
+   var appointment_time = $("#appointment_time").val();
+   var appointment_price = $("#appointment_price").val();
+   
+   if(appointment_minutes =='' && appointment_date =='' && appointment_date =='') {
+        bootbox.alert("No Slot available");
+        return false;
+   } else {
+       $.ajax({
+        url: pageurl + '/check-slots',
+        type: 'post',
+        data: {'appointment_minutes': appointment_minutes,'appointment_date': appointment_date,'appointment_time' :appointment_time,'appointment_price':appointment_price},
+        success: function (data, status) {
+            if(data == 0) {
+                bootbox.alert("No Slot available");
+                
+            } else {
+                //e.preventDefault();
+                $("#edit_package").submit();
+            }
+           
+        },
+        error: function (xhr, desc, err) {
+            
+            console.log(xhr);
+            console.log("Details: " + desc + "\nError:" + err);
+        }
+    });
+        
+       //return true;
+   }
+   
+});

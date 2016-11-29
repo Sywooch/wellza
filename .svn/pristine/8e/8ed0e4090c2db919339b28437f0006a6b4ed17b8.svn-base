@@ -1,0 +1,37 @@
+$(document).ready(function(){
+    var socket = io('192.168.0.192:3000');
+    
+    $('#inbox').submit(function () {
+        var user_id = document.getElementById('currentuser_id').value;
+        var data = {
+            from_user_id: user_id,
+            to_user_id :94,
+            message: $('#message-message').val()            
+        };
+        socket.emit('send-message', data);
+        $('#message-message').val('');  
+        return false;
+        
+    });
+    socket.on('recieve-message', function(messages){
+        console.log(messages);
+    });
+  });
+$(window).on("load", function () {
+    
+    $(".inbox-content .right .chat-box").mCustomScrollbar({
+        axis: "y", // horizontal scrollbar
+        autoHideScrollbar: true
+
+    });
+    $(".inbox-content .inbox-list").mCustomScrollbar({
+        axis: "y", // horizontal scrollbar
+        autoHideScrollbar: true
+    });
+});
+
+
+
+
+
+

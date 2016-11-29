@@ -1,0 +1,118 @@
+<?php
+/************************************************************************************************************************//**
+ *  Controller Name: MyProfileController.php
+ *  Created: Codian Team
+ *  Description: This will manage the meta data of a provider's profile.Also manage the flow of data from view to modal and
+ * vice versa.
+ ***************************************************************************************************************************/
+
+namespace frontend\modules\provider\controllers;
+
+use Yii;
+use yii\base\InvalidParamException;
+use yii\web\BadRequestHttpException;
+use yii\web\Response;
+use yii\widgets\ActiveForm;
+use yii\web\Session;
+use yii\web\UploadedFile;
+
+class MyProfileController extends \frontend\modules\provider\components\Controller
+{
+    public function actionIndex()
+    {   
+        return $this->render('my-profile');
+    }
+    
+/********************************************** Ajax Driven functions ******************************************************************* */
+/*************************************************************************************************************************************** */
+    
+    /**
+     * View providers profile
+     */
+    public function actionViewProfile()
+    {   
+        $model = new \common\models\User();
+        $returndata = \common\models\User::providerDetail(Yii::$app->user->id);
+        return $this->renderAjax('my-profile', ['returndata' => $returndata,'model' => $model]);        
+    }
+    
+    /**
+     * View providers profile
+     */
+    public function actionEditProfile()
+    {   
+        $model = new \common\models\User();
+        $id = Yii::$app->user->id;
+        $model->scenario = 'providerEditProfile';
+        //$model = new \common\models\base\UserForm();
+        $post = Yii::$app->request->post();
+                
+        if (Yii::$app->request->isAjax && $model->load($post)) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return ActiveForm::validate($model);
+        }
+        
+        $model->load($post);
+                
+        $model->gender = $post['User']['gender'];
+        $model->profile_image = UploadedFile::getInstanceByName('profile_image');
+        $model->profile_image_thumb = UploadedFile::getInstanceByName('profile_image_thumb');
+        $isadmin = '';
+        
+        //echo '<pre/>';
+        //        print_r($post);die;
+        if(!empty($post['originalimg'])) {
+            $image_array = explode('base64,',$post['originalimg']);
+            $img = $image_array[1];
+            $model->originalimg = base64_decode($img);
+        } 
+        
+        if(!empty($post['profile_thumbimg'])) {
+            $imagethumb_array = explode('base64,',$post['profile_thumbimg']);
+            $imgthumb = $imagethumb_array[1];
+            $model->profile_thumbimg = base64_decode($imgthumb);           
+        }                
+               
+        $data = \common\models\User::findIdentity($id);
+        $province = \common\components\Utility::provinceData('CA');
+        $cities = \common\components\Utility::cityData('CA');
+        
+        $returndata = $model->setUserData($id,null ,null,'isadmin');
+        if(!empty($returndata)) {
+            Yii::$app->session->setFlash('service_message', 'Profile edited!');
+                    
+        } else {
+            Yii::$app->session->setFlash('service_message', 'Failed to edit profile!');
+            //return $this->redirect(Yii::$app->urlManager->createUrl('customer-detail').'/'.$id);
+        }
+        return $this->redirect(Yii::$app->urlManager->createUrl('provider/service'));
+        //die('..');
+    }
+    
+    /**
+     * Get the all provinces
+     */
+    public function actionGetProvinces() {
+        $searchTerm = Yii::$app->request->get('term');
+        $provinces = \common\models\MasterStates::searchProvince($searchTerm);
+        echo json_encode($provinces);
+        die;        
+    }
+    
+    /**
+     * Get the all cities
+     */
+    public function actionGetCities() {
+        $searchTerm = Yii::$app->request->get('term');
+        $cities = \common\models\MasterCities::searchCities($searchTerm);
+        echo json_encode($cities);
+        die; 
+        
+        
+    }
+
+}
+
+/*************************************************************************************************************************************/
+// EOF: MyProfileController.php
+/*************************************************************************************************************************************/

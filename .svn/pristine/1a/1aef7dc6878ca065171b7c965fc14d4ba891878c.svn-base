@@ -1,0 +1,613 @@
+<?php
+
+/* * ********************************************************************************************************************* *//**
+ *  Model Name: Appointment.php
+ *  Created: Codian Team
+ *  Description: Manages the crud operations for appointment for admin,providers and client.It inherits the properties
+ *  of the base class rules and attributlabels. 
+ * ************************************************************************************************************************* */
+
+namespace common\models;
+
+use Yii;
+use common\models\base\BaseAppointment;
+use common\models\query\AppointmentQuery;
+use yii\helpers\ArrayHelper;
+use yii\base\NotSupportedException;
+use yii\db\ActiveRecord;
+use yii\behaviors\TimestampBehavior;
+use yii\db\Expression;
+use DateTime;
+use yii\web\Session;
+
+class Appointment extends BaseAppointment implements \yz\shoppingcart\CartPositionInterface {
+
+    use \yz\shoppingcart\CartPositionTrait;
+
+    public $sub_category_name;
+    public $profile_image;
+    public $category_image;
+    public $price;
+    public $first_name;
+    public $last_name;
+    public $address;
+    public $review_count;
+    public $is_member;
+    public $appointments;
+
+    public function rules() {
+        return ArrayHelper::merge(
+                        parent::rules(), [
+                    [['appointment_time'], \common\components\customvalidators\CheckTimeFormatValidator::className()],
+                    ['preferred_location', 'trim', 'on' => 'service-location'],
+                    [['address1', 'address2', 'city', 'province', 'telephone_number'], 'required', 'on' => 'service-location'],
+                    [['telephone_number'], 'integer', 'on' => 'service-location', 'message' => 'Telephone Number must be an number.'],
+                    [['postal_code'], 'integer', 'on' => 'service-location', 'message' => 'Telephone Number must be an number.']
+        ]);
+    }
+
+    public function attributeLabels() {
+        return ArrayHelper::merge(
+                        parent::attributeLabels(), [
+        ]);
+    }
+
+    public function scenarios() {
+        $scenarios = parent::scenarios();
+        $scenarios['service-location'] = ['address1', 'address2', 'city', 'province', 'telephone_number', 'postal_code', 'personal_information', 'preferred_location', 'latitude', 'longitude'];
+        return $scenarios;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function behaviors() {
+        return [
+            [
+                'class' => TimestampBehavior::className(),
+                'createdAtAttribute' => 'created_at',
+                'updatedAtAttribute' => 'updated_at',
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
+                    ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
+                ],
+                'value' => new Expression('NOW()'),
+            ],
+        ];
+    }
+
+    public function fields() {
+        return ArrayHelper::merge(parent::fields(), [
+                    'service_name' => function($model) {
+                        $packageData = Packages::find()->byPackageId($model->package_id)->one();
+                        if (!empty($packageData)) {
+                            $service = Services::find()->byID($packageData->parent)->one();
+                            return !empty($service->category_name) ? $service->category_name : '';
+                        }
+                    },
+                    'sub_service_name' => function($model) {
+                        $packageData = Packages::find()->byPackageId($model->package_id)->one();
+                        if (!empty($packageData)) {
+                            $service = Services::find()->byID($packageData->service_id)->one();
+                            return !empty($service->category_name) ? $service->category_name : '';
+                        }
+                    },
+                    'profile_image',
+                    'category_image',
+                    'price', 'first_name',
+                    'last_name',
+                    'address',
+                    'review_count',
+                    'is_member', 'appointments'
+        ]);
+    }
+
+    /**
+     * @inheritdoc
+     * @return \common\models\query\AppointmentQuery the active query used by this AR class.
+     */
+    public static function find() {
+        return new \common\models\query\AppointmentQuery(get_called_class());
+    }
+
+    /**
+     * Return the status of appointment
+     */
+    public static function getAppointmentStatus($id, $status) {
+        $returndata = self::find()->select('*')->ByStatus($status, $id)->asArray()->all();
+        return $returndata;
+    }
+
+    /**
+     * This function add the appointment for users
+     */
+    public function addAppointment($screen_type = null,$is_upcoming = null) {    
+        $session = Yii::$app->session;
+        //if(!empty($result)) {
+        //$appointment = $this->set_value();
+        Yii::$app->db->createCommand('set foreign_key_checks=0')->execute();
+        if ($screen_type == 'web') {
+            $appointment = new Appointment();
+            if($is_upcoming == 1) {
+                $appointment_id = $session->get('appointment_id');
+                $appointment = Appointment::findOne(['id' => $appointment_id]);
+                $appointment = $this->set_value($appointment, \Yii::$app->user->id, $screen_type);
+                if ($appointment->update(false)) {
+                    Yii::$app->db->createCommand('set foreign_key_checks=1')->execute();
+                    return $appointment_id;
+                } else {
+                    return null;
+                }
+            } else {
+                $appointment = $this->set_value($appointment, \Yii::$app->user->id, $screen_type);
+                if ($appointment->save(false)) {
+                    Yii::$app->db->createCommand('set foreign_key_checks=1')->execute();
+                    return $appointment->id;
+                } else {
+                    return null;
+                }
+            }
+            
+        } else {
+            $packageData = Packages::find()->byPackageId($this->package_id)->one();
+
+            $result = ProviderServices::checkService($packageData->parent, $packageData->service_id, $this->provider_id);
+            if (!empty($result)) {
+                $appointment = $this->set_value($appointment, \Yii::$app->user->id);
+
+                if ($appointment->save(false)) {
+                    $cartData = ['type_id' => $appointment->id, 'customer_id' => Yii::$app->user->id, 'type' => 'appointment'];
+                    Cart::add($cartData);
+                    Yii::$app->db->createCommand('set foreign_key_checks=1')->execute();
+                    return $appointment;
+                } else {
+                    return null;
+                }
+            } else {
+                return null;
+            }
+        }
+        //}
+    }
+    /**
+     * This function reschedule the appointment for users
+     */
+    public function rescheduleAppointment($screen_type = null, $is_upcoming = null) {
+        $packageData = Packages::find()->byPackageId($this->package_id)->one();
+        $result = ProviderServices::checkService($packageData->parent, $packageData->service_id, $this->provider_id);
+        if (!empty($result)) {
+            $appointment = $this->set_value(null, \Yii::$app->user->id, null);
+            if ($appointment->save(false)) {
+                return $appointment;
+            } else {
+                return null;
+            }
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Check if appointment exist for a that particular time and date for a client
+     * @return True|False
+     */
+    public static function isAppointmentExist() {
+        $session = Yii::$app->session;
+        $date = !empty($session->get('appointment_date')) ? $session->get('appointment_date') : '';
+        $date = date_create($date);
+        $start_date = date_format($date, "Y-m-d");
+        $time = !empty($session->get('appointment_time')) ? $session->get('appointment_time') : '';
+        $time = date("G:i:s", strtotime($time));
+        $data = self::find()->BySlot(\Yii::$app->user->id, $time, $start_date)->one();
+
+        if (!empty($data)) {
+            return $data->id;
+        }
+        return null;
+    }
+
+    /**
+     * set the data for appointment
+     */
+    public function set_value($appointment = null, $id = null, $screen_type = null) {
+        //$appointment = new Appointment();
+        $session = Yii::$app->session;
+        $end_time = '';
+        $start_time = $session->get('appointment_time');
+        $duration_minutes = '+' . $session->get('appointment_minutes') . ' minutes';
+
+
+        $start_time = date("G:i", strtotime($start_time));
+        $endtime = date('g:i a', strtotime($duration_minutes, strtotime($start_time)));
+        //echo $endtime;
+        //die('...');
+        if ($screen_type == 'web') {
+            $session = Yii::$app->session;
+            $package_id = Packages::getPackageId($session->get('subcategoryid'));
+            $appointment->customer_id = $id;
+            $appointment->provider_id = !empty($session->get('provider_id')) ? $session->get('provider_id') : '';
+            $appointment->package_id = !empty($package_id) ? $package_id : '';
+            $appointment->address1 = !empty($session->get('address1')) ? $session->get('address1') : '';
+            $appointment->address2 = !empty($session->get('address2')) ? $session->get('address2') : '';
+            $appointment->preferred_location = !empty($session->get('preferred_location')) ? $session->get('preferred_location') : '';
+            $appointment->longitude = !empty($session->get('longitude')) ? $session->get('longitude') : '';
+            $appointment->latitude = !empty($session->get('latitude')) ? $session->get('latitude') : '';
+            $appointment->city = !empty($session->get('city')) ? $session->get('city') : '';
+            $date = !empty($session->get('appointment_date')) ? $session->get('appointment_date') : '';
+            $date = date_create($date);
+            $appointment->province = !empty($session->get('province')) ? $session->get('province') : '';
+            $appointment->telephone_number = !empty($session->get('telephone_number')) ? $session->get('telephone_number') : '';
+            $appointment->postal_code = !empty($session->get('postal_code')) ? $session->get('postal_code') : '';
+
+            $appointment->personal_information = !empty($session->get('personal_information')) ? $session->get('personal_information') : '';
+            $appointment->appointment_time = !empty($session->get('appointment_time')) ? $session->get('appointment_time') : '';
+            $appointment->appointment_endtime = !empty($endtime) ? $endtime : '';
+            $appointment->appointment_date = date_format($date, "Y-m-d");
+            $appointment->appointment_price = !empty($session->get('appointment_price')) ? $session->get('appointment_price') : '';
+            $appointment->appointment_duration = !empty($session->get('appointment_minutes')) ? $session->get('appointment_minutes') : '';
+            $appointment->status = "Upcoming";
+            return $appointment;
+        } else {
+            $date = date_create($this->appointment_date);
+            $time = new DateTime($this->appointment_time);
+            $this->appointment_date = date_format($date, "Y-m-d");
+            $time->modify("+" . $this->appointment_duration . " minutes");
+            $this->appointment_endtime = $time->format("H:i:s");
+            $this->status = "Pending";
+            return $this;
+        }
+    }
+
+    /**
+     * get all the upcoming for the client appointment
+     */
+    public static function getApppointmentData($id = null, $status = null, $type = null) {
+        $result = [];
+        $expression = new Expression('NOW()');
+        $now = (new \yii\db\Query)->select($expression)->scalar();
+        $now_array = explode(' ', $now);
+
+        $select = "`appointment`.`id`,`appointment`.`customer_id`,`appointment`.`provider_id`,`appointment`.`package_id`,"
+                . "`appointment`.`address1`,`appointment`.`address2`,`appointment`.`city`,`appointment`.`province`,`appointment`.`telephone_number`,"
+                . "`appointment`.`postal_code`,`appointment`.`personal_information`,`appointment`.`appointment_price`,`appointment`.`appointment_duration`,"
+                . "`appointment`.`appointment_time`,`appointment`.`appointment_date`,`appointment`.`appointment_endtime`,"
+                . "`user`.`first_name`,`user`.`last_name`,`user`.`profile_image`,`user`.`address`,`service`.`category_id`,"
+                . "`service`.`category_name`,`service`.`category_image`";
+        if ($type == 'Upcoming') {
+//            $query = self::find()->byStatus($status, $id)->byDate($now_array[0]);
+            $query = self::find()->byStatus($status, $id);
+        } else {
+            $query = self::find()->byStatus($status, $id);
+        }
+
+        $query = $query->select($select)
+                ->leftJoin('user', '`appointment`.`provider_id` = `user`.`id`')
+                ->leftJoin('packages', '`appointment`.`package_id` = `packages`.`package_id`')
+                ->leftJoin('services AS  service', '`packages`.`parent` = `service`.`category_id`')
+                ->leftJoin('services AS  sub_service', '`packages`.`parent` = `sub_service`.`category_id`');
+
+        $dataProvider = new \yii\data\ActiveDataProvider([
+            'query' => $query,
+            'pagination' => [
+                'pageSize' => 20,
+            ],
+        ]);
+
+        if (!empty($dataProvider) && empty($type)) {
+
+
+            $url = \yii\helpers\Url::to('@web', true);
+            foreach ($dataProvider->getModels() as $appointment) {
+                $profileImage = '';
+                $categoryImage = '';
+                if ($appointment['profile_image'] != '' && file_exists($appointment['profile_image'])) {
+                    $profileImage = $url . '/' . $appointment['profile_image'];
+                } else {
+                    $profileImage = \yii\helpers\Url::to('@web', true) . Yii::getAlias('@defaultimg');
+                }
+                if ($appointment['category_image'] != '' && file_exists($appointment['category_image'])) {
+                    $categoryImage = $url . '/' . $appointment['category_image'];
+                }
+                $sub_service_id = $appointment->package->service_id;
+                $category = Services::callCategoryQuery($sub_service_id, 'Active');
+                $appointment['sub_category_name'] = $category['category_name'];
+                $appointment['profile_image'] = $profileImage;
+                $appointment['category_image'] = $categoryImage;
+                $appointment['review_count'] = 0;
+                $appointment['is_member'] = 0;
+                $result[] = $appointment;
+            }
+            $dataProvider->setModels($result);
+        }
+        return $dataProvider;
+    }
+    
+    /**
+     * get all the upcoming appointment for the provider
+     */
+    public static function getProviderApppointmentData($id = null, $status = null, $type = null) {
+        $result = [];
+        $expression = new Expression('NOW()');
+        $now = (new \yii\db\Query)->select($expression)->scalar();
+        $now_array = explode(' ', $now);
+
+        $select = "`appointment`.`id`,`appointment`.`customer_id`,`appointment`.`provider_id`,`appointment`.`package_id`,"
+                . "`appointment`.`address1`,`appointment`.`address2`,`appointment`.`city`,`appointment`.`province`,`appointment`.`telephone_number`,"
+                . "`appointment`.`postal_code`,`appointment`.`personal_information`,`appointment`.`appointment_price`,`appointment`.`appointment_duration`,"
+                . "`appointment`.`appointment_time`,`appointment`.`appointment_date`,`appointment`.`appointment_endtime`,"
+                . "`user`.`first_name`,`user`.`last_name`,`user`.`profile_image`,`user`.`address`,`service`.`category_id`,"
+                . "`service`.`category_name`,`service`.`category_image`";
+        if ($type == 'Upcoming') {
+          
+            $query = self::find()->ByProviderStatus($status, $id);
+        } else {
+            $query = self::find()->ByProviderStatus($status, $id);
+        }
+
+        $query = $query->select($select)
+                ->leftJoin('user', '`appointment`.`customer_id` = `user`.`id`')
+                ->leftJoin('packages', '`appointment`.`package_id` = `packages`.`package_id`')
+                ->leftJoin('services AS  service', '`packages`.`parent` = `service`.`category_id`')
+                ->leftJoin('services AS  sub_service', '`packages`.`parent` = `sub_service`.`category_id`');
+
+        $dataProvider = new \yii\data\ActiveDataProvider([
+            'query' => $query,
+            'pagination' => [
+                'pageSize' => 20,
+            ],
+        ]);
+
+        if (!empty($dataProvider) && empty($type)) {
+
+
+            $url = \yii\helpers\Url::to('@web', true);
+            foreach ($dataProvider->getModels() as $appointment) {
+                $profileImage = '';
+                $categoryImage = '';
+                if ($appointment['profile_image'] != '' && file_exists($appointment['profile_image'])) {
+                    $profileImage = $url . '/' . $appointment['profile_image'];
+                } else {
+                    $profileImage = \yii\helpers\Url::to('@web', true) . Yii::getAlias('@defaultimg');
+                }
+                if ($appointment['category_image'] != '' && file_exists($appointment['category_image'])) {
+                    $categoryImage = $url . '/' . $appointment['category_image'];
+                }
+                $sub_service_id = $appointment->package->service_id;
+                $category = Services::callCategoryQuery($sub_service_id, 'Active');
+                $appointment['sub_category_name'] = $category['category_name'];
+                $appointment['profile_image'] = $profileImage;
+                $appointment['category_image'] = $categoryImage;
+                $appointment['review_count'] = 0;
+                $appointment['is_member'] = 0;
+                $result[] = $appointment;
+            }
+            $dataProvider->setModels($result);
+        }
+        return $dataProvider;
+    }
+
+    /**
+     * get all the upcoming appointment for the client appointment
+     */
+    public static function getWebApppointmentData($customer_id = null) {
+        $returndata = self::getApppointmentData($customer_id, 'Pending', 'web');
+
+        if (!empty($returndata)) {
+            return $returndata->getModels();
+        } else {
+            return null;
+        }
+    }
+    
+    public static function changeAppointmentStatus($id, $status) {
+        $appointment = self::find()->byId($id)->one();
+        if (!empty($appointment)) {
+            $appointment->status = $status;
+            return $appointment->save();
+        } else {
+            return false;
+        }
+    }
+    
+    /**
+     * Get the appointment cancel by the provider for a particular client
+     */
+    public static function cancelAppointment($id, $status) {
+        $appointment = self::find()->byId($id)->one();
+        if (!empty($appointment)) {
+            $appointment->status = $status;
+            return $appointment->update(false);
+        } else {
+            return false;
+        }
+    }
+
+    public function getPrice() {
+        return $this->appointment_price;
+    }
+
+    public function getId() {
+        return $this->id;
+    }
+
+    /**
+     * Override methods from cartinterface
+     * @return type
+     */
+    public function getType() {
+        return 'appointment';
+    }
+
+    public static function providerCustomers($providerId, $params) {
+        $where = "WHERE `provider_id` = {$providerId}";
+        if (!empty($params['from_date'])) {
+            $where .= " AND a.appointment_date >= '{$params['from_date']}'";
+        }
+        if (!empty($params['to_date'])) {
+            $where .= " AND a.appointment_date <= '{$params['to_date']}'";
+        }
+        $query = "SELECT
+	a.`customer_id`,u.first_name,u.last_name,
+        u.profile_image,u.address,u.address2,u.city
+        FROM `appointment` a 
+        join `user` u ON u.id = a.customer_id
+        {$where}
+        GROUP BY `customer_id`";
+//        echo $query;die;
+        $count = \yii::$app->db->createCommand($query)->queryScalar();
+        $dataProvider = new \yii\data\SqlDataProvider([
+            'sql' => $query,
+            'totalCount' => $count,
+            'pagination' => [
+                'pageSize' => 10,
+            ],
+        ]);
+        if (!empty($dataProvider)) {
+            $result = [];
+            foreach ($dataProvider->getModels() as $data) {
+                $url = \yii\helpers\Url::to('@web', true);
+                if (!empty($data['profile_image']) && file_exists('./' . $data['profile_image'])) {
+                    $data['profile_image'] = $url . '/' . $data['profile_image'];
+                } else {
+                    $data['profile_image'] = $url . '/uploads/profile/images/default-profile.png';
+                }
+                $data['appointments'] = Appointment::providerSalesHistory($data['customer_id'], $params);
+                $result[] = $data;
+            }
+            $dataProvider->setModels($result);
+        }
+        return $dataProvider;
+    }
+
+    public static function providerSalesHistory($customer_id, $params) {
+
+        $where = "WHERE a.customer_id = {$customer_id}";
+        if (!empty($params['from_date'])) {
+            $where .= " AND a.appointment_date >= '{$params['from_date']}'";
+        }
+        if (!empty($params['to_date'])) {
+            $where .= " AND a.appointment_date <= '{$params['to_date']}'";
+        }
+        $processedArray = [];
+        $sql = "SELECT
+	a.id,
+	a.provider_id,
+	a.customer_id,
+	a.package_id,
+	services.category_name AS service_name,
+	sub_service.category_name AS sub_servic_name,
+	od.price, 1 AS quantity
+        FROM `appointment` a
+        JOIN packages p ON a.package_id = p.package_id
+        JOIN services ON p.parent = services.category_id
+        JOIN services AS sub_service ON p.service_id = sub_service.category_id
+        JOIN `order` o  ON o.user_id = a.customer_id 
+        LEFT JOIN order_detail od on o.id = od.order_id AND od.commodity_type = 'appointment' AND od.product_id = a.id {$where} GROUP BY a.id";
+        $result = \yii::$app->db->createCommand($sql)->queryAll();
+        if (!empty($result)) {
+            foreach ($result as $data) {
+
+                $arrayExistIndex = \common\components\Utility::is_in_array_history($processedArray, 'package_id', $data['package_id']);
+                if ($arrayExistIndex !== false) {
+                    $processedArray[$arrayExistIndex]['price'] += $data['price'];
+                    $processedArray[$arrayExistIndex]['quantity'] ++;
+                } else {
+                    $processedArray[] = $data;
+                }
+            }
+        }
+        return $processedArray;
+    }
+
+    /**
+     * Get categoryId from appointmentid
+     * @param integer $appoinment_id Appointment id 
+     * @return category_array|null
+     * * */
+    public static function getCategoriesByAppointment($appoinment_id = null) {
+        $category_array = array();
+        $appointment_data = self::find()->ByAppointment($appoinment_id)->one();
+
+        $category_array['category_id'] = $appointment_data->package->parent;
+        $category_array['sub_category_id'] = $appointment_data->package->service_id;
+
+        if (isset($category_array)) {
+            return $category_array;
+        }
+
+        return null;
+    }
+
+    public static function providerApppointments($id, $params) {
+        $expression = new Expression('NOW()');
+        $now = (new \yii\db\Query)->select($expression)->scalar();
+        $now_array = explode(' ', $now);
+
+        $select = "`appointment`.`id`,`appointment`.`customer_id`,`appointment`.`provider_id`,`appointment`.`package_id`,"
+                . "`appointment`.`address1`,`appointment`.`address2`,`appointment`.`city`,`appointment`.`province`,`appointment`.`telephone_number`,"
+                . "`appointment`.`postal_code`,`appointment`.`personal_information`,`appointment`.`appointment_price`,`appointment`.`appointment_duration`,"
+                . "`appointment`.`appointment_time`,`appointment`.`appointment_date`,`appointment`.`appointment_endtime`,"
+                . "`user`.`first_name`,`user`.`last_name`,`user`.`profile_image`,`user`.`address`,`service`.`category_id`,"
+                . "`service`.`category_name`,`service`.`category_image`";
+
+        if ($params['apointment_type'] == 'Upcoming') {
+//            $query = self::find()->byCurrentStatus($params['apointment_type'])->byProviderId($id)->byDate($now_array[0]);
+            $query = self::find()->byCurrentStatus($params['apointment_type'])->byProviderId($id);
+        } else {
+            $query = self::find()->byCurrentStatus($params['apointment_type'])->byProviderId($id);
+        }
+        $query = $query->select($select)
+                ->leftJoin('user', '`appointment`.`customer_id` = `user`.`id`')
+                ->leftJoin('packages', '`appointment`.`package_id` = `packages`.`package_id`')
+                ->leftJoin('services AS  service', '`packages`.`parent` = `service`.`category_id`')
+                ->leftJoin('services AS  sub_service', '`packages`.`parent` = `sub_service`.`category_id`');
+
+        $dataProvider = new \yii\data\ActiveDataProvider([
+            'query' => $query,
+            'pagination' => [
+                'pageSize' => 20,
+            ],
+        ]);
+        if (!empty($dataProvider)) {
+
+            $result = [];
+            $url = \yii\helpers\Url::to('@web', true);
+            foreach ($dataProvider->getModels() as $appointment) {
+                $profileImage = '';
+                $categoryImage = '';
+                if ($appointment['profile_image'] != '') {
+                    $profileImage = $url . '/' . $appointment['profile_image'];
+                }
+                if ($appointment['category_image'] != '') {
+                    $categoryImage = $url . '/' . $appointment['category_image'];
+                }
+                $sub_service_id = $appointment->package->service_id;
+                $category = Services::callCategoryQuery($sub_service_id, 'Active');
+                $appointment['sub_category_name'] = $category['category_name'];
+                $appointment['profile_image'] = $profileImage;
+                $appointment['category_image'] = $categoryImage;
+                $appointment['review_count'] = 0;
+                $appointment['is_member'] = 0;
+                $result[] = $appointment;
+            }
+            $dataProvider->setModels($result);
+        }
+        return $dataProvider;
+    }
+    
+    public static function updateAppointmentStatus($appointmentId,$status){
+        $appointment = self::findOne($appointmentId);
+        if(!empty($appointment)) {
+            $appointment->status = $status;
+            $appointment->save(false);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+}
+
+/* * ********************************************************************************************************************************** */
+// EOF: appointment.php
+/* * ********************************************************************************************************************************** */

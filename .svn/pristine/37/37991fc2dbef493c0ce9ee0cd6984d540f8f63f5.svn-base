@@ -1,0 +1,299 @@
+<?php
+
+namespace common\models;
+
+use Yii;
+use  yii\web\Session;
+use yii\helpers\ArrayHelper;
+use yii\behaviors\TimestampBehavior;
+use yii\db\Expression;
+use yii\web\NotFoundHttpException;
+/**
+ * This is the model class for table "order_detail".
+ *
+ * @property integer $id
+ * @property integer $order_id
+ * @property integer $product_id
+ * @property string $product_name
+ * @property string $price
+ * @property integer $quantity
+ * @property string $email
+ * @property string $phone
+ * @property string $shipping_first_name
+ * @property string $shipping_last_name
+ * @property string $shipping_address1
+ * @property string $shipping_address2
+ * @property string $city
+ * @property string $zip
+ * @property string $country
+ * @property string $created_at
+ * @property string $updated_at
+ *
+ * @property Product $product
+ * @property Order $order
+ */
+class OrderDetail extends base\BaseOrderDetail
+{
+    /**
+     * @inheritdoc
+     */
+    public static function tableName()
+    {
+        return 'order_detail';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function rules()
+    {
+        return [
+            [['order_id', 'product_id', 'quantity'], 'integer'],
+            [['price'], 'number'],
+            [['created_at', 'updated_at'], 'safe'],
+            [['product_name'], 'string', 'max' => 150],
+            [['email'], 'string', 'max' => 250],
+            [['phone'], 'string', 'max' => 20],
+            [['shipping_first_name', 'shipping_last_name'], 'string', 'max' => 80],
+            [['shipping_address1', 'shipping_address2'], 'string', 'max' => 200],
+            [['city', 'country'], 'string', 'max' => 100],
+            [['zip'], 'string', 'max' => 10],
+            [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::className(), 'targetAttribute' => ['product_id' => 'id']],
+            [['order_id'], 'exist', 'skipOnError' => true, 'targetClass' => Order::className(), 'targetAttribute' => ['order_id' => 'id']],
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function attributeLabels()
+    {
+        return [
+            'id' => 'ID',
+            'order_id' => 'Order ID',
+            'product_id' => 'Product ID',
+            'product_name' => 'Product Name',
+            'price' => 'Price',
+            'quantity' => 'Quantity',
+            'email' => 'Email',
+            'phone' => 'Phone',
+            'shipping_first_name' => 'Shipping First Name',
+            'shipping_last_name' => 'Shipping Last Name',
+            'shipping_address1' => 'Shipping Address1',
+            'shipping_address2' => 'Shipping Address2',
+            'city' => 'City',
+            'zip' => 'Zip',
+            'country' => 'Country',
+            'created_at' => 'Created At',
+            'updated_at' => 'Updated At',
+        ];
+    }
+    /**
+     * 
+     * @return type
+     */
+    
+    public function behaviors() {
+        return [
+            [
+                'class' => \yii\behaviors\TimestampBehavior::className(),
+                'createdAtAttribute' => 'created_at',
+                'updatedAtAttribute' => 'updated_at',
+                'attributes' => [
+                    \yii\db\ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
+                    \yii\db\ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
+                ],
+                'value' => new Expression('NOW()'),
+            ],
+        ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProduct()
+    {
+        return $this->hasOne(Product::className(), ['id' => 'product_id']);
+    }
+    
+    public function getAppointment()
+    {
+        return $this->hasOne(Appointment::className(), ['id' => 'product_id']);
+    }    
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getOrder()
+    {
+        return $this->hasOne(Order::className(), ['id' => 'order_id']);
+    }
+
+    /**
+     * @inheritdoc
+     * @return \common\models\query\OrderDetailQuery the active query used by this AR class.
+     */
+    public static function find()
+    {
+        return new \common\models\query\OrderDetailQuery(get_called_class());
+    }
+    
+     /**
+     * Save the order in the database
+     * @params id as order_id
+     * @return True|False
+     */
+    public function saveOrderDetail($id = null) {
+        $model = new OrderDetail();
+        $session = Yii::$app->session;
+        Yii::$app->db->createCommand('set foreign_key_checks=0')->execute();
+           
+        $cart = Yii::$app->cart;
+        $j = 0;
+            $orders = $cart->getPositions();
+            if(count($orders) > 0){
+                foreach ($orders as $order) {
+                    $commodity_type = $order->getType();
+                    $model->id = NULL; 
+                    $model->isNewRecord = true;
+                    if($commodity_type == 'appointment') {
+                        $model->order_id = $id;
+                        $model->product_id = $order->getId();
+                        
+                        $category_id = $session->get('categoryid');
+                        $subcategory_id = $session->get('subcategoryid');
+                        $category_name = Services::getCatName($category_id);
+                        $sub_category_name = Services::getCatName($subcategory_id);
+                        $model->product_name = $category_name->category_name.'<br/>'.$sub_category_name->category_name;
+                        $model->quantity = $order->getQuantity();
+                        $model->price = $order->getQuantity() * (Int)$order->appointment_price;
+                        $model->commodity_type = $commodity_type;
+                        $user_data = User::findOne(['id' => Yii::$app->user->id]);
+                        $model->email = $user_data->email;
+                        $model->phone = $user_data->mobile;
+                        $model->shipping_first_name = $user_data->first_name;
+                        $model->shipping_last_name = $user_data->last_name;
+                        $model->shipping_address1 = $session->get('address1');
+                        $model->shipping_address2 = $session->get('address2');
+                        //$model->province = $session->get('province');
+                        $model->city = $session->get('city');
+                        $model->zip = $session->get('postal_code');              
+
+                        $model->country = 'Canada';
+                        
+                    }
+                    if($commodity_type == 'giftcard') {
+                        $model->order_id = $id;
+                        $model->product_id = $order->getId();
+                        $model->product_name = 'Gift Card';
+                        $model->quantity = $order->getQuantity();
+                        $model->price = $order->amount;
+                        $model->from_email = $order->from_email;
+                        $model->commodity_type = $commodity_type;
+                        $model->from_name = $order->from_name;
+                        $model->to_name = $order->to_name;
+                        $model->to_email = $order->to_email;
+                        $code_data = GiftVoucher::findOne(['id' => $order->getId()]);
+                        $model->code = $code_data->code;
+                        
+                        $model->delivery_date = $order->delivery_date;
+                        $model->message = $order->message;
+                        $model->phone = '';
+                        $model->shipping_first_name = '';
+                        $model->shipping_last_name = '';
+                        $model->shipping_address1 = '';
+                        $model->shipping_address2 = '';
+                        //$model->province = $session->get('province');
+                        $model->city = '';
+                        $model->zip = '';              
+
+                        $model->country = '';
+                    }
+                    if($model->save(false)){
+                        $j++;
+                    }
+                }
+                Yii::$app->db->createCommand('set foreign_key_checks=1')->execute();
+                if($j > 0){
+                    Yii::$app->cart->removeAll();
+                    return true;
+                }
+                return false;
+            };
+        
+        
+        
+        Yii::$app->db->createCommand('set foreign_key_checks=1')->execute();
+    }
+    
+    /**
+     * Get the order details of the placed order
+     * @params order_id 
+     * @return Array|Null
+     */
+    public static function getOrderDetails($order_id = null) {
+        $session = Yii::$app->session;
+        $returndata = array();
+        $query_data = self::find()
+                        ->leftJoin('appointment', '(`appointment`.`id` = `order_detail`.`product_id`)')
+                        ->leftJoin('gift_voucher', '(`gift_voucher`.`id` = `order_detail`.`product_id`)')
+                        ->where('order_id = :order_id',[':order_id' => $order_id])
+                        ->all();
+        
+        if(!empty($query_data)){
+            foreach ($query_data as $data) {
+                //this is the case with appoitnment
+                
+                switch ($data->commodity_type) {
+                    case 'appointment':
+                        $appointments = Appointment::findOne(['id' => $data->product_id]);
+                        $packages = Packages::findOne(['package_id' => $appointments->package_id]);
+                        $services = Services::findOne(['category_id' =>$packages->service_id]); 
+                        $returndata['appointment']['commodity_type'] =  'appointment';
+                        $returndata['appointment']['category_image'] =  '../' . $services->category_thumbnail;
+                        $returndata['appointment']['product_name'] =  $data->product_name;
+                        $returndata['appointment']['price'] =  $data->price;
+                        $returndata['appointment']['quantity'] =  $data->quantity;
+                        $returndata['appointment']['email'] =  $data->email;
+                        $returndata['appointment']['appointment_minutes'] =  $session->get('appointment_minutes');
+                        $odate = $session->get('appointment_date');
+                        $date_arr = explode('-', $odate);
+                        $order_date = $date_arr[2] . '-' . $date_arr[1] . '-' . $date_arr[0];
+                        $returndata['appointment']['appointment_date'] =  $order_date;
+                        $returndata['appointment']['phone'] =  $data->phone;
+                        $returndata['appointment']['shipping_first_name'] =  $data->shipping_first_name;
+                        $returndata['appointment']['shipping_last_name'] =  $data->shipping_last_name;
+                        $returndata['appointment']['shipping_address1'] =  $data->shipping_address1;
+                        $returndata['appointment']['shipping_address2'] =  $data->shipping_address2;
+                        $returndata['appointment']['city'] =  $data->city;
+                        $returndata['appointment']['zip'] =  $data->zip;
+                        $returndata['appointment']['country'] =  $data->country;
+                    break;
+                    case 'giftcard':
+                        $returndata['appointment']['commodity_type'] =  'giftcard';
+                        $returndata['giftcard']['product_name'] =  $data->product_name;
+                        $returndata['giftcard']['from_email'] =  $data->from_email;
+                        $returndata['giftcard']['from_name'] =  $data->from_name;
+                        $returndata['giftcard']['to_name'] =  $data->to_name;
+                        $returndata['giftcard']['to_email'] =  $data->to_email;
+                        $returndata['giftcard']['delivery_date'] =  $data->delivery_date;
+                        $returndata['giftcard']['message'] =  $data->message;
+                        $returndata['giftcard']['price'] =  $data->price;
+                        $returndata['giftcard']['quantity'] =  $data->quantity;
+                        $returndata['giftcard']['email'] =  $data->email;                        
+                    break;
+                }                
+                //$duration = $session->get('appointment_minutes');
+                //$appointment_date = $order_date;
+                
+                
+                //$returndata['category_image'] = $query_data->product_id; 
+                
+            }
+            return $returndata;
+        } else {
+            return null;
+        }              
+        
+    }
+}

@@ -1,0 +1,39 @@
+$(function () {
+    var pageurl = $("#pageurl").val();
+
+    $("#appointment-province").autocomplete({
+        source: pageurl + '/get-provinces',
+        autoFocus: true
+    });
+    $("#appointment-city").autocomplete({
+        source: pageurl + '/get-cities'
+    });
+
+});
+
+$(document).on('click', "#ui-id-1 li.ui-menu-item", function () {
+    document.getElementById("appointment-province").value = $(this).text();
+});
+
+$(document).on('click', "#ui-id-2 li.ui-menu-item", function () {
+    document.getElementById("appointment-city").value = $(this).text();
+});
+/*
+$("#save_location").click(function () {
+    var pageurl = $("#pageurl").val();
+    pageurl = pageurl + '/province-city';
+    $.ajax({
+        url: pageurl,
+        type: 'post',
+        data: {'state_id': state_id},
+        success: function (data, status) {
+            //var returndata = jQuery.parseJSON(data);
+            console.log('test');
+
+        },
+        error: function (xhr, desc, err) {
+            console.log(xhr);
+            console.log("Details: " + desc + "\nError:" + err);
+        }
+    }); // end ajax call
+});*/

@@ -1,0 +1,102 @@
+.wellza-gift-card{ 
+  .gift-card-banner{
+    background: url('#{$imageurl}/gift-card.jpg');    background-size:cover;    background-position:center center; height:520px;
+   
+    @media (max-width:$screen-xs-max){
+      height:300px;
+    }
+     @media (max-width:480px){
+      height:250px;
+    }
+
+    .gift-card-content{
+      text-align: right; padding-right:50px; padding-top:25px;
+      @media (max-width:$screen-xs-max){
+          padding-right:10px; padding-top:5px;
+        }
+      h2{
+        color: $color-yellow; font:45px $avantgarde-md; font-weight:bold; @include text-shadow(0px, 2px, 8px, rgba(0,0,0,0.5)); 
+        @media (max-width:$screen-xs-max){
+         font-size:20px;
+        }
+        
+      }
+      p{
+        color: $color-white; font:21px $avantgardestd-bk;letter-spacing:2px;
+      
+        @media (max-width:$screen-xs-max){
+          height:18px;letter-spacing:0px;font-size:16px ;
+        }
+      }
+    }
+
+  }
+
+  .gift-card-heading{
+    h2{
+        color:$color-666; font:40px $avantgardestd-bk;margin-top:35px;margin-bottom:0;
+          @media (max-width:$screen-xs-max){
+         font-size: 20px; margin-top:15px;
+       }
+    }
+
+    p{
+      color:$color-666; font:20px $avantgardestd-bk;
+       @media (max-width:$screen-xs-max){
+         font-size: 16px; margin-top:15px;
+       }
+    }
+  }
+
+  .form-group{
+    margin-top: 25px;
+    @media (max-width:$screen-xs-max){
+          margin-top: 0px;
+       }
+    label{
+      color:$color-666; font:18px $avantgardestd-bk;
+      @media (max-width:$screen-xs-max){
+         font-size: 16px; margin-top:15px; margin-top:7px;
+       }
+    }
+
+    input{
+      color:$color-666; font:18px $avantgardestd-bk;border-radius:0;height:60px;
+      @media (max-width:$screen-xs-max){
+         font-size: 16px; height:40px;
+       }
+
+       @media (min-width:$screen-sm-min) and (max-width:$screen-sm-max){
+         height:50px;
+       }
+    }
+
+    textarea{
+      color:$color-666; font:18px $avantgardestd-bk;height:120px;
+      @media (max-width:$screen-xs-max){
+         font-size: 16px; height:60px;
+       }
+    }
+
+    .input-group-addon{
+      border-radius:0;
+      img{
+        @media (max-width:$screen-xs-max){
+          height: 24px;
+        }
+      }
+    }
+  }
+
+  .btn-warning{
+    display: inline-block; text-decoration:none;padding: 15px 30px; margin-top:15px;
+  }
+
+   
+}
+
+
+
+
+
+   

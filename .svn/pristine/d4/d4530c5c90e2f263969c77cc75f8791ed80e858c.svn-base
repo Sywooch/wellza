@@ -1,0 +1,114 @@
+.startup-page{
+    .inner-heading{
+        text-align: center; padding: 30px 0 10px;
+        @media(max-width:$screen-xs-max){
+            padding:15px 0 10px;
+        }
+    }
+    .startup-section{ margin: 40px 120px; box-shadow: 0px 0px 7px 0px rgba(0, 0, 0, 0.1); background-color: $color-white; letter-spacing: 0.3px;
+                      @media(max-width:$screen-xs-max){margin:15px;}
+                      @media(min-width:$screen-md-min) and (max-width:$screen-lg-max){
+                          margin: 40px 40px;  
+                      }
+                      @media(min-width:$screen-md-min) and (max-width:$screen-lg-max){
+                          margin: 40px 40px;  
+                      }
+                      .left{
+                          background-image: url(../images/login-bg.jpg); background-repeat: no-repeat; background-size: cover;
+                          .table{
+                              display: table;height: 522px; 
+                              @media(max-width:$screen-xs-max){height: 200px; }
+                              @media(min-width:$screen-sm-min) and (max-width:$screen-sm-max){height: 300px; }
+                          }
+                      }
+                      .center-align-xs{
+                          @media(max-width:$screen-xs-max){text-align:center;}
+                      }
+                      .right{ padding: 40px; 
+                              @media(max-width:$screen-xs-max){
+                                  padding:15px;   
+                              }
+                              .top-btn{ margin-bottom:50px;
+                                        @media(max-width:$screen-xs-max){
+                                            margin-bottom:20px;
+                                        }
+                                        li.active{
+                                            a{
+                                                color: $color-green;
+                                            }
+                                        }
+                                        li{
+                                            a{
+                                                font-size: 20px; font-family: $avantgarde-md; color:#A1A1A1; text-transform: uppercase; text-decoration: none; padding: 0px 5px; position: relative;
+                                                &:after{
+                                                    width: 1px; content: ''; position: absolute; right: -9px; top: 1px; height: 22px; background-color: #D6D6D6; 
+                                                }
+
+                                                &:hover{
+                                                    color: $color-green;
+                                                }
+                                            }
+                                            &:first-child{
+                                                a{
+                                                    padding-left: 0px;
+                                                }
+                                            }
+                                            &:last-child{
+                                                a{
+                                                    &:after{ background-color: transparent;}      
+                                                } 
+                                            }
+                                        }
+                              }
+
+                              ul{ 
+                                  .client, .service-provider{ padding: 0px;text-align: center;
+                                                              a{
+                                                                  height: 149px; width: 149px; display: inline-block;  background-color: #52BFB8; border-radius: 50%; line-height: 149px; vertical-align: middle; text-align: center; cursor: pointer;
+                                                                  @media(max-width:$screen-xs-max){
+                                                                      height:80px; width: 80px;line-height:80px; 
+                                                                  }
+                                                                  img{
+                                                                      display: inline-block;
+                                                                      @media(max-width:$screen-xs-max){
+                                                                          width:60px;
+                                                                      }
+
+                                                                  }
+                                                              }
+
+                                                              h4{
+                                                                  font-size: 21px; font-family: $avantgarde-md; text-align: center; margin-top: 35px;
+                                                                  @media(max-width:$screen-xs-max){
+                                                                      font-size:16px;
+                                                                  }
+                                                              }
+                                  }
+                                  .client{
+                                      a{
+                                          &:hover{
+                                              background-color: #37a49d;
+                                          }  
+                                      }
+                                      h4{
+                                          color: #52BFB8;
+                                      }  
+                                  }
+                                  .service-provider{
+                                      a{
+                                          background-color: #F9AE39;
+                                          &:hover{
+                                              background-color: #e89d28;
+                                          }
+                                      } 
+                                      h4{
+                                          color: #F8AD39;
+                                      }
+                                  }
+                              }
+
+
+                      }
+    }
+}
+

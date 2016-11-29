@@ -1,0 +1,263 @@
+.select-category-section{
+    .inner-heading{ padding:30px 0px 15px; text-align: center;}
+    .category-tabs{ margin-top: 100px; margin-bottom: 40px;
+                    @media (min-width:$screen-lg-min) and (max-width:$screen-lg-max){
+                        margin-top: 50px;
+                    }
+                    @media (min-width:$screen-sm-min) and (max-width:$screen-md-max){
+                        margin-top: 40px;
+                    }
+                    @media (max-width:$screen-xs-max){
+                        margin-top: 30px;
+                    }
+
+                    .tab-content{
+                        margin-top: 70px; background-color: #F4F4F4; padding: 40px 25px 10px;
+                        @media (min-width:$screen-lg-min) and (max-width:$screen-lg-max){
+                            margin-top: 40px; padding:25px 15px 5px 15px;
+                        }
+                        @media (min-width:$screen-sm-min) and (max-width:$screen-md-max){
+                            margin-top: 40px;padding:25px 15px 5px 15px;
+                        }
+                        @media (max-width:$screen-xs-max){
+                            margin-top:20px; padding:25px 15px 5px 15px;
+                        }
+                    }
+                    ul{
+                        border: none;
+                        li{
+                            text-align: center;
+                            a{ text-decoration: none;}
+                            .cat-name{
+                                font-size: 18px; color: #A2A2A2; font-family: $avantgarde-md; margin-top:20px;
+                                @media (min-width:$screen-lg-min) and (max-width:$screen-lg-max){
+                                    font-size:17px;
+                                }
+                                @media (min-width:$screen-sm-min) and (max-width:$screen-md-max){
+                                    font-size:16px;
+                                }
+                                @media (max-width:$screen-xs-max){
+                                    font-size:14px;
+                                }
+                            }
+                        }
+                    }
+
+                    li.active{
+                        &:after{
+                            content: ''; position: absolute;  width: 0;   height: 0; border-left: 15px solid transparent;  border-right: 15px solid transparent;border-bottom: 15px solid #F4F4F4;
+                            bottom: -70px;
+                        }   
+                    }
+                    li.active, li:hover, li:focus, li:active{ position: relative;
+                                                              .cat-icon{ background-color: $color-green !important; border: none !important;}
+                                                              .hair-icon{
+                                                                  background-image: url('../images/hair-icon-lgwh.png'); 
+                                                              }
+                                                              .training-icon{
+                                                                  background-image: url('../images/training-icon-lgwh.png');
+                                                              }
+                                                              .skin-icon{
+                                                                  background-image: url('../images/skin-icon-lgwh.png');
+                                                              } 
+                                                              .nails-icon{
+                                                                  background-image: url('../images/nails-icon-lgwh.png');
+                                                              } 
+                                                              .massage-icon{
+                                                                  background-image: url('../images/massage-icon-lgwh.png');
+                                                              } 
+                                                              .bundle-icon{
+                                                                  background-image: url('../images/bundle-icon-lgwh.png');
+                                                              } 
+                                                              .blow_icon{
+                                                                  background-image: url('../images/blow_iconwh_lg.png');
+                                                              } 
+                                                              .spraytan_icon{
+                                                                  background-image: url('../images/spraytan_iconwh.png'); 
+                                                              }
+                                                              .mensgrooming_icon{
+                                                                  background-image: url('../images/mensgrooming_iconwh.png');    
+                                                              }
+                    }
+
+                    .cat-icon{transition: background-color 0.3s ease;height: 179px; width: 179px; background-repeat: no-repeat; background-position: center center;background-color: #F4F4F4;text-align: center; border-radius:50%; display: block; margin: 0 auto;
+
+                              @media (min-width:$screen-lg-min) and (max-width:$screen-lg-max){
+                                  background-size:62%; height:140px; width:140px;
+                              }
+                              @media (min-width:$screen-sm-min) and (max-width:$screen-md-max){
+                                  background-size:62%; height:110px; width:110px;
+                              }
+                              @media (max-width:$screen-xs-max){
+                                  background-size:62%; height:80px; width:80px;
+                              }
+                    }
+                    .hair-icon{
+                        background-image: url('../images/hair-icon-lg.png'); 
+                    }
+                    .training-icon{
+                        background-image: url('../images/training-icon-lg.png');
+                    }
+                    .skin-icon{
+                        background-image: url('../images/skin-icon-lg.png');
+                    } 
+                    .nails-icon{
+                        background-image: url('../images/nails-icon-lg.png');
+                    } 
+                    .massage-icon{
+                        background-image: url('../images/massage-icon-lg.png');
+                    } 
+                    .bundle-icon{
+                        background-image: url('../images/bundle-icon-lg.png');
+                    } 
+                    .blow_icon{
+                        background-image: url('../images/blow_icon_lg.png');
+                    } 
+                    .spraytan_icon{
+                        background-image: url('../images/spraytan_icon.png'); 
+                    }
+                    .mensgrooming_icon{
+                        background-image: url('../images/mensgrooming_icon.png');    
+                    }
+
+    }   
+    .category-type {vertical-align:top;
+                    .col-lg-3{
+                        @media(min-width:$screen-lg-min){
+                            width:20%;
+                        }
+                    }
+                    .checkbox, .radio{ height:60px; width: 100%; display: block; margin:0; position: relative;}
+                    .checkbox, .radio{ 
+                        input[type=checkbox], input[type=radio] {display: none;}
+                        input[type=checkbox]:checked + label, input[type=radio]:checked + label{ font-family: $avantgardestd-bk; background-color: $color-orange;border: solid 1px #F9AE39; color:#FFF; }
+                        input[type=checkbox]:checked, input[type=radio]:checked  {
+                            + label{
+                                span{ background-image: url('../images/category-white-icon-strip.png');  }
+                            }
+                        }
+                        label{
+                            box-shadow: 0 0 2px 0px rgba(0, 0, 0, 0.2); width:100%;padding:15px 15px; text-transform: capitalize;  background:#FFF;  font-family: $avantgardestd-bk; color:#333333; font-size: 18px; text-align: center; 
+                            @media (min-width:$screen-lg-min) and (max-width:$screen-lg-max){
+                                font-size:16px; padding:10px;
+                            }
+                            @media (min-width:$screen-sm-min) and (max-width:$screen-md-max){
+                                font-size:16px;padding:10px;
+                            }
+                            @media (max-width:$screen-xs-max){
+                                font-size:14px;padding:10px;
+                            }
+                            span{
+                                background-image: url('../images/category-icon-strip.png');
+                                height:35px; width: 40px;  background-repeat: no-repeat; 
+                                display: inline-block; vertical-align: middle;
+                            }
+                        }
+
+                    }
+
+                    .category-box{  margin-bottom: 35px;
+                                    @media(min-width:$screen-sm-min) and (max-width:$screen-md-max){
+                                        padding-left:5px; padding-right: 5px; margin-bottom:20px;  
+                                    }
+                                    @media(min-width:$screen-lg-min) and (max-width:$screen-lg-max){
+                                        margin-bottom:20px;   
+                                    }
+                                    @media(max-width:$screen-xs-max){
+                                        margin-bottom:15px;   
+                                    }
+
+                                    .braiding{
+                                        background-position: -44px 0px;
+                                    }
+                                    .haircare{
+                                        background-position: -96px 0px;
+                                    }
+                                    .children{
+                                        background-position: -146px 0px;
+                                    }
+                                    .barbar{
+                                        background-position: -196px 0px;
+                                    }
+                                    .homeeservice{
+                                        background-position: -312px 0px;
+                                    }
+                                    .massage{
+                                        background-position: -254px 0px;
+                                    }
+                                    .facial{
+                                        background-position: -353px 0px;
+                                    }
+                                    .heena{
+                                        background-position: -402px 0px;
+                                    }
+                                    .makeup{
+                                        background-position: -449px 0px;
+                                    }
+                                    .nails{
+                                        background-position: -490px 0px;
+                                    }
+                                    .haircut{
+                                        background-position: -691px 0px;
+                                    }
+                                    .haircolor{
+                                        background-position: -534px 0px;
+                                    }
+                                    .waxing{
+                                        background-position: -590px 0px;
+                                    }
+                                    .bridal-service{
+                                        background-position: -639px 0px;
+                                    }
+                    }
+
+    }
+
+}
+
+.service-detail-modal{
+    .media_box{ 
+        img{
+            width: 100%;
+        }
+    }
+    .modal-header{
+        padding:0;border:0; 
+        button{
+            background-color: #f9ae39;
+            border-radius: 50%;
+            color: #fff;
+            height: 24px;
+            opacity: 1;
+            position: absolute;
+            right:8px;
+            top: 8px; 
+            width: 24px;
+            position:absolute;
+            z-index: 1;
+        }
+    }
+    .modal-content{
+        background:#fff !important; border: 0; position:relative;
+        .product-detail{
+            padding:20px 40px; color:#A1A1A1; text-align:justify; font-size:19px;
+            .heading{ 
+                color: $color-green;font-size:24px; text-align:center;
+                @media(max-width:$screen-xs-max){
+                    font-size:16px;   
+                }
+                img{
+                    padding:0 15px;
+                }
+                span{
+                    color:#A1A1A1;
+                }
+            }
+            p{ margin-top: 20px;
+               @media(max-width:$screen-xs-max){
+                   font-size:16px;   
+               }
+            }
+        }
+    }
+}

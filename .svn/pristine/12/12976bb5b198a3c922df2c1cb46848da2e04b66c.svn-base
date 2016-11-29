@@ -1,0 +1,136 @@
+<?php
+/* @var $this yii\web\View */
+use yii\helpers\Html;
+use yii\bootstrap\ActiveForm;
+use common\components\CommonHelper;
+use yii\base\view;
+use yii\web\UrlManager;
+
+$this->title = "User";
+?>
+<main class="content admin-page clearfix" id="content">
+    <div class="tabpanel">                    
+        <div class="panel-body">
+            <div class="table-container">
+                <div class="panel-heading clearfix"> 
+                    <div class="main-heading pull-left">
+                        <h4 class="">Customers</h4>
+                        <p class="subline">Lorum Ipsum kolcomi chompica tori edo kopari to matoi</p>
+                    </div>
+                    <?php
+                        //Renders search products view
+                        echo Yii::$app->view->render('_search',['model' => $model, 'search' => $search]);
+                    ?> 
+                </div>
+                    
+                <div class="table-responsive admintable">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th style="width: 15%;">NAME</th>
+                                <th style="width: 10%;">MOBILE</th>
+                                <th style="width: 10%;">BIRTHDATE</th>
+                                <th style="width: 10%;">GENDER</th>                                        
+                                <th style="width: 20%;">LOCATION</th>
+                                <th style="width: 10%;">ACTION</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <?php                                               
+                         $url = \yii\helpers\Url::to('@apilocal', true).'/';
+                          
+                         if(!empty($dataprovider)) {
+                                
+                                foreach ($dataprovider as $data) {                                    
+                                    if(!empty($data->profile_image)) {
+                                        $image = $url.$data->profile_image;
+                                    } else {
+                                        //set default image
+                                        $url = \yii\helpers\Url::to('@apilocal', true).Yii::getAlias('@defaultimg');
+                                        $image = $url;
+                                    }                                    
+                                    
+                                    $user_id = $data->id;
+                                    $first_name = !empty($data->first_name) ? $data->first_name : '';
+                                    $last_name = !empty($data->last_name) ? $data->last_name : '';
+                                    $name = $first_name.' '.$last_name; 
+                                    $mobile = !empty($data->mobile) ? $data->mobile : '';
+                                    $birth_date = !empty($data->birth_date) ? $data->birth_date : '';
+                                    if(!empty($birth_date)) {
+                                        $date_array = explode('-',$birth_date);
+                                        $birth_date = $date_array[2].'-'.$date_array[1].'-'.$date_array[0]; 
+                                    }                                    
+                                    
+                                    $gender = !empty($data->gender) ? $data->gender : '';
+                                    $address = !empty($data->address) ? $data->address .',' : '';
+                                    $country = !empty($data->country) ? $data->country : '';
+                                    $status = $data->status;
+                                    
+                                    $location = $address.$country; 
+                        ?>
+                                    <tr>
+                                        <td>
+                                            <div class="category-name">
+                                                <div class="img-box">
+                                                    <div class="customer-image">
+                                                        <img src="<?=$image?>" class="img-responsive img-circle" alt="hair">
+                                                        </div>
+                                                    </div>
+                                                    <div class="name">
+                                                        <?=$name?>
+                                                    </div>
+                                                </div> 
+                                            </td>
+                                            <td>(+012) <?=$mobile?></td>
+                                            <td><?=$birth_date?></td>
+                                            <td><?=$gender?></td>
+                                            <td><?=$location?></td>
+                                            <td>
+                                                <ul class="list-inline">
+                                                    <li>
+                                                        <?php
+                                                            if($status == 10) {
+                                                        ?>
+                                                        <input type="checkbox" id="<?= $user_id ?>" name="on-off-checkbox" data-on-color='success' data-label-text="enable" data-on-text="enable" data-off-text="disable" checked>
+                                                        <?php
+                                                            } else {
+                                                        ?>
+                                                        <input type="checkbox" id="<?= $user_id ?>" name="on-off-checkbox" data-on-color='success' data-label-text="disable" data-on-text="enable" data-off-text="disable">
+                                                        <?php
+                                                            }
+                                                        ?>
+                                                    </li>
+                                                    <li>
+                                                        <a href="<?php echo Yii::$app->urlManager->createUrl('customer-detail').'/'.$user_id ?>" class="view-btn"><img src="<?php echo Yii::$app->urlManager->createUrl('/')?>resource/images/eye-icon.png"></a>
+                                                    <li>
+                                                    <li>
+                                                        <a href="#" class="delete-btn"><img src="<?php echo Yii::$app->urlManager->createUrl('/')?>resource/images/delete-icon-btn.png"></a>
+                                                    <li>    
+                                                        <li><span id="loader<?= $user_id ?>" class="loaderclass"><i class="fa fa-spinner fa-spin"></i></span></li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+                            <?php
+                                    }
+                                
+                                } else {
+                                    echo '<tr><td>No Record Found</td></tr>';
+                                }
+                            ?>
+                        </tbody>
+                    </table>
+                </div>
+                <?php
+                        echo \yii\widgets\LinkPager::widget([
+                            'pagination'=>$pagination
+                            
+                        ]);
+                    ?>
+                <!--<div class="text-center"><a href="javascript:void(0);" class="loadmore">Load more <i class="fa fa-spinner fa-spin"></i></a></div>-->              
+                <input type="hidden" id="siteurl" name="siteurl" value="<?php echo Yii::$app->urlManager->createUrl('/')?>">
+                <input type="hidden" id="pageurl" name="pageurl" value="<?php echo Yii::$app->urlManager->createUrl('customer')?>">
+            </div>
+        </div>
+    </div>
+</main>
+<?php $this->registerJsFile('@web/js/customer/customer.js'); ?>

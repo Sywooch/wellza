@@ -1,0 +1,132 @@
+<?php
+
+namespace common\models;
+
+use Yii;
+use yii\helpers\ArrayHelper;
+/**
+ * This is the model class for table "bundle_categories".
+ *
+ * @property integer $id
+ * @property integer $category_id
+ * @property integer $bundle_id
+ *
+ * @property Bundles $bundle
+ * @property Services $category
+ */
+class BundlesCategories extends base\BaseBundlesCategories
+{
+    public function rules() {
+        return ArrayHelper::merge(
+                        parent::rules(), [                    
+        ]);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function attributeLabels() {
+        return ArrayHelper::merge(
+                        parent::attributeLabels(), [
+        ]);
+    }  
+    /**
+     * Fields
+     */
+    public function fields() {
+        return ArrayHelper::merge(parent::fields(), [
+            'category_name'=>function($model){
+                return $model->category->category_name;
+            },
+            'class_name'=>function($model){
+                $iconClass =  IconClass::getIconByID($model->category->id);
+                return !empty($iconClass['class_name'])?$iconClass['class_name']:'';
+            },
+            'category_image'=>function($model){
+                $image =  $model->category->category_image;
+                $url = \yii\helpers\Url::to('@web', true);
+                if (!empty($image) && file_exists('../../backend/web/' . $image)) {
+                    return $url .'/'. $image;
+                }
+            }
+        ]);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getBundle()
+    {
+        return $this->hasOne(Bundles::className(), ['bundle_id' => 'bundle_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCategory()
+    {
+        return $this->hasOne(Services::className(), ['category_id' => 'category_id']);
+    }
+    
+    /**
+     * @inheritdoc
+     * @return \common\models\query\BundlesCategoriesQuery the active query used by this AR class.
+     */
+    public static function find()
+    {
+        return new \common\models\query\BundlesCategoriesQuery(get_called_class());
+    }
+    
+    /**
+     * get selected services data for a bundle
+     * @param type bundle_id
+     * @return type Categories|Null
+     */
+    public static function getSelectedCategories($bundle_id = null) {
+        
+        $result = self::find()->select('category_id')->ByBundleId($bundle_id)->asArray()->all();       
+        
+        if(!empty($result)) {
+            return $result;
+        } else {
+            return null;
+        }       
+    }
+    
+    /**
+     * Get all the data of categories their images etc
+     * @param type null
+     * @return type Categories|Null
+     */
+    public static function getCategoriesData() {
+        $returndata = array();
+        $bundles_data = Bundles::getAllBundle();
+        if(!empty($bundles_data)) {
+            $i=0;
+            foreach ($bundles_data as $data) {
+                $returndata[$i]['bundle']['bundle_id'] = $data->bundle_id;
+                $returndata[$i]['bundle']['bundle_name'] = $data->bundle_name;
+                $returndata[$i]['bundle']['savings'] = $data->savings;
+                $returndata[$i]['bundle']['price'] = $data->price;
+                $returndata[$i]['bundle']['status'] = $data->status;
+                $bundle_categories = self::find()->ByBundleId($data->bundle_id)->all();
+                if(!empty($bundle_categories)) {
+                    $j=0;
+                    foreach($bundle_categories as $bundle_data) {
+                        
+                        $returndata[$i]['bundle'][$j]['categories']['category_id'] = $bundle_data->category_id;
+                        $returndata[$i]['bundle'][$j]['categories']['category_name'] = $bundle_data->category->category_name;
+                        $returndata[$i]['bundle'][$j]['categories']['category_image'] = $bundle_data->category->category_image;
+                    
+                        $j++;
+                    }
+                }
+                $i++;
+                
+            }            
+        }
+        
+        return null;
+    }
+    
+}

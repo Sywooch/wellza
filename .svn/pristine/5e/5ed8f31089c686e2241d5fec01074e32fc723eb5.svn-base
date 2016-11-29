@@ -1,0 +1,152 @@
+$(function () {
+    var pageurl = $("#pageurl").val();
+    //$("#pick_locationtxt").hide();
+    //$(".fa-spin").hide();
+    $("#appointment-province").autocomplete({
+        source: pageurl + '/get-provinces',
+        autoFocus: true
+    });
+    $("#appointment-city").autocomplete({
+        source: pageurl + '/get-cities'
+    });
+    
+    $('#get_location').click(function (event) {
+     event.preventDefault();
+     $("#pick_locationtxt").hide();
+        $(".fa-spin").show();
+        //check if browser supports the geolocation api
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(success);// if geolocation supported, call function
+        } 
+    })
+
+// function to get lat/long and plot on a google map
+function success(position) {
+    var latitude = position.coords.latitude;				// set latitude variable
+    var longitude = position.coords.longitude;			// set longitude variable
+    document.getElementById("latitude").value = latitude;
+    document.getElementById("longitude").value = longitude;
+    getAddress(latitude, longitude);							// geocode the lat/long into an address
+}
+
+// function to geocode a lat/long
+function getAddress(myLatitude, myLongitude) {
+
+    var geocoder = new google.maps.Geocoder();							// create a geocoder object
+    var location = new google.maps.LatLng(myLatitude, myLongitude);		// turn coordinates into an object
+ 			
+    geocoder.geocode({'latLng': location}, function (results, status) {
+        if (status == google.maps.GeocoderStatus.OK) {						// if geocode success
+            processAddress(results[0].formatted_address);					// if address found, pass to processing function
+        } else {
+            alert("Geocode failure: " + status);								// alert any other error(s)
+            return false;
+        }
+    });
+}
+
+// function to process address data
+function processAddress(address) {
+    //$("#location-address").val(address);									// write address to field
+    var spokenResponse = "I've got you at " + address;						// build string to speak
+    document.getElementById('pick_locationtxt').value = address;
+    $(".fa-spin").hide();
+    $("#pick_locationtxt").show();
+    //console.log(spokenResponse);    
+}
+
+
+var placeSearch, autocomplete;
+     
+});
+
+$(document).on('click', "#ui-id-1 li.ui-menu-item", function () {
+    document.getElementById("appointment-province").value = $(this).text();
+});
+
+$(document).on('click', "#ui-id-2 li.ui-menu-item", function () {
+    document.getElementById("appointment-city").value = $(this).text();
+});
+/*
+$("#save_location").click(function(e){
+    //$('#search_location').data('yiiActiveForm').submitting = true;
+    $('#search_location').yiiActiveForm('validate');        
+    e.preventDefault();
+    console.log('called');
+    //
+    
+});*/
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
+      function initAutocomplete() {
+        // Create the autocomplete object, restricting the search to geographical
+        // location types.
+        autocomplete = new google.maps.places.Autocomplete(
+            /** @type {!HTMLInputElement} */(document.getElementById('autocomplete')),
+            {types: []});
+
+        // When the user selects an address from the dropdown, populate the address
+        // fields in the form.
+        autocomplete.addListener('place_changed', fillInAddress);
+      }
+
+      function fillInAddress() {
+        // Get the place details from the autocomplete object.
+        var place = autocomplete.getPlace();
+
+        /*for (var component in componentForm) {
+          document.getElementById(component).value = '';
+          document.getElementById(component).disabled = false;
+        }*/
+
+        // Get each component of the address from the place details
+        // and fill the corresponding field on the form.
+        /*for (var i = 0; i < place.address_components.length; i++) {
+          var addressType = place.address_components[i].types[0];
+          if (componentForm[addressType]) {
+            var val = place.address_components[i][componentForm[addressType]];
+            document.getElementById(addressType).value = val;
+          }
+        }*/
+      }
+
+      // Bias the autocomplete object to the user's geographical location,
+      // as supplied by the browser's 'navigator.geolocation' object.
+      function geolocate() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(function(position) {
+            var geolocation = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
+            };
+            
+            var circle = new google.maps.Circle({
+              center: geolocation,
+              radius: position.coords.accuracy
+            });
+            autocomplete.setBounds(circle.getBounds());
+          });
+        }
+      }
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
+/*
+$("#save_location").click(function () {
+    var pageurl = $("#pageurl").val();
+    pageurl = pageurl + '/province-city';
+    $.ajax({
+        url: pageurl,
+        type: 'post',
+        data: {'state_id': state_id},
+        success: function (data, status) {
+            //var returndata = jQuery.parseJSON(data);
+            console.log('test');
+
+        },
+        error: function (xhr, desc, err) {
+            console.log(xhr);
+            console.log("Details: " + desc + "\nError:" + err);
+        }
+    }); // end ajax call
+});*/

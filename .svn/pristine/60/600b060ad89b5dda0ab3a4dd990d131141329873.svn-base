@@ -1,0 +1,162 @@
+<?php
+
+namespace common\models;
+
+use Yii;
+use yii\db\Expression;
+use common\components\Utility;
+use yii\data\ActiveDataProvider;
+
+/**
+ * This is the model class for table "user_refrence".
+ *
+ * @property string $id
+ * @property integer $user_id
+ * @property string $first_name
+ * @property string $last_name
+ * @property string $email
+ * @property string $subject
+ * @property string $message
+ * @property string $status
+ * @property string $created_at
+ * @property string $updated_at
+ *
+ * @property User $user
+ */
+class UserRefrence extends \common\models\base\BaseUserRefrence
+{
+    /**
+     * @inheritdoc
+     */
+    public static function tableName()
+    {
+        return 'user_refrence';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function rules()
+    {
+        return [
+            [['user_id'], 'integer'],
+            [['message', 'status'], 'string'],
+            [['created_at', 'updated_at'], 'safe'],
+            [['first_name', 'last_name', 'email', 'subject'], 'string', 'max' => 255],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
+            [['first_name','last_name','email','message'],'required'],
+            [['email'],'email']
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function attributeLabels()
+    {
+        return [
+            'id' => 'ID',
+            'user_id' => 'User ID',
+            'first_name' => 'First Name',
+            'last_name' => 'Last Name',
+            'email' => 'Email',
+            'subject' => 'Subject',
+            'message' => 'Message',
+            'status' => 'Status',
+            'created_at' => 'Created At',
+            'updated_at' => 'Updated At',
+        ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUser()
+    {
+        return $this->hasOne(User::className(), ['id' => 'user_id']);
+    }
+
+    /**
+     * @inheritdoc
+     * @return UserRefrenceQuery the active query used by this AR class.
+     */
+    public static function find()
+    {
+        return new UserRefrenceQuery(get_called_class());
+    }
+    
+    /**
+     * 
+     * @return type
+     */
+    
+    public function behaviors() {
+        return [
+            [
+                'class' => \yii\behaviors\TimestampBehavior::className(),
+                'createdAtAttribute' => 'created_at',
+                'updatedAtAttribute' => 'updated_at',
+                'attributes' => [
+                    \yii\db\ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
+                    \yii\db\ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
+                ],
+                'value' => new Expression('NOW()'),
+            ],
+        ];
+    }
+    /**
+     * FFunction for saving User reference Data
+     * @return boolean
+     * if validation fails then this function will return model
+     */
+    public function referFriend() {
+        $this->user_id = \yii::$app->user->id;
+        if ($this->save()) {
+            $data['request'] = 'refer_friend';
+            $data['first_name'] = $this->first_name;
+            $data['last_name'] = $this->last_name;
+            $data['email'] = $this->email;
+            $data['message'] = $this->message;
+            $data['logo'] = 'logo';
+            Utility::sendMail($data);
+            return true;
+        } else {
+            return $model;
+        }
+    }
+    
+    
+    public static function referredFriends($userId) {
+        $columns = [
+            "user.id",
+            "user.first_name",
+            "user.last_name",
+            "user.profile_image"
+        ];
+        $query = User::find()
+                ->select($columns)
+                ->where(['ur.user_id' => $userId,'user.status'=>10])
+                ->join('join', "user_refrence ur", "user.email=ur.email AND ur.status = 'active'");
+        $dataProvider = new ActiveDataProvider([
+            'query' => $query,
+            'pagination' => [
+                'pageSize' => 10
+            ],
+        ]);
+        if (!empty($dataProvider)) {
+            $result = [];
+            $url = \yii\helpers\Url::to('@web', true);
+            foreach ($dataProvider->getModels() as $user) {
+                if (!empty($user['profile_image']) && file_exists('./' . $user['profile_image'])) {
+                    $user['profile_image'] = $url . '/' . $user['profile_image'];
+                } else {
+                    $user['profile_image'] = $url . '/uploads/profile/images/default-profile.png';
+                }
+                $result[] = $user;
+            }
+            $dataProvider->setModels($result);
+        }
+        return $dataProvider;
+    }
+
+}

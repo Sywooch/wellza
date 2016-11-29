@@ -1,0 +1,38 @@
+<?php
+
+namespace frontend\modules\client\controllers;
+
+use Yii;
+use yii\base\InvalidParamException;
+use yii\web\BadRequestHttpException;
+use yii\web\Response;
+use yii\widgets\ActiveForm;
+use yii\data\ActiveDataProvider;
+use  yii\web\Session;
+
+class ProviderDetailController extends \frontend\modules\client\components\Controller
+{
+    public function actionIndex()
+    {   
+        $id = Yii::$app->request->get('id');
+        $session = Yii::$app->session;
+        $session['provider_id'] = $id;
+        
+        $returndata = \common\models\User::providerDetail($id);
+        
+        return $this->render('provider-detail',['returndata' => $returndata]);
+    }
+    
+    /********************************************** Ajax Driven functions ********************************************************************/
+    /****************************************************************************************************************************************/
+    
+    /***
+     * Load calender dates for a particular month with its weekday
+     * *** */
+
+    public function actionSetAppointment() {
+        
+        $session['customer_id'] = \Yii::$app->user->identity->id;        
+    }
+
+}

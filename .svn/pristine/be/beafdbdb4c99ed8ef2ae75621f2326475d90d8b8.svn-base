@@ -1,0 +1,55 @@
+$(document).ready(function(){
+   $(".loaderclass").hide();
+   /*
+    $('input[name="on-off-checkbox"]').bootstrapToggle({
+      on: 'Enabled',
+      off: 'Disabled'
+    });*/
+  
+});
+//Ajax function to change the category status    
+$('input[name="on-off-checkbox"]').on('switchChange.bootstrapSwitch', function (event, state) {
+    
+    if(state == true){
+       
+        //$.fn.bootstrapSwitch.defaults.labelText = 'Enable';
+        //$(this).bootstrapSwitch('toggleState', true, true);
+        //$(this).attr('data-label-text','enable');
+        //$(this).onText = 'enable';
+        
+    }
+    if(state == false){
+        //$(this).hasClass('bootstrap-switch-label').text('hjhj')
+        
+        //$(".container span:contains('Sunday')").html('Sun');//Replace to Sun
+        //$.fn.bootstrapSwitch.defaults.labelText = 'Disable';
+        //$(this).bootstrapSwitch('toggleInverse', true, true);
+        //$(this).bootstrapSwitch('toggleState', true, true);
+        //$(this).attr('data-label-text','disable');
+        // $(this).onText = 'disable';
+    }
+    //$(this).bootstrapSwitch('toggleState', true, true);
+    //console.log(state); // true | false
+
+    var siteurl = $("#pageurl").val();
+    siteurl = siteurl + '/change-status';
+    var msg = '';
+    var user_id = $(this).attr('id');
+    $('#loader' + user_id).show();
+    $.ajax({
+        url: siteurl,
+        type: 'post',
+        //data: {'action' : 'change-status','status' : state},
+        data: {'status': state, 'user_id': user_id},
+        success: function (data, status) {
+            $('#loader' + user_id).hide();
+            
+        },
+        error: function (xhr, desc, err) {
+            console.log(xhr);
+            console.log("Details: " + desc + "\nError:" + err);
+        }
+    }); // end ajax call
+});
+
+$('input[name="on-off-checkbox"]').bootstrapSwitch('state', true, true);

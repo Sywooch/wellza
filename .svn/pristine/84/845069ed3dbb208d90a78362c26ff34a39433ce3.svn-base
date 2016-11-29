@@ -1,0 +1,125 @@
+.wellza-blog-page{ 
+  .wellza-blog-banner{
+    background: url('#{$imageurl}/wellza-blog-banner.jpg');    background-size:cover;    background-position:center center; height:600px;
+    @media (max-width:480px){
+      height:250px !important;
+    }
+    @media (max-width:$screen-xs-max){
+      height:400px;
+    }
+    .wellza-blog-content{
+        padding-left:70px; padding-top:70px;
+        @media (max-width:480px){
+          padding-left:30px; padding-top:30px;
+        }
+            h2{
+          font:40px $avantgarde-md; color:$heading-color;position:relative;display:inline-block;
+          @media (max-width:480px){
+             font-size:20px;
+          }
+          &:after{
+              content: ''; background:url('#{$imageurl}/blog-quotes.png');  background-position:bottom; width:47px; height:47px; right:-52px; bottom:-10px; position:absolute; background-size: 42px;background-repeat: no-repeat;
+              @media (max-width:480px){
+                 width:25px; height:25px; background-size: 25px;right:-30px;
+              }
+            }
+          span{
+            color:$color-green; position: relative;padding-left:58px;
+            @media (max-width:480px){
+                padding-left:28px;
+              }
+            &:before{
+              content: ''; background:url('#{$imageurl}/blog-quotes.png');  background-position:top; width:47px; height:47px; left:0; top:-7px; position:absolute; background-size: 42px;background-repeat: no-repeat;
+              @media (max-width:480px){
+                 width:25px; height:25px; background-size: 25px;
+              }
+            }
+          }
+        }
+        a{
+          display: inline-block; padding:15px 25px; text-decoration:none;
+           @media (max-width:480px){
+             padding:15px;font-size:14px;
+           }
+        }
+    }
+
+  }
+
+  .blog-heading{
+    color:$color-green; font: 35px $avantgarde-md;margin-top:35px;
+     @media (max-width:480px){
+       font-size: 20px; margin-top:15px;
+     }
+  }
+
+  .wellza-blog-list{
+    
+      .resize-box{
+        @media(max-width:480px){
+          width: 100% !important; 
+        }
+        @media(max-width:$screen-xs-max){
+          width: 50%; float: left;
+        }
+      }
+
+     .item-box{
+            border:2px solid #F7F7F7;margin-top:30px;
+             @media (max-width:480px){
+              margin-top:10px;
+             }
+            .blog-info{
+              padding:25px;text-align:left;background:#EEEEEE;
+              @media(max-width:$screen-xs-max){
+                padding:10px;
+              }
+              @media(min-width:$screen-sm-min) and (max-width:$screen-md-max){
+                padding:10px 20px;
+              }
+              h4{
+                font:22px $avantgarde-md; color:#383838;
+                @media(max-width:$screen-xs-max){
+                  font-size: 17px;
+                }
+              } 
+              .details{
+                font:14px $avantgardestd-bk; color:$color-666;padding-bottom: 25px;
+                 @media(max-width:$screen-xs-max){
+                  font-size: 14px;
+                }
+              }
+              ul{
+                li{
+                  color: #A1A1A1;margin-right:25px;
+                 
+                  @media(max-width:$screen-md-max){
+                     margin-right:5px;
+                  }
+                  img{
+                    width: 25px;margin-right:8px;display:inline-block;
+                  }
+                }
+              }
+            }
+
+            .big-info{
+               padding:34px 10em; text-align:center;
+                @media (max-width:$screen-md-max){
+                  padding:15px;text-align:left;
+                }
+                @media (min-width:1200px) and (max-width:1700px){
+                   padding:32px 10em;
+                }
+            }
+          }
+        
+     
+  }  
+}
+
+
+
+
+
+   

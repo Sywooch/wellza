@@ -1,0 +1,39 @@
+//@import 'compass';
+@import '../vendor/bootstrap-sass/assets/stylesheets/bootstrap';
+@import '../vendor/font-awesome/scss/font-awesome'; 
+
+
+@import 'variables/customvariables';
+
+@import 'pages/home';  
+
+@import 'pages/admin-left-menu'; 
+@import 'pages/admin-header'; 
+@import 'pages/admin-footer'; 
+@import 'pages/admin';     
+@import 'pages/listing';
+@import 'pages/category'; 
+@import 'pages/sub-category';
+@import 'pages/login';
+@import 'pages/cleint-signup';
+@import 'pages/serviceprovider-signup';
+@import 'pages/select-category'; 
+@import 'pages/wellza-bundle'; 
+@import 'pages/service-package';
+@import 'pages/location';
+@import 'pages/wellza-bundle';
+@import 'pages/wellza-provider';
+@import 'pages/appointment-history';
+@import 'pages/my-favorite';
+@import 'pages/my-referral';
+@import 'pages/service-provider-detail';
+@import 'pages/startup';
+
+@import 'helper/common'; 
+@import 'pages/admin-common';  
+
+
+
+
+
+

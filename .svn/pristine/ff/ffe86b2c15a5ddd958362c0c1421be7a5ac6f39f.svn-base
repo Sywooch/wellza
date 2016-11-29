@@ -1,0 +1,38 @@
+<?php
+/***
+ * New fields added to the user table
+ * ***/
+
+use yii\db\Migration;
+
+class m160712_071455_add_newfields_user extends Migration
+{
+    public function up()
+    {
+        $this->addColumn('{{%user}}', 'user_type', 'ENUM("Administrator", "Client", "Provider") AFTER `email` ');
+        $this->addColumn('{{%user}}', 'social_id', 'VARCHAR(255) AFTER `roles` ');
+        $this->addColumn('{{%user}}', 'social_type', 'VARCHAR(255) AFTER `facebook` ');
+        //$this->addColumn('{{%user}}', 'linkedin', 'VARCHAR(255) AFTER `google` ');
+    }
+
+    public function down()
+    {
+        //$this->dropColumn('{{%user}}', 'user_type');
+        $this->dropColumn('{{%user}}', 'facebook');
+        $this->dropColumn('{{%user}}', 'google');
+        $this->dropColumn('{{%user}}', 'linkedin');
+        //echo "m160712_071455_add_newfields_user cannot be reverted.\n";
+        //return false;
+    }
+
+    /*
+    // Use safeUp/safeDown to run migration code within a transaction
+    public function safeUp()
+    {
+    }
+
+    public function safeDown()
+    {
+    }
+    */
+}

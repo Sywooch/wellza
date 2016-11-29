@@ -1,0 +1,71 @@
+.serviceprovider-signup-section{ margin: 40px 120px; box-shadow: 0px 0px 7px 0px rgba(0, 0, 0, 0.1); background-color: $color-white; letter-spacing: 0.3px;
+                 @media(min-width:$screen-md-min) and (max-width:$screen-lg-max){
+                   margin: 40px 40px;  
+                 }
+                .left{
+                    background-image: url(../images/login-bg.jpg); background-repeat: no-repeat; background-size: cover;
+                    .table{
+                        display: table;height: 522px; 
+                    }
+                    .inner-text{
+                        text-align: center; display: table-cell;vertical-align:middle;
+                        p{
+                            font-size: 22px; color:$color-white; margin-top: 30px; text-shadow: 2px 1px 2px rgba(0,0,0,0.9); font-family: $avantgardestd-bk;
+                        }
+                    }
+                }
+                .right{ padding: 40px; 
+                        .top-heading{ font-family: $avantgarde-md; margin-bottom: 35px; 
+                            h2{
+                                float: left; font-size: 20px; color: #52BFB8; margin-top: 0px;
+                            }
+                            .back{
+                                font-size: 16px; color: #A1A1A1; float: right; text-decoration: none; text-transform: uppercase;
+                            }
+                        }
+                        .form-group{ margin-bottom: 20px;
+                            .form-control{
+                                border:none; border-bottom: 1px solid #D8D7DD; box-shadow: none; border-radius: 0px; height: 45px; font-size: 18px; color: #A2A2A2;font-family: $avantgarde-md; padding-left: 0px;
+                                background-image: url('../images/login-icon.png'); background-repeat: no-repeat; background-position: right; padding-right: 45px;
+                            }
+                            .user{
+                               background-position: right 13px;
+                            }
+                            .password{
+                                 background-position: right -116px;
+                            }
+                        }
+                        .bottom-section{
+                             margin-bottom:0px; margin-top: 30px;
+                        }
+                        .btn{
+                             padding: 10px 25px; font-size: 16px;font-family: $avantgarde-md; 
+                        }
+                        .login-social-site{
+                            float: right;
+                            li{ padding: 0px;
+                                a{
+                                    i{
+                                        height: 35px; width: 35px; font-size: 17px; border-radius: 50%;  display: table-cell; vertical-align: middle; text-align: center;color:$color-white; 
+                                    }
+                                    i.fa-wellza{
+                                         background-color:#F9AE39;
+                                    }
+                                    i.fa-facebook{
+                                         background-color: #5D84BB;
+                                    }
+                                    i.fa-linkedin{
+                                       background-color: #0084B1; 
+                                    }
+                                    i.fa-google-plus{
+                                       background-color: #E86050; 
+                                    }
+                                     i.fa-twitter{
+                                        background-color: #55ACEE;
+                                    }
+                                }
+                            }
+                        }
+                }
+}
+

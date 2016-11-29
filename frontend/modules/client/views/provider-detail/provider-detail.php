@@ -1,0 +1,186 @@
+<?php
+/* @var $this yii\web\View */
+use yii\helpers\Html;
+use yii\bootstrap\ActiveForm;
+use common\components\CommonHelper;
+use yii\base\view;
+use yii\web\UrlManager;
+use kartik\rating\StarRating;
+use yii\web\JsExpression;
+
+$this->title = 'Service Provider Detail';
+?>
+<main class="inner-content top-bg-map" id="inner-content">
+    <div class="service-providerdetail-section">
+        <div class="container">
+            <h1 class="inner-heading"><?=$this->title?></h1>
+            <div class="detail-box">
+                <div class="row">
+                    <?php
+                        if(!empty($returndata)) {                            
+                    ?>
+                    <div class="col-lg-2 col-md-2">
+                        <div class="img-box">
+                            <div class="provider-image">
+                                <?php
+                                    $profile_image = '';
+                                    if(!empty($returndata->profile_image))
+                                            
+                                ?>
+                                <img src="<?= Yii::getAlias('@web').'/'.$returndata->profile_image?>" class="img-circle" alt="provider-image">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-10 col-md-10 right">
+                            <div class="detail-left">
+                                <div class="clearfix">
+                                    <div class="pull-left"><span class="provider-name"> <?= $returndata->first_name . ' ' . $returndata->last_name ?></span> <span class="age">Age 35, <?= $returndata->gender ?></span></div>
+                                    <div class="buttons-right">
+                                        <a href="#inbox.php" class="btn btn-warning btn-lg">SEND MESSAGE</a>
+                                        <a id="book_appointment" href="javascript:void(0)" class="btn btn-info btn-lg">BOOK APPOINTMENT</a>
+                                    </div>
+                                </div> 
+                                <div class="address">
+                                    <img src="../../../resource/images/location-icon.png" alt="location"> <?= $returndata->address ?>,<?= $returndata->city ?>,<?= $returndata->province ?> Canada
+                                </div>  
+                                <div class="rating clearfix">
+                                    <?php
+                                    if (!empty($average_rating)) {
+                                        // Render a display only rating easily
+                                        echo StarRating::widget([
+                                            'name' => 'rating',
+                                            'value' => "{$average_rating}",
+                                            'pluginOptions' => ['displayOnly' => true]
+                                        ]);
+                                    }
+                                    ?>
+                                   <span class="review"><?php echo ($review_count > 0) ? $review_count . ' reviews' : 'No review'; ?></span>
+                                </div>
+                            </div>
+
+                            <div class="clearfix"></div>
+                            <div class="about ">
+                                <h4>ABOUT ME</h4>
+                                <p><?= $returndata->about_me ?></p>
+                            </div>
+
+                        </div>
+                    <?php
+                        }
+                    ?>
+                </div>
+            </div>
+        </div>
+
+        <h3>
+            <div class="container"> Photo & Video Gallery</div>
+        </h3>
+        <div class="gallery-section">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-3 col-md-3 col-sm-3 gallery-box">
+                        <img src="../../resource/images/gallery01.jpg" alt="gallery-img" class="img-responsive">
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-3 gallery-box">
+                        <img src="../../resource/images/gallery02.jpg" alt="gallery-img" class="img-responsive">
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-3 gallery-box">
+                        <img src="../../resource/images/gallery03.jpg" alt="gallery-img" class="img-responsive">
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-3 gallery-box">
+                        <img src="../../resource/images/gallery01.jpg" alt="gallery-img" class="img-responsive">
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-3 gallery-box">
+                        <img src="../../resource/images/gallery07.jpg" alt="gallery-img" class="img-responsive">
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-3 gallery-box">
+                        <img src="../../resource/images/gallery05.jpg" alt="gallery-img" class="img-responsive">
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-3 gallery-box">
+                        <img src="../../resource/images/gallery04.jpg" alt="gallery-img" class="img-responsive">
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-3 gallery-box">
+                        <img src="../../resource/images/gallery06.jpg" alt="gallery-img" class="img-responsive">
+                    </div>
+                    <!--<div class="text-center">
+                        <a href="javascript:void(0);" class="loadmore">Load More</a>
+                    </div>-->
+                </div> 
+            </div>
+
+        </div>
+        <div class="reviews-section">
+            <div class="container">
+            <?php
+                if($review_count >0) {
+                    
+            ?>
+                <h5><?=$review_count?> reviews</h5>
+
+                <div class="row">
+                <?php
+                    foreach($rating_data as $data) {
+                ?>
+                        <div class="col-lg-6 col-md-6 col-sm-6">
+                            <div class="review-box clearfix">
+                                <div class="col-lg-3 left">
+                                    <div class="rating">
+                                        <?php
+                                            if(!empty($data)) {
+                                                // Render a display only rating easily
+                                                echo StarRating::widget([
+                                                    'name' => 'rating',
+                                                    'value' => "{$data->rating}",
+                                                    'pluginOptions' => ['displayOnly' => true]
+                                                ]);
+                                            }        
+                                        ?>                                        
+                                    </div>
+                                    <div class="name">
+                                        <?php
+                                            $user_data = common\models\User::findOne(['id' => $data->provided_by]); 
+                                            echo $user_data->first_name.' '.$user_data->last_name
+                                        ?>
+                                    </div>
+                                    <div class="date">
+                                        
+                                        <?php
+                                            if(!empty($data->rating_date)) {
+                                                $date_array = explode('-',$data->rating_date);
+                                                echo $date_array[2].'.'.$date_array[1].'.'.$date_array[0];
+                                            }
+                                        ?>
+                                    </div>
+                                    <hr class="hidden-lg">
+                                </div>
+                                <div class="col-lg-9 col-md-10 col-sm-10">
+                                    <p>
+                                        <?=$data->review?>                                        
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    <!--<div class="text-center">
+                        <a href="javascript:void(0);" class="loadmore">Load More <i class="fa fa-spinner fa-spin"></i></a>
+                    </div>-->
+                    <?php
+                    }
+                    ?>
+                </div>
+            <?php                    
+                } else {
+                    echo '<h5>No review</h5>';
+               }
+            ?>
+            </div>
+        </div>
+    </div>
+</div>
+</main>
+
+<input type="hidden" id="appointment_id" name="appointment_id" value="<?php echo $is_upcoming?>">
+<input type="hidden" id="pageurl" name="pageurl" value="<?php echo Yii::$app->urlManager->createUrl('cart') ?>">
+<?php
+//$this->registerJsFile("@web/js/client/service-location.js");
+$this->registerJsFile("@web/js/client/provider-detail.js");
+?>

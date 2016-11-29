@@ -1,0 +1,358 @@
+<?php
+
+namespace common\models;
+
+use Yii;
+use common\models\base\BasePackages;
+use common\models\query\PackagesQuery;
+use yii\helpers\ArrayHelper;
+use yii\behaviors\TimestampBehavior;
+use yii\db\Expression;
+use yii\web\NotFoundHttpException;
+use  yii\web\Session;
+
+class Packages extends BasePackages {
+
+    /**
+     * @inheritdoc
+     */
+    public function rules() {
+        return ArrayHelper::merge(
+                        parent::rules(), [
+                    [['sub_category_name'], 'required', 'on' => 'adminpackages'],
+                    [['start_time', 'end_time', 'service_price'], 'required', 'on' => 'adminpackages']
+        ]);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function attributeLabels() {
+        return ArrayHelper::merge(
+                        parent::attributeLabels(), [
+        ]);
+    }
+
+    /**
+     * Scenario for packages
+     */
+    public function scenarios() {
+        $scenarios = parent::scenarios();
+        $scenarios['adminpackages'] = ['package_service_id', 'sub_category_name', 'preparation_status'];
+        return $scenarios;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function behaviors() {
+        return [
+            [
+                'class' => TimestampBehavior::className(),
+                'createdAtAttribute' => 'created_at',
+                'updatedAtAttribute' => 'updated_at',
+                'attributes' => [
+                    \yii\db\ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
+                    \yii\db\ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
+                ],
+                'value' => new Expression('NOW()'),
+            ],
+        ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPackageService() {
+        return $this->hasOne(PackageServices::className(), ['package_id' => 'package_id']);
+    } 
+    
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAppointmentsPackage() {
+        return $this->hasOne(Appointment::className(), ['package_id' => 'package_id']);
+    }
+
+    /**
+     * @inheritdoc
+     * @return \common\models\query\PackagesQuery the active query used by this AR class.
+     */
+    public static function find() {
+        return new \common\models\query\PackagesQuery(get_called_class());
+    }
+    
+    
+    public function fields() {
+        return ArrayHelper::merge(parent::fields(), [
+            'start_time','end_time','minutes_duration','service_price'
+        ]);
+    }
+
+    /**
+     * To get the hours of packages with given service id and sub service id
+     * @return package|null
+     */
+    public function get_select_date() {
+        $on_date_array = explode('-', $this->on_date);
+        $on_date = $on_date_array[2] . '-' . $on_date_array[1] . '-' . $on_date_array[0];
+        $result = self::find()->ByServiceId($this->sub_service_id, 'Active', $on_date)->asArray()->all();
+
+        if (!empty($result)) {
+            return $result;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Get preparation status with some parameters
+     *
+     */
+    public static function getPreparations($category_id = null, $subcategory_id = null) {
+        return self::find()->select('package_id,discount_price,service_time,service_price,available_time')->ByPreparationStatus($category_id, $subcategory_id)->groupBy(['service_time', 'service_price'])->all();
+    }
+
+    /**
+     * get available time for service
+     * @param type $param
+     * @return type
+     */
+    public static function getAvailableTime($param) {
+        return self::find()->select('available_time')->where(['service_time' => $param['service_time'], 'service_id' => $param['sub_service_id'], 'service_price' => $param['service_price']])->all();
+    }
+
+    /**
+     * Save the package data
+     * @retrun True|False
+     */
+    public function savePackage($package_id = null) {
+        $model = new Packages();
+        
+        Yii::$app->db->createCommand('set foreign_key_checks=0')->execute();
+        if (!empty($package_id)) {
+            self::deleteAll('package_id=:package_id', [':package_id' => $package_id]);
+            PackageServices::deleteAll('package_id=:package_id', [':package_id' => $package_id]);
+        }
+
+        $model = $this->setPackageData($model);
+
+        if ($model->save(false)) {
+            $model_packages_services = new PackageServices();
+            
+            $session['package_id'] = $model->package_id;
+            
+            $return = $this->setPackageServicesData($model_packages_services, $model->package_id);
+
+            Yii::$app->db->createCommand('set foreign_key_checks=1')->execute();
+            if ($return) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        return false;
+    }
+
+    /*     * *
+     * Set the data for package for both save and update
+     * ** */
+
+    public function setPackageData($model = null, $edit = null) {
+        $model->service_id = !empty($this->sub_category_name) ? $this->sub_category_name : '';
+        $model->parent = !empty($this->parent) ? $this->parent : '';
+        $model->preparation_status = !empty($this->preparation_status) ? $this->preparation_status : '';
+        $model->parent = !empty($this->parent) ? $this->parent : '';
+        $model->status = 'Active';
+        return $model;
+    }
+
+    /*     * *
+     * Set the data for package for both save and update
+     * ** */
+
+    public function setPackageServicesData($model = null, $package_id = null, $edit = null) {
+        $bool = 0;
+        
+        for ($i = 0; $i < count($this->service_price); $i++) {
+            $model->id = NULL; //primary key(auto increment id) id
+            $model->isNewRecord = true;
+            $model->package_id = !empty($package_id) ? $package_id : '';
+            if(!empty($this->start_time[$i])) {
+                $model->start_time =  $this->start_time[$i];
+            }
+            if(!empty($this->end_time[$i])) {
+                $model->end_time = $this->end_time[$i];
+            }
+            if(!empty($this->minutes_duration[$i])) {
+                $model->minutes_duration = $this->minutes_duration[$i];
+            }
+            if(!empty($this->service_price[$i])) {
+                $model->service_price = $this->service_price[$i];
+            }            
+            if ($model->save(false)) {
+                $bool = 1;
+            } else {
+                $bool = 0;
+            }
+        }
+
+        return $bool;
+    }
+
+    /**
+     * Get all the packages from the package table
+     * @param type null
+     * @return dataprovider
+     */
+    public static function getAllPackage() {
+        $query = self::find();
+        //$data = self::find()
+        //                ->select('`services`.`category_id`,`services`.`category_name`,`services`.`category_image`,`services`.`description`,,(CASE WHEN (`provider_services`.`service_id` = `services`.`category_id` OR `provider_services`.`sub_service_id` = `services`.`category_id`) THEN "true" ELSE "false" END) as is_selected')
+        //                ->leftJoin('provider_services', '(`provider_services`.`service_id` = `services`.`category_id` OR `provider_services`.`sub_service_id` = `services`.`category_id`)')
+        //                ->ByParents(0)->asArray()->all();
+        $dataProvider = new \yii\data\ActiveDataProvider([
+            'query' => $query,
+            'pagination' => [
+                'pageSize' => 20,
+            ],
+        ]);
+        return $dataProvider->getModels();
+    }
+    
+    
+
+    /**
+     * Get the tims slots for a particular package
+     * @param type category_id
+     * @return Slots|Null
+     */
+    public static function getPackageSlots($category_id = null, $subcategory_id = null) {
+        $returndata = array();
+        $query = self::find()
+                ->select('`packages`.`service_id`,`packages`.`parent`,`packages`.`preparation_status`,`package_services`.`start_time`,`package_services`.`end_time`,`package_services`.`minutes_duration`,`package_services`.`service_price`')
+                ->joinWith('packageService')
+                ->where('packages.parent = :parent', [':parent' => $category_id])
+                ->andWhere('packages.service_id = :service_id', ['service_id' => $subcategory_id])
+                ->all();
+
+        if (!empty($query)) {
+            $i = 0;
+            foreach ($query as $data) {
+                //echo $data;
+                $returndata[0]['service_id'] = $data->service_id;
+                $returndata[0]['parent'] = $data->parent;
+                $returndata[0]['preparation_status'] = $data->preparation_status;
+                $returndata[$i]['start_time'] = $data->start_time;
+                $returndata[$i]['end_time'] = $data->end_time;
+                $returndata[$i]['minutes_duration'] = $data->minutes_duration;
+                $returndata[$i]['service_price'] = $data->service_price;
+                $i++;
+            }
+
+            return $returndata;
+        }
+
+        return null;
+    }
+    
+    /**
+     * Get package id;
+     * @param type service_id
+     * @return package_id|Null
+     */
+    public static function getPackageId($subcategory_id = null) {
+        $query = self::find()->ByID($subcategory_id)->one();
+        
+        if(!empty($query)) {
+            return $query->package_id;
+        } else {
+            return null;
+        }
+        
+    }
+    
+    /**
+     * Update the status of a package
+     * @param type package_id, status
+     * @return True|False
+     */
+    public static function updateStatus($package_id = null, $status = null) {
+        return self::updateAll(['status' => $status], "package_id = {$package_id}");
+    }
+    
+    /**
+     * Deletes a package
+     * @param type package_id
+     * @return True|Null
+     */
+    public static function deletePackage($package_id = null) {
+        return self::deleteAll('package_id = :package_id', [':package_id' => $package_id]);
+    }
+    
+    /**
+     * Get package subservice data
+     * @param type package_id
+     * @return subservice|Null
+     */
+    public static function getPackageSubName($id = null) {
+        $returndata = array();
+        //$query = self::find()->joinWith('service')->where('packages.package_id =:package_id',[':package_id' => $id])->one();
+        $query = self::find()->joinWith('appointments')->joinWith('parent0')->where('appointment.id =:id',[':id' => $id])->one();
+                
+        if(!empty($query)) {
+            return $query;
+        } else {
+            return null;
+        }
+        
+    }
+    
+    /**
+     * Get package service data
+     * @param type package_id
+     * @return service|Null
+     */
+    public static function getPackageName($id = null) {
+        
+        $query = self::find()->joinWith('appointments')->joinWith('parent0')->where('appointment.id =:id',[':id' => $id])->one();
+        //echo $query->parent0->category_name;die('...');
+        //echo '<pre/>';
+        //        print_r($query);die('..');        
+        if(!empty($query)) {
+            return $query;
+        } else {
+            return null;
+        }
+        
+    }
+    
+    /**
+     * Check if package exist
+     * @param type array
+     * @return true|false
+     */
+    public static function IsPackageExist($params = null) {
+        
+        $params['appointment_time'] = ltrim($params['appointment_time'], '0');
+        //$query = self::find()->joinWith('packageService')->
+        //        where('packages.service_id = :service_id AND packages.parent = :parent AND package_services.start_time = :start_time AND package_services.minutes_duration = :minutes_duration AND package_services.service_price = :service_price',
+        //              [':service_id' => $params['subcategoryid'],':parent' => $params['categoryid'],':start_time' => $params['appointment_time'],':minutes_duration' => $params['appointment_minutes'],':service_price' => $params['appointment_price']])->one();
+        $query = self::find()
+                ->leftJoin('package_services', '(`package_services`.`package_id` = `packages`.`package_id`)')
+                ->leftJoin('appointment', '(`appointment`.`package_id` = `package_services`.`package_id`)')
+                //->where('packages.service_i = :service_id AND packages.parent = :parent AND package_services.start_time = :start_time AND package_services.minutes_duration = :minutes_duration AND package_services.service_price = :service_price AND appointment.customer_id != :customer_id',
+                //      [':service_id' => $params['subcategoryid'],':parent' => $params['categoryid'],':start_time' => "{$params['appointment_time']}",':minutes_duration' => $params['appointment_minutes'],':service_price' => $params['appointment_price'],':customer_id' => $params['customer_id']])->one();
+                ->where('packages.service_id = :service_id AND packages.parent = :parent AND package_services.start_time = :start_time AND package_services.minutes_duration = :minutes_duration AND package_services.service_price = :service_price',
+                   [':service_id' => $params['subcategoryid'],':parent' => $params['categoryid'],':start_time' => "{$params['appointment_time']}",':minutes_duration' => $params['appointment_minutes'],':service_price' => $params['appointment_price']])->one();
+        echo '<pre/>';
+                print_r($query);            
+        if(!empty($query)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+}

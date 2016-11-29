@@ -1,0 +1,147 @@
+.serviceprovider-sales-history-section{
+    .top-bar{ padding: 30px 0px;
+              .date-search{
+                  width: 500px;
+                  @media(max-width:499px){
+                      width: 100%;
+                  }
+                  .input-group{
+                      width: 250px;  float: left;
+                      @media(max-width:499px){
+                          width: 100%;       
+                      }
+
+                      .input-group-addon{
+                          border-radius: 0; padding:8px 12px; background:#F0F0F0;border:1px solid #EFEFEF;
+                      }
+                      input{
+                          height: 45px;border-radius:0;border:1px solid #EFEFEF;
+                      }
+                  }
+              }
+              .inner-heading{
+                  font-family: $avantgardestd-bk;color: $color-666; text-align: left; padding: 0; font-size: 40px;
+              } 
+    }
+    .table{
+        margin-bottom: 0; border:0;
+        td{
+            border:0;
+        }
+    }
+
+    .sales-history-table-bg{
+        background:#F8F8F8;
+
+    }
+    .sales-history-table-trans{
+        background:transparent;
+    }
+
+    .sales-history-table{
+        background:#fff; @extend .box-shadow; margin-bottom: 30px;
+        .pad0{padding:0;}
+
+        .sales-history-td-user{
+            padding-left:60px;
+
+            img{
+                @media(max-width:$screen-xs-max){
+                    width: 100px;
+                }
+            }
+        }
+
+        th{
+            color: $color-666; font-family:$avantgarde-md; font-size: 20px;font-weight: normal; padding:20px 0;
+            border-bottom: 1px solid #eeeeee;
+        }
+
+        .sales-history-td div{
+            color: $color-666;font-family:$avantgarde-md; font-size: 17px; padding: 10px 0; display: block;
+            @media(max-width:$screen-xs-max){
+                font-size: 14px;padding:5px 0;
+            }
+        }
+
+        .sales-user-detail{
+            padding: 18px 0px 0px 20px;display: inline-block;
+
+            @media(max-width:$screen-xs-max){
+                padding: 8px 0px 0px 20px;
+            }
+
+            p{
+                &:nth-child(1){
+                    color: $color-pink;font-family: $avantgarde-md;font-size: 26px;
+
+                    @media(max-width:$screen-xs-max){
+                        font-size: 20px;
+                    }
+                }
+
+                &:nth-child(2){
+                    color: $color-666; font-family:$avantgardestd-bk;font-size: 16px;
+                    @media(max-width:$screen-xs-max){
+                        font-size: 13px;
+                    }
+                }
+            }
+
+            span{
+                color: $color-green;font-family:$avantgardestd-bk; font-size: 17px; background:url(#{$imageurl}/select-green.png); background-position: left center; background-repeat: no-repeat;
+            padding:5px 0 5px 35px;
+            @media(max-width:$screen-xs-max){
+                font-size: 15px; background-size: 25px;
+            }
+        }
+    } 
+}
+
+.sales-history-table{
+    .table{
+        @media(max-width:$screen-xs-max){
+            width: 1200px !important;
+        }
+
+        .sales-total-table{
+            border-top: 1px solid #EEEEEE;
+            .sales-total-comm{
+                padding-left:60px;
+                div{
+                    color:#9F9F9F;font-size: 22px;font-family:$avantgardestd-bk;
+                    @media(max-width:$screen-xs-max){
+                        font-size: 18px;
+                    }
+                }
+                span{
+                    color: $color-green; font-size: 26px; font-family: $avantgarde-md;
+                    @media(max-width:$screen-xs-max){
+                        font-size: 20px;
+                    }
+                }
+            } 
+
+            .sales-total-td{
+                padding-right:93px;
+
+                div{
+                    color:  $color-666; font-size: 29px;  font-family:$avantgardestd-bk;
+                    @media(max-width:$screen-xs-max){
+                        font-size: 22px;
+                    }
+                }
+
+                span{
+                    color: $color-green;  font-size: 29px;font-family: $avantgarde-md;
+                    @media(max-width:$screen-xs-max){
+                        font-size: 22px;
+                    }
+                }
+            }
+        }
+
+    }
+}
+
+}

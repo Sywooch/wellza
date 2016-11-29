@@ -1,0 +1,200 @@
+<?php
+
+namespace common\models;
+
+use Yii;
+use common\models\base\BaseGiftVoucher;
+use common\models\query\GiftVoucherQuery;
+use yii\helpers\ArrayHelper;
+use yii\base\NotSupportedException;
+use yii\db\ActiveRecord;
+use yii\behaviors\TimestampBehavior;
+use yii\db\Expression;
+use DateTime;
+use yii\web\Session;
+/**
+ * This is the model class for table "gift_voucher".
+ *
+ * @property integer $id
+ * @property string $code
+ * @property string $from_name
+ * @property string $from_email
+ * @property string $to_name
+ * @property string $to_email
+ * @property string $delivery_date
+ * @property string $message
+ * @property string $amount
+ * @property string $status
+ * @property string $created_at
+ * @property string $updated_at
+ *
+ * @property VoucherHistory[] $voucherHistories
+ */
+class GiftVoucher extends BaseGiftVoucher implements \yz\shoppingcart\CartPositionInterface {
+    
+    use \yz\shoppingcart\CartPositionTrait;
+    /**
+     * @inheritdoc
+     */
+    public static function tableName() {
+        return 'gift_voucher';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function rules() {
+        return [
+            [['delivery_date', 'created_at', 'updated_at'], 'safe'],
+            [['message', 'status'], 'string'],
+            [['amount'], 'number'],
+            [['code'], 'string', 'max' => 40],
+            [['from_name', 'to_name'], 'string', 'max' => 80],
+            [['from_email', 'to_email'], 'string', 'max' => 150],
+            [['from_email', 'to_email'], 'email'],
+            [['from_email', 'to_email', 'from_name', 'to_name', 'amount', 'message', 'delivery_date'], 'required'],
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function attributeLabels() {
+        return [
+            'id' => 'ID',
+            'code' => 'Code',
+            'from_name' => 'From Name',
+            'from_email' => 'From Email',
+            'to_name' => 'To Name',
+            'to_email' => 'To Email',
+            'delivery_date' => 'Delivery Date',
+            'message' => 'Message',
+            'amount' => 'Amount',
+            'status' => 'Status',
+            'created_at' => 'Created At',
+            'updated_at' => 'Updated At',
+        ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getVoucherHistories() {
+        return $this->hasMany(VoucherHistory::className(), ['voucher_id' => 'id']);
+    }
+    
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCart() {
+        return $this->hasOne(Cart::className(), ['type_id' => 'id']);
+    }
+   
+    /**
+     * @inheritdoc
+     */
+    public function behaviors() {
+        return [
+            [
+                'class' => TimestampBehavior::className(),
+                'createdAtAttribute' => 'created_at',
+                'updatedAtAttribute' => 'updated_at',
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
+                    ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
+                ],
+                'value' => new Expression('NOW()'),
+            ],
+        ];
+    }
+    /**
+     * Save gift card
+     * @return TRUE|FALSE
+     */
+    public static function addGiftCard($params = null,$type = null){
+        $model = new GiftVoucher;
+        $model->load($params,'');
+        $coupon_model = new Coupon();
+        $code = $coupon_model->generate();
+        $model->code = $code;
+        
+        if($model->save()) {
+            if($type == 'web') {
+                return $model->id;
+            } 
+            $cartData = ['type_id'=>$model->id,'customer_id'=>Yii::$app->user->id,'type'=>'giftcard'];
+            Cart::add($cartData);
+            return true;
+        } else {
+            return $model;
+        }
+    }
+    
+    /**
+     * Get all the records for Gift Cards
+     * @return Dataproivder|Null
+     */
+    public static function getAllGiftCard() {
+        //return self::find()->all();
+        $query = self::find();
+
+            $dataProvider = new \yii\data\ActiveDataProvider([
+                'query' => $query,
+                'pagination' => [
+                    'pageSize' => 10,
+                ],
+            ]);
+        return $dataProvider;    
+    }
+    
+    /**
+     * Get all the records for Gift Cards
+     * @return Dataproivder|Null
+     */
+    public static function getGiftCardData($id = null) {
+        return self::find()->ById($id)->asArray()->one();            
+    }
+    /**
+     * Update the status of a gift card
+     * @param type giftcard_id, status
+     * @return True|False
+     */
+    public static function updateStatus($id = null, $status = null) {
+        return self::updateAll(['status' => $status], "id = {$id}");
+    }
+    
+    /***
+     * Delete a gift card
+     * @params id
+     * @return True|False
+     * ** */
+
+    public static function deleteCoupon($id = null) {
+        return self::deleteAll('id = :id', [':id' => $id]);
+    }
+   
+    /**
+     * Override methods from cartinterface
+     * @return amount
+     */
+    public function getPrice() {
+        return $this->amount;
+    }
+
+    /**
+     * Override methods from cartinterface
+     * @return id
+     */
+    public function getId() {
+        return $this->id;
+    }
+    
+    /**
+     * Override methods from cartinterface
+     * @return type
+     */
+    public function getType() {
+        return 'giftcard';
+    }
+    
+}

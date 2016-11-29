@@ -1,0 +1,600 @@
+#fp-nav ul li a span, .fp-slidesNav ul li a span{ background-color: $color-green;}
+.main-slider{ position: relative;background-image: url(../images/banner01.jpg);background-size: cover;background-position: center center;background-repeat: no-repeat;  min-height:800px;
+         .navbar{
+                  position: absolute;  width: 100%; background: transparent; border-bottom: none;
+                  padding-top: ($padding-large-vertical*2 + 5);
+                  @media (max-width: $screen-xs-max) { padding-top:0px;}
+                  .navbar-toggle{ @include border-all(2px,soild,$color-yellow); @include border-radius(0); padding: 7px;
+                                  &:hover{ @include border-all(2px,soild,$color-yellow); @include border-radius(0);background-color: #ffffff;}
+                                  .icon-bar{ background-color: $color-yellow;
+
+                                  }
+                  }
+                  .navbar-brand{
+                      height: auto; 
+                      padding: ($padding-base-vertical + 2);
+                      img{
+                          @media (min-width:$screen-sm-min) and (max-width:$screen-xlg-max){ width:85px;}
+                          @media (max-width: $screen-xs-max) { width:70px;}
+                      } 
+                  }
+                  .navbar-collapse { border-top:none;}
+                  .navbar-nav {
+                      padding-top: 47px; 
+                      @media (min-width: $screen-sm-min) and (max-width: $screen-md-max) { padding-top:10px;}
+                      @media (max-width: $screen-xs-max) { background-color:#fff; padding-top:0px;}
+                      li { padding: 0 15px;
+                           a { 
+                               color: $color-white; 
+                               font-size: $font-size-large; letter-spacing: 1.3px;
+                               padding:8px 13px;
+                               border:2px solid transparent;
+                               &:hover,  &:active,  &:focus,  &:visited {
+                                   color: $color-white; border: 2px solid $color-yellow; background-color: transparent;
+                               }
+                               @media (min-width: $screen-sm-min) and (max-width: $screen-md-max) {@include padding(10,10,10,10); font-size:$font-size-base + 2;}
+                               @media (max-width: $screen-xs-max){ color:#333; padding:9px; font-size:$font-size-base;}
+                           }
+                      }
+                      li.active { 
+                          a {
+                              color: $color-white; border: 2px solid $color-yellow; background-color: transparent;
+
+                          }
+                      }
+
+
+
+                  }
+              }
+
+              .banner-text{ position: absolute; width: 100%; top: 40%; text-align: center;
+                            @media (max-width: $screen-xs-max) { top: 24%;}
+                            h1{
+                                font-size: 70px; color: $color-white; text-align:center;  font-family: $brandon-light; line-height: 1.2;
+                                @media (min-width:$screen-md-min) and (max-width:$screen-xlg-max){
+                                    font-size:45px;
+                                }
+                                @media (min-width:$screen-sm-min) and (max-width:$screen-sm-max){
+                                    font-size:35px;
+                                }
+                                @media (max-width: $screen-xs-max) { font-size:24px;}
+                            }
+                            .btn{
+                                font-family: $avantgarde-md; font-size: 16px; padding: 15px 50px; margin-top: 60px; position: relative;
+                                @media (min-width:$screen-sm-min) and (max-width:$screen-lg-max){
+                                    font-size:17px; padding:10px 20px;
+                                }
+                                @media (max-width: $screen-xs-max) { font-size:14px; padding:10px 15px;}
+                                
+                                &:before{
+                                    content: '';
+                                    background-image: url('#{$imageurl}/btn-arrow.png'); height: 45px; width: 13px; 
+                                    background-repeat: no-repeat; background-position: center; position: absolute; left:-25px; top:-33px;
+
+                                }
+                            }
+              }
+
+}
+
+.how-it-work{
+    .heading{
+        margin:0 0 100px 0;
+        @media(min-width:$screen-lg-min) and (max-width:$screen-lg-max){
+            margin:0 0 50px 0;
+        }
+        @media(min-width:$screen-sm-min) and (max-width:$screen-md-max){
+            margin-bottom:30px;
+        } 
+        @media(max-width:$screen-xs-max){
+            font-size: 24px; margin-bottom:20px;
+        } 
+
+    }
+    .wrapper{ 
+        text-align: center; position: relative;
+        &:before{
+            content: '';  height: 21px;  background-image: url('#{$imageurl}/top-line.png'); top: -12px;
+            position: absolute; width: 100%; left: 0; right: 0;  background-repeat: no-repeat; background-position: center; 
+            @media(min-width:$screen-sm-min) and (max-width:$screen-sm-max){ 
+                background-image:none; 
+            }
+            @media(max-width:$screen-xs-max){ 
+                background-image:none; 
+            }
+        }
+        .icon{ position: relative;
+               @media(max-width:$screen-xs-max){
+                   padding:15px;
+               }
+        }
+        p{
+            font-family: $avantgardestd-bk; font-size: 18px; color: $color-black; 
+            @media(max-width:$screen-xs-max){
+                font-size:16px;
+            }
+            @media(min-width:$screen-sm-min) and (max-width:$screen-xlg-max){
+                font-size:16px; 
+            }
+        }
+        h2{ font-size: 28px;
+            @media(max-width:$screen-xs-max){
+                font-size:22px;
+            }
+            @media(min-width:$screen-sm-min) and (max-width:$screen-xlg-max){
+                font-size:22px;   
+            }
+        }
+
+        .bx01{
+            position: relative; padding: 0px;
+            h2{
+                color:$color-green; font-family: $avantgarde-md;
+            }
+        }
+        .bx02{
+            position: relative; padding: 0px;
+            h2{
+                color:$color-pink;font-family: $avantgarde-md;
+            }
+        }
+        .bx03{
+            position: relative; padding: 0px;
+            h2{
+                color:$color-yellow;font-family: $avantgarde-md;
+            }
+        }
+        .bx04{
+            position: relative; padding: 0px;
+            h2{
+                color:$color-black;font-family: $avantgarde-md;
+            }
+        }
+        .bx01, .bx02, .bx03, .bx04{
+            @media(min-width:$screen-sm-min) and (max-width:$screen-sm-max){
+                min-height: 300px; padding: 15px;   
+            }
+        }
+    }
+}
+
+.our-services{
+    min-height: 940px; background-image: url('#{$imageurl}/services_banner.jpg'); background-size: cover;background-position: center center; background-repeat: no-repeat; text-align:center;
+    @media(min-width:$screen-sm-min) and (max-width:$screen-md-max){
+        min-height:auto;
+    }
+    .align{
+        padding: 50px 100px; border-right: 1px solid rgba(225,225,225,0.1);border-bottom: 1px solid rgba(225,225,225,0.1);
+        @media(min-width:$screen-sm-min) and (max-width:$screen-lg-max){
+            padding: 30px 15px; min-height:300px;
+        }
+        @media(max-width:$screen-xs-max){
+            padding:15px; border:none; 
+        }
+        &:nth-child(4), &:nth-child(5), &:nth-child(6){
+            border-bottom: none;
+        }
+        &:nth-child(3), &:nth-child(6){
+            border-right: 0px;
+
+        }
+    }
+    .heading{
+        margin:0 0 100px 0; color: $color-white;
+        @media(min-width:$screen-lg-min) and (max-width:$screen-lg-max){
+            margin:0 0 50px 0;
+        }
+        @media(max-width:$screen-xs-max){
+            font-size:24px; margin-bottom:20px;
+        }
+    }
+    h3{
+        font-size: 22px; color:$color-white; font-family: $avantgardestd-bk; position: relative;  margin-bottom: 30px;
+        &:after{
+            content: '';
+            width: 41px; height: 3px; background-color: $color-pink; position: absolute; left: 0; right: 0;margin: 0 auto; bottom: -15px; 
+        }
+    }
+    p{
+        font-family: $avantgardestd-bk; font-size: 16px; color:$color-white; letter-spacing: 0.3px;
+    }
+}
+
+.service-provider-home{text-align: center; padding: 50px 0px 25px; background-color: #F7F7F7;
+                  @media(max-width:$screen-xs-max){
+                      padding:20px 0px;
+                  }
+                  @media(min-width:$screen-sm-min) and (max-width:$screen-md-max){
+                      padding:40px 0; 
+                  }
+                  .heading{
+                      margin:0 0 10px 0;
+                  }
+                  .subheading{
+                      font-size: 20px; font-family: $avantgardestd-bk;
+                      @media(min-width:$screen-sm-min) and (max-width:$screen-md-max){
+                          font-size: 16px;
+                      }
+                      @media(max-width:$screen-xs-max){
+                          font-size: 14px;
+                      }
+
+                  } 
+                  .service-provider-slider{ position: relative; padding:0 70px; text-align: center; margin-top: 50px;
+                                            @media(min-width:$screen-sm-min) and (max-width:$screen-md-max){
+                                                padding:15px; margin-top:20px;
+                                            }
+                                            @media(max-width:$screen-xs-max){
+                                                padding:30px; margin-top:20px;
+                                            }
+                                            .item{
+                                                @media(max-width:$screen-xs-max) {
+                                                    margin:10px;
+                                                }
+                                                @media(min-width:$screen-sm-min) and (max-width:$screen-lg-max){
+                                                    margin:10px;
+                                                }
+
+                                                .item-box{position: relative;
+                                                          &:hover{
+                                                              .fighover{
+                                                                  opacity: 1;
+                                                              }
+                                                              .place-info{
+                                                                  background-color: $color-pink; color: $color-white;
+                                                                  h4{
+                                                                      color: $color-white;
+                                                                  }
+                                                                  .place{
+                                                                      color: $color-white;
+                                                                  }
+                                                              }
+                                                          }
+                                                          figure{ position: relative;
+
+                                                                  figcaption{ z-index: 9999;
+                                                                              .place-info{
+                                                                                  padding:20px 15px;background-color: $color-white;
+                                                                                  @media(max-width:$screen-xs-max){
+                                                                                      padding:10px;
+                                                                                  }
+                                                                                  h4{
+                                                                                      margin: 0px; font-size: 25px; font-family: $avantgardestd-bk;color: $color-black;
+                                                                                      @media(min-width:$screen-sm-min) and (max-width:$screen-lg-max){
+                                                                                          font-size: 20px;
+                                                                                      }
+                                                                                      @media(max-width:$screen-xs-max){
+                                                                                          font-size: 18px;
+                                                                                      }
+                                                                                  }
+                                                                                  .place{
+                                                                                      font-size: 20px; color: $color-black; margin-top: 10px; font-family: $avantgardestd-bk;
+                                                                                      @media(min-width:$screen-sm-min) and (max-width:$screen-lg-max){
+                                                                                          font-size: 16px;
+                                                                                      }
+                                                                                      @media(max-width:$screen-xs-max){
+                                                                                          font-size: 14px;
+                                                                                      }
+                                                                                  }
+                                                                              }
+                                                                              position: absolute;width: 100%; bottom: 20px;  padding: 0 20px;left: 0; right: 0;
+                                                                  }
+
+                                                          }
+                                                          .fighover{
+                                                              position: absolute; background-color: rgba(0,0,0,0.5); height: 100%; top: 0;
+                                                              width: 100%; opacity:0; padding: 20px; @include transition(0.3s ease); 
+                                                              .info{
+                                                                  padding:0 20px;position: absolute; bottom:145px; left:0; right: 0;
+                                                                  @media(max-width:$screen-xs-max){
+                                                                      bottom: 115px;}
+                                                                  .btn-text{
+                                                                      font-size: 22px; color: $color-white; text-align: center;
+                                                                      margin-bottom: 74px; font-family: $jayneprint;
+                                                                      @media(min-width:$screen-sm-min) and (max-width:$screen-lg-max){
+                                                                          font-size: 17px;
+                                                                      }
+                                                                      @media(max-width:$screen-xs-max){
+                                                                          font-size: 14px;margin-bottom: 70px; line-height:1.2;
+                                                                      }
+                                                                      &:before{
+                                                                          content: '';
+                                                                          background-image: url('#{$imageurl}/btn-arrow.png'); height: 45px; width: 13px; 
+                                                                          background-repeat: no-repeat; background-position: center; position: absolute; left:0px; right: 0; bottom:69px;
+                                                                          margin: 0 auto; animation: bounce 3000ms infinite;
+                                                                          @media(max-width:$screen-xs-max){
+                                                                              bottom:48px;
+                                                                          }
+
+                                                                      } 
+                                                                  }
+
+                                                              }
+                                                              .btn{
+                                                                  font-size: 20px; padding: 15px;
+                                                                  @media(min-width:$screen-sm-min) and (max-width:$screen-lg-max){
+                                                                      font-size: 16px; padding:10px 15px;
+                                                                  }
+                                                                  @media(max-width:$screen-xs-max){
+                                                                      font-size: 14px; padding:6px 10px;
+                                                                  }
+                                                              }
+                                                          }
+                                                }
+                                                margin: 30px; position: relative;
+
+
+                                            }
+
+                                            .owl-nav{ position: absolute; top: 45%; width: 100%; left: 0; right:0; height: 0px; 
+                                                      .owl-prev{
+                                                          float: left;
+                                                      }
+                                                      .owl-next{
+                                                          float: right;
+                                                      }
+                                            }
+                  }
+                  .btn-readmore{
+                      font-size: 16px;  color: #A1A1A1;padding: 5px 15px; border:1px solid #A2A2A2; border-radius: 0px;
+
+                  }
+
+}
+
+.download-app{
+    padding: 50px 0px 30px; background-color: $color-white;
+    @media(min-width:$screen-sm-min) and (max-width:$screen-sm-max){
+        padding:20px 0px;
+    }
+    @media(max-width:$screen-xs-max){
+        padding:20px 0px;
+    }
+
+    .container01{
+        @media(min-width:$screen-sm-min) and (max-width:$screen-md-max){
+            width:100%; padding:0px;
+        }
+    }
+    .banner{
+        background-image: url('../images/download-app-banner.jpg'); background-repeat: no-repeat; background-position: center center; min-height: 757px; z-index: -1;
+        margin-top: 50px; display: table; width: 100%; padding: 0px 75px; padding-top: 30px;
+        @media(min-width:$screen-sm-min) and (max-width:$screen-md-max){
+            padding:30px;min-height:auto;
+        }
+        @media(max-width:$screen-xs-max){
+            display:block; padding:15px; margin-top:20px;
+        }
+        .left{ color: $color-white; text-align:left; display: table-cell; vertical-align: middle;
+               @media(max-width:$screen-xs-max){
+                   text-align:center; display:block;
+               }
+               h2{
+                   font-size: 56px; font-family: $brandon-light; margin-top: 0px;
+                   @media(min-width:$screen-sm-min) and (max-width:$screen-lg-max){
+                       font-size:45px;
+                   }
+                   @media(max-width:$screen-xs-max){
+                       font-size: 20px;
+                   }
+
+               }
+               .subheading{
+                   font-size: 24px;
+                   @media(min-width:$screen-sm-min) and (max-width:$screen-md-max){
+                       font-size:18px;
+                   }
+                   @media(max-width:$screen-xs-max){
+                       font-size: 14px;
+                   }
+               }
+               .appstore{
+                   margin-top: 35px;
+                   img{
+                       @media(max-width:$screen-sm-max){
+                           width:100px;
+                       }
+                   }
+                   a{
+                       padding-right:40px; display: inline-block;
+                       @media(max-width:$screen-sm-max){
+                           padding-right:10px;
+                       }
+                   }
+               }
+        }
+        .right{
+            text-align: right;
+            @media(min-width:$screen-sm-min) and (max-width:$screen-md-max){
+                display:table-cell; vertical-align:middle;
+
+            }
+            @media(max-width:$screen-xs-max){
+                text-align: center;
+            }
+            img{
+                position: relative;
+                @media(min-width:$screen-sm-min) and (max-width:$screen-lg-max){
+                      width:300px;
+                   }
+               
+                @media(max-width:$screen-xs-max){
+                    width:230px; margin-top:15px;
+                }
+            }
+        }
+    }
+
+}
+
+.get-in-tuch{ 
+    min-height: 730px;  background-image: url('../images/map-bg.jpg'); background-size:cover; background-repeat: no-repeat; background-position: center center;
+    @media(min-width:$screen-sm-min) and (max-width:$screen-md-max){
+        padding:40px 0px;min-height:auto;
+    }
+    @media (max-width:$screen-xs-max){
+        min-height:auto;
+    }
+    h2{
+        font-size: 40px; text-align: left; color:$heading-color; font-family: $avantgarde-md; margin-bottom: 40px; margin-top: 0px;    
+        @media (max-width:$screen-xs-max){
+            font-size: 24px; margin-bottom:15px; text-align:center;
+        }
+    }
+    .getintouch-form{
+        padding: 50px 80px; 
+        @media (min-width:$screen-md-min) and (max-width:$screen-lg-max){
+            padding: 40px 0px; 
+        }
+        @media (max-width:$screen-xs-max){
+            padding:15px;
+        }
+    }
+    .left{ padding-right: 40px;
+           @media(min-width:$screen-sm-min) and (max-width:$screen-md-max){
+               padding:15px;
+           }
+           @media (max-width:$screen-xs-max){
+               padding:15px;
+           }
+           .form-group{ margin-bottom: 45px; position: relative;font-family: $brandon-grotesque-r; 
+                        @media (max-width:$screen-xs-max){
+                            margin-bottom:15px;
+                        }
+
+                        .bootstrap-select{ height: auto;
+                                           button{
+                                               border:none;height: 45px;font-size: 20px;padding-left: 60px; background-color: transparent; border-radius: 0px;box-shadow: none;    
+                                               color: #C51F70;
+                                               .caret { border-bottom-width: 11px;border-left-width: 13px; border-top-width:0px;border-right-width: 0;border-style: solid;height: 0; width: 0;position: absolute;
+                                                        right: 0; top: 37px;}
+                                           } 
+                                           li{
+                                               font-size: 20px;
+                                           }
+                        }
+
+           }
+           input.form-control, .bootstrap-select{
+               height: 50px; border:none; border-radius: 0px; padding-left: 0px;border-bottom: 2px solid #D6D6D6; box-shadow: none;font-size: 20px; color: $color-black;
+               background-color:transparent;
+           }
+           textarea.form-control{
+               border:none; border-radius: 0px; padding-left: 0px;border-bottom: 2px solid #D6D6D6; box-shadow: none;font-size: 20px; color: $color-black;
+               background-color:transparent;  resize: none;
+           }
+           label{
+               font-size: 20px; position: absolute; bottom:5px; font-weight: normal; 
+           }
+           .captcha-code{
+               input{
+                   height: 50px; border: 2px solid #D6D6D6; box-shadow: none;font-size: 20px; color: $color-black; padding: 0 10px;
+               }
+               .btn{
+                   padding: 10px 15px; font-size: 17px;
+                   @media (min-width:$screen-sm-min) and (max-width:$screen-xlg-max){
+                       fotn-size:16px;
+                   }
+               }
+           }
+    }
+    .right{padding-left: 40px;
+           @media(min-width:$screen-sm-min) and (max-width:$screen-md-max){
+               padding:15px;
+           }
+           @media (max-width:$screen-xs-max){
+               padding:15px;
+           }
+           ul{
+               @media (min-width:$screen-sm-min) and (max-width:$screen-xlg-max){
+                   padding:0px;
+               }
+               @media (max-width:$screen-xs-max){
+                   padding:0px;
+               }
+               li{
+                   margin-bottom: 70px;
+                   .icon, .info{
+                       display: table-cell; vertical-align: middle;
+                   }
+                   .info{
+                       padding-left: 15px;
+                   }
+                   @media (min-width:$screen-sm-min) and (max-width:$screen-xlg-max){
+
+                   }
+                   @media (max-width:$screen-xs-max){
+                       margin-bottom:20px;
+                   }
+
+                   h3{ font-size: 20px; margin-bottom: 0px; margin-top:5px;
+                       @media (max-width:$screen-xs-max){
+                           font-size:14px; margin:0px;
+                       }
+                   }
+                   .detail{
+                       font-size: 45px; font-family: $avantgarde-md;
+                       @media (min-width:$screen-sm-min) and (max-width:$screen-xlg-max){
+                           font-size:25px; margin-top:8px;
+                       }
+                       @media (max-width:$screen-xs-max){
+                           font-size:16px;
+                       }
+                   }
+               }
+           }
+    }
+
+} 
+
+
+#footer{  background-color: $heading-color; padding: 15px 0px 0px;
+          .social-media{ text-align: center; position: relative; top: -56px;
+                         @media(max-width:$screen-xs-max){
+                             top:0px;
+                         }
+                         @media (min-width:$screen-sm-min) and (max-width:$screen-md-max){
+                             top: -50px;
+                         }
+                         li{
+                             i{
+                                 height: 83px;width: 83px; background-color: $color-green; color:$color-white; border-radius: 50%;
+                                 display: table-cell; vertical-align: middle; text-align: center; font-size: 40px;
+                                 @media (min-width:$screen-sm-min) and (max-width:$screen-md-max){
+                                     height:70px; width:70px;font-size: 30px;
+                                 }
+                                 @media(max-width:$screen-xs-max){
+                                     height:45px; width:45px;font-size: 20px;
+                                 }
+                             }
+                         }
+          }
+          .footer-links{ text-align: center; margin-top: 40px;
+                         @media (min-width:$screen-sm-min) and (max-width:$screen-lg-max){
+                             margin-top: 0px;
+                         }
+                         @media(max-width:$screen-xs-max){
+                             margin-top: 20px;
+                         }
+                         
+                         li{
+                             a{
+                                 font-size: 18px; color: $color-white; text-decoration: none; text-align: center; padding: 5px 15px; letter-spacing: 0.3px;
+                                 @media(max-width:$screen-xs-max){
+                                     font-size: 14px; padding: 5px 8px; 
+                                 }
+                                 @media (min-width:$screen-sm-min) and (max-width:$screen-md-max){
+                                     font-size: 16px; padding: 10px 8px; 
+                                 }
+                             }
+                         }
+          }
+          .copyright{
+              font-size: 14px; color: #929292; text-align: center; background-color: #3F3F3F; padding:25px; margin-top: 25px;
+              @media(max-width:$screen-xs-max){
+                  padding:15px; font-size:12px;
+              }
+          }
+
+}

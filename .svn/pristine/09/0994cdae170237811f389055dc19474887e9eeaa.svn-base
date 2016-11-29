@@ -1,0 +1,271 @@
+<?php
+
+namespace common\models;
+
+use Yii;
+use common\models\base\BaseProduct;
+use yii\helpers\ArrayHelper;
+use yii\web\NotFoundHttpException;
+use yii\behaviors\TimestampBehavior;
+use yii\db\Expression;
+use yii\web\UploadedFile;
+use yii\data\ActiveDataProvider;
+
+class Product extends BaseProduct {
+    
+    /**
+     * @inheritdoc
+     * @return \common\models\query\PortfolioQuery the active query used by this AR class.
+     */
+    public static function find() {
+        return new query\ProductQuery(get_called_class());
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public $product_cover_image;
+    public $height;
+    public $width;
+
+    public function rules() {
+        return ArrayHelper::merge(
+                        parent::rules(), [
+                    [['product_name', 'sr_number', 'main_category', 'sub_category', 'price', 'selling_price', 'quantity'], 'required'],
+                    [['product_image'],'file', 'extensions' => ['png', 'jpg', 'jpeg'], 'maxSize' => 1024 * 1024 * 5],        
+                    ['sr_number', 'unique']
+        ]);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function attributeLabels() {
+        return ArrayHelper::merge(
+                        parent::attributeLabels(), [
+        ]);
+    }
+
+    /**
+     * Get all the products
+     */
+    public static function adminGetAllProducts($category_id = null, $sub_category_id = null) {
+
+        if (!empty($category_id) || !empty($sub_category_id)) {
+
+            $query = self::find()->ByCategory($category_id, $sub_category_id);
+
+            $dataProvider = new \yii\data\ActiveDataProvider([
+                'query' => $query,
+                'pagination' => [
+                    'pageSize' => 20,
+                ],
+            ]);
+        } else {
+
+            $query = self::find();
+
+            $dataProvider = new \yii\data\ActiveDataProvider([
+                'query' => $query,
+                'pagination' => [
+                    'pageSize' => 20,
+                ],
+            ]);
+        }
+
+
+        return $dataProvider->getModels();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function behaviors() {
+        return [
+            [
+                'class' => TimestampBehavior::className(),
+                'createdAtAttribute' => 'created_at',
+                'updatedAtAttribute' => 'updated_at',
+                'attributes' => [
+                    \yii\db\ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
+                    \yii\db\ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
+                ],
+                'value' => new Expression('NOW()'),
+            ],
+        ];
+    }
+
+    /**
+     * 
+     * @return type
+     */
+    public function fields() {
+        return array_merge(parent::fields(), [
+            'product_cover_image' => function($model) {
+                $url = \Yii::$app->urlManagerBackend->baseurl;
+                $coverImage = ProductImage::find()->byProductId($model->id)->isCover(1)->one();
+                if (!empty($coverImage->product_image) && file_exists('../../backend/web/' . $coverImage->product_image)) {
+                    return $url . $coverImage->product_image;
+                } else {
+                    return $url . '/uploads/products/default-product-image.png';
+                }
+            },
+            'category_name' => function($model) {
+                $service = Services::find()->byID($model->category_id)->one();
+                return !empty($service->category_name) ? $service->category_name : '';
+            },
+            'sub_category_name' => function($model) {
+                $service = Services::find()->byID($model->sub_category_id)->one();
+                return !empty($service->category_name) ? $service->category_name : '';
+            },
+            'height', 'width'
+        ]);
+    }
+
+    public function extraFields() {
+        return array_merge(parent::extraFields(), [
+            'product_image' => function($model) {
+                return $model->productImages;
+            }
+        ]);
+    }
+
+    /**
+     * save products
+     */
+    public function saveProduct($product_id = null) {
+        $model = new Product();
+        $product_image = UploadedFile::getInstance($model, 'product_image');
+
+        Yii::$app->db->createCommand('set foreign_key_checks=0')->execute();
+        if (!empty($product_id)) {
+            $product = self::findOne(['id' => $product_id]);
+
+            $product = $this->setProductData($product, 'edit');
+
+            if ($product->update(false)) {
+                $product_image = UploadedFile::getInstance($model, 'product_image');
+                ProductImage::setProductImage($product_image, $product_id);
+
+                Yii::$app->db->createCommand('set foreign_key_checks=1')->execute();
+                return true;
+            }
+        } else {
+
+            $model = $this->setProductData($model);
+
+            if ($model->save(false)) {
+                $product_image = UploadedFile::getInstance($model, 'product_image');
+                ProductImage::setProductImage($product_image, $model->id);
+
+                Yii::$app->db->createCommand('set foreign_key_checks=1')->execute();
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /*     * *
+     * Set the data for products for both save and update
+     * ** */
+
+    public function setProductData($model = null, $edit = null) {
+
+        $model->product_name = $this->product_name;
+        $model->quantity = $this->quantity;
+        $model->price = $this->price;
+        $model->selling_price = $this->selling_price;
+        $model->sr_number = $this->sr_number;
+
+        $model->category_id = $this->main_category;
+        $model->sub_category_id = $this->sub_category;
+        $model->long_description = $this->long_description;
+        $model->status = 'Active';
+
+        return $model;
+    }
+
+    /*     * *
+     * Get the details of a product
+     * ** */
+
+    public static function getProductDetails($product_id) {
+        $query = self::find()->ById($product_id)->one();
+
+        $returndata = '';
+        foreach ($query as $key => $value) {
+
+            $returndata[$key] = $value;
+        }
+        $returndata['product_image'] = isset($query->productImage[0]->product_image) ? $query->productImage[0]->product_image : '';
+
+
+        return $returndata;
+    }
+
+    /*     * *
+     * Delete a product
+     * ** */
+
+    public static function deleteProduct($product_id) {
+        return self::deleteAll('id = :product_id', [':product_id' => $product_id]);
+    }
+
+    /*     * *
+     * change product status
+     * ** */
+
+    public static function updateStatus($product_id, $status) {
+        return self::updateAll(['status' => $status], "id = {$product_id}");
+    }
+
+    /**
+     * Search product
+     * @param type $params
+     * @return ActiveDataProvider
+     */
+    public static function searchProduct($params) {
+        $query = self::find()->byStatus('Active');
+                if(!empty($params['category_id'])) {
+                   $query->byCategory($params['category_id']);
+                }
+                if(!empty($params['sub_category_id'])) {
+                    $query->byCategory($params['category_id'],$params['sub_category_id']);
+                }
+                $query->select("product.id,"
+                . "product.product_name,"
+                . "product.price,"
+                . "product.selling_price,"
+                . "pi.product_image AS product_cover_image");
+        $query->join('LEFT JOIN', 'product_image pi', 'product.id = pi.product_id');
+        $dataProvider = new ActiveDataProvider([
+            'query' => $query,
+            'pagination' => [
+                'pageSize' => 10
+            ],
+        ]);
+        if (!empty($dataProvider)) {
+            $result = [];
+            foreach ($dataProvider->getModels() as $product) {
+                $url = \Yii::$app->urlManagerBackend->baseurl;
+                if (!empty($product['product_cover_image'] && file_exists('../../backend/web/' . $product['product_cover_image']))) {
+                    $product['product_cover_image'] = $url . $product['product_cover_image'];
+                } else {
+                    $product['product_cover_image'] = $url . '/uploads/products/default-product-image.png';
+                }
+                $data = getimagesize($product['product_cover_image']);
+                $product['height'] = $data[1];
+                $product['width'] = $data[0];
+                $result[] = $product;
+            }
+            $dataProvider->setModels($result);
+        }
+        return $dataProvider;
+    }
+
+    public static function productDetail($id) {
+        return self::find()->byId($id)->byStatus('Active')->one();
+    }
+
+}

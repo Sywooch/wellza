@@ -1,0 +1,134 @@
+<?php
+
+namespace common\models;
+
+use Yii;
+use common\models\UserMembership;
+use yii\behaviors\TimestampBehavior;
+use yii\db\Expression;
+
+/**
+ * This is the model class for table "user_membership".
+ *
+ * @property integer $id
+ * @property integer $user_id
+ * @property integer $plan_id
+ * @property string $price
+ * @property string $off_percent
+ * @property string $start_date
+ * @property string $end_date
+ * @property string $plan_detail
+ * @property integer $is_active
+ * @property string $duration
+ * @property string $created_at
+ * @property string $updated_at
+ *
+ * @property MasterMembershipPlan $plan
+ * @property User $user
+ */
+class UserMembership extends \common\models\base\BaseUserMembership
+{
+    /**
+     * @inheritdoc
+     */
+    public static function tableName()
+    {
+        return 'user_membership';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function rules()
+    {
+        return [
+            [['user_id', 'plan_id', 'is_active'], 'integer'],
+            [['price', 'off_percent'], 'number'],
+            [['start_date', 'end_date', 'created_at', 'updated_at'], 'safe'],
+            [['duration'], 'string'],
+            [['plan_detail'], 'string', 'max' => 255],
+            [['plan_id'], 'exist', 'skipOnError' => true, 'targetClass' => MasterMembershipPlan::className(), 'targetAttribute' => ['plan_id' => 'id']],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function attributeLabels()
+    {
+        return [
+            'id' => 'ID',
+            'user_id' => 'User ID',
+            'plan_id' => 'Plan ID',
+            'price' => 'Price',
+            'off_percent' => 'Off Percent',
+            'start_date' => 'Start Date',
+            'end_date' => 'End Date',
+            'plan_detail' => 'Plan Detail',
+            'is_active' => 'Is Active',
+            'duration' => 'Duration',
+            'created_at' => 'Created At',
+            'updated_at' => 'Updated At',
+        ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPlan()
+    {
+        return $this->hasOne(MasterMembershipPlan::className(), ['id' => 'plan_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUser()
+    {
+        return $this->hasOne(User::className(), ['id' => 'user_id']);
+    }
+
+    /**
+     * @inheritdoc
+     * @return \common\models\query\UserMembershipQuery the active query used by this AR class.
+     */
+    public static function find()
+    {
+        return new \common\models\query\UserMembershipQuery(get_called_class());
+    }
+    
+     public function behaviors() {
+        return [
+            [
+                'class' => TimestampBehavior::className(),
+                'createdAtAttribute' => 'created_at',
+                'updatedAtAttribute' => 'updated_at',
+                'attributes' => [
+                    \yii\db\ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
+                    \yii\db\ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
+                ],
+                'value' => new Expression('NOW()'),
+            ],
+        ];
+    }
+    
+    public static function saveMembership($userId,$planData){
+        $model = new UserMembership;
+        $model->user_id = $userId;
+        $model->plan_id = $planData->id;
+        $model->price = $planData->price;
+        $model->off_percent = $planData->off_percent;
+        $model->start_date = date('Y-m-d H:i:s');
+        if($planData->duration == 'monthly') {
+            $time = strtotime($model->start_date);
+            $model->end_date = date("Y-m-d", strtotime("+1 month", $time));
+        } else {
+            $time = strtotime($model->start_date);
+            $model->end_date = date("Y-m-d", strtotime("+1 year", $time));
+        }
+        $model->is_active = 1;
+        $model->duration = $planData->duration;
+        return $model->save(false);
+    }
+}

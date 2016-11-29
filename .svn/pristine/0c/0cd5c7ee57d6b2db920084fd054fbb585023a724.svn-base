@@ -1,0 +1,214 @@
+<?php
+
+namespace frontend\controllers;
+
+use Yii;
+use yii\web\Controller;
+use yii\helpers\Json;
+use yii\base\InvalidParamException;
+use yii\web\BadRequestHttpException;
+use yii\web\Response;
+use yii\web\Session;
+
+class CartController extends Controller {
+
+    public function actionIndex() {
+        
+        return $this->render('view-cart', ['model' => $model]);
+    }
+
+    /**
+     * Load the view cart
+     * * */
+    public function actionViewCart() {
+         $model = new \common\models\StripePayment();
+        //$cart_data = \common\models\Cart::myCart(Yii::$app->user->id);
+        $returndata = \common\models\Appointment::getWebApppointmentData(Yii::$app->user->id);
+        return $this->render('view-cart', ['returndata' => $returndata,'model' =>$model ]);
+    }
+
+    /**
+     * Add items to cart
+     * * */
+    public function actionAddToCart() {
+
+        $data = Yii::$app->request->post();
+        $session = Yii::$app->session;
+        $commodity_type = $data['commodity_type'];
+
+        switch ($commodity_type) {
+            case 'appointment':
+
+                $model = new \common\models\Appointment();
+                $appointment_id = \common\models\Appointment::isAppointmentExist();
+
+                if ($appointment_id) {
+                    //echo 'here';
+                    $id = $appointment_id;
+                } else {
+                    //echo 'here1';
+                    //echo $data['upcoming'];die('...');
+                    $id = $model->addAppointment('web',$data['upcoming']);
+                }
+                //echo $id;
+                //die('..');
+                if (!empty($id)) {
+                    $qty = 1;
+                    $model = \common\models\Appointment::findOne($id);
+
+                    if ($model) {
+
+                        $cartPosition = \Yii::$app->cart->getPositionById($id);
+
+                        if (!empty($cartPosition)) {
+                            Yii::$app->cart->update($cartPosition, $qty);
+                        } else {
+                            Yii::$app->cart->put($model, $qty);
+                        }
+                        //echo $appointment_id;die('...');
+                        if (empty($appointment_id)) {
+
+                            \common\models\Cart::saveSessionData($id, $qty, 'appointment');
+                        }
+
+                        return json_encode(['count' => count(Yii::$app->cart->getPositions())]);
+                        die;
+                        //return $this->redirect(['cart-view']);
+                    }
+                }
+                throw new \yii\web\NotFoundHttpException();
+                break;
+            case 'giftcard':
+                $model = new \common\models\GiftVoucher();
+                $date = $data['GiftVoucher']['delivery_date'];
+                $date_array = explode('-', $date);
+                $data['GiftVoucher']['delivery_date'] = $date_array[2].'-'.$date_array[1].'-'.$date_array[0];
+                $returndata = \common\models\GiftVoucher::addGiftCard($data['GiftVoucher'], 'web');
+                if ($returndata) {
+
+                    $session['gift_id'] = $returndata;
+                    //$session['commodity_type'] = 'gift_card';
+                    $id = $returndata;
+                    $qty = 1;
+                    $model = \common\models\GiftVoucher::findOne($id);
+
+                    if ($model) {
+
+                        $cartPosition = \Yii::$app->cart->getPositionById($id);
+
+                        if (!empty($cartPosition)) {
+                            \Yii::$app->cart->update($cartPosition, $qty);
+                        } else {
+                            
+                            \Yii::$app->cart->put($model, $qty);
+                            
+                        }
+
+                        \common\models\Cart::saveSessionData($id, $qty, 'giftcard');
+
+                        return json_encode(['count' => count(Yii::$app->cart->getPositions())]);
+                        die;
+                    }
+                    throw new \yii\web\NotFoundHttpException();
+                }
+                break;
+        }
+        die;
+    }
+
+    /**
+     * remove item from cart
+     * * */
+    public function actionRemoveCart() {
+        $data = Yii::$app->request->post();
+        $k = new \yz\shoppingcart\ShoppingCart();
+        if (!empty($data['id'])) {
+            $id = $data['id'];
+            $commodity_type = $data['commodity_type'];
+            switch ($commodity_type) {
+                case 'appointment':
+                    $model = \common\models\Appointment::findOne($id);
+                    if ($model) {
+                        Yii::$app->cart->remove($model);
+                        \common\models\Cart::saveSessionData($id, '', 'appointment');
+                        return json_encode(['success' => true, 'count' => count(Yii::$app->cart->getPositions())]);
+                    }
+                break;
+                case 'giftcard':
+                    $model = \common\models\GiftVoucher::findOne($id);
+                    if ($model) {
+                        Yii::$app->cart->remove($model);
+                        \common\models\Cart::saveSessionData($id, '', 'giftcard');
+                        return json_encode(['success' => true, 'count' => count(Yii::$app->cart->getPositions())]);
+                    }
+                break;
+            }
+            
+        }
+        throw new \yii\web\NotFoundHttpException();
+    }
+
+    /**
+     * load item list for a particular user in min-cart
+     * * */
+    public function actionLoadItemList() {
+        $post = Yii::$app->request->post();
+        $checkout = false;
+        if (isset($post['checkout']) && $post['checkout'] == true) {
+            $checkout = true;
+        }
+        $cart = Yii::$app->cart->getPositions();
+        $total_cost = $this->getTotalCost();
+        return $this->renderAjax('_item-list', ['cart' => $cart, 'total_cost' => $total_cost, 'checkout' => $checkout]);
+    }
+
+    /**
+     * Get total cost
+     * * */
+    public static function getTotalCost() {
+        $cart = Yii::$app->cart->getPositions();
+        $amt = 0;
+        foreach ($cart as $cart) {
+            $amt += $cart->getCost();
+        }
+        return $amt;
+    }
+
+    /**
+     * This will fill cart with updated comodities
+     * * */
+    public function actionShowCart() {
+        $total_cost = $this->getTotalCost();
+        return $this->renderAjax('_min-cart', ['total_cost' => $total_cost]);
+    }
+
+    /**
+     * Redirects to the checkout page and manages its data
+     * * */
+    public function actionCheckOut() {
+        $model = new \common\models\StripePayment();
+        $post = Yii::$app->request->post();
+        if (!empty($post)) {
+            if (Yii::$app->request->isAjax && $model->load($post)) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                return \yii\widgets\ActiveForm::validate($model);
+            }
+
+            $model->load($post);
+            $model_order = new \common\models\Order();
+            $model_order->updateOrder();
+            $returndata = $model->paynow($post);
+            if (!empty($returndata)) {
+                $model_order = new \common\models\Order();
+                $model_order->updateOrder($returndata, 'update');
+                return $this->redirect(['/order/order-detail']);
+            } else {
+                Yii::$app->session->setFlash('cart_message', 'Payment failed!!');
+                return $this->render('view-cart', ['model' => $model]);
+            }
+        }
+
+        return $this->render('view-cart', ['model' => $model]);
+    }
+
+}

@@ -1,0 +1,87 @@
+
+.login-section{ margin: 40px 120px; box-shadow: 0px 0px 7px 0px rgba(0, 0, 0, 0.1); background-color: $color-white; letter-spacing: 0.3px;
+                @media(min-width:$screen-md-min) and (max-width:$screen-lg-max){
+                   margin: 40px 40px;  
+                 }
+                .left{
+                    background-image: url(../images/login-bg.jpg); background-repeat: no-repeat; background-size: cover;
+                    .table{
+                        display: table;height: 522px; 
+                    }
+                
+                }
+                .right{ padding: 40px; 
+                    .top-btn{ margin-bottom:50px;
+                            li.active{
+                                a{
+                                    color: $color-green;
+                                }
+                            }
+                            li{
+                                a{
+                                    font-size: 20px; font-family: $avantgarde-md; color:#A1A1A1; text-transform: uppercase; text-decoration: none; padding: 0px 5px; position: relative;
+                                    &:after{
+                                        width: 1px; content: ''; position: absolute; right: -9px; top: 1px; height: 17px; background-color: #D6D6D6; 
+                                    }
+
+                                    &:hover{
+                                        color: $color-green;
+                                    }
+                                }
+                                &:first-child{
+                                    a{
+                                        padding-left: 0px;
+                                    }
+                                }
+                                &:last-child{
+                                    a{
+                                        &:after{ background-color: transparent;}      
+                                    } 
+                                }
+                            }
+                        }
+                        .forgot-password{
+                            a{
+                                font-size: 14px; color: #666666; float: right;font-family: $avantgarde-md; 
+                            }
+                        }
+                        .form-group{ margin-bottom: 30px;
+                            .form-control{
+                                border:none; border-bottom: 1px solid #D8D7DD; box-shadow: none; border-radius: 0px; height: 45px; font-size: 18px; color: #A2A2A2;font-family: $avantgarde-md; padding-left: 0px;
+                                background-image: url('../images/login-icon.png'); background-repeat: no-repeat; background-position: right; padding-right: 45px;
+                            }
+                            .password{
+                                 background-position: right -116px;
+                            }
+                        }
+                        .bottom-section{
+                             margin-top: 176px; margin-bottom:0px;
+                        }
+                        .btn{
+                             padding: 10px 25px; font-size: 16px;font-family: $avantgarde-md; 
+                        }
+                        .login-social-site{
+                            float: right;
+                            li{
+                                a{
+                                    i{
+                                        height: 42px; width: 42px; font-size: 20px; border-radius: 50%;  display: table-cell; vertical-align: middle; text-align: center;color:$color-white; 
+                                    }
+                                    i.fa-facebook{
+                                         background-color: #5D84BB;
+                                    }
+                                    i.fa-linkedin{
+                                       background-color: #0084B1; 
+                                    }
+                                    i.fa-google-plus{
+                                       background-color: #E86050; 
+                                    }
+                                    i.fa-twitter{
+                                        background-color: #55ACEE;
+                                    }
+                                }
+                            }
+                        }
+                }
+}
+

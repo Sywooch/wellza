@@ -1,0 +1,101 @@
+.admin-modal{ background-color: rgba(0,0,0,0.5);
+    .modal-lg{
+        @media(min-width:$screen-lg-min){
+             width: 1011px;
+        }
+       
+    }
+    .modal-content{
+        border-radius: 0px; background-image: url('../images/modal-bg.jpg');
+        .modal-body{
+            @media(min-width:$screen-lg-min){
+            padding: 65px 144px;
+            }
+        }
+    .modal-header{
+        font-family:$avantgarde-md;  text-align: center; border-bottom: 1px solid rgba(0,0,0,0.1); 
+            @media(min-width:$screen-lg-min){
+                 margin-left:65px; margin-right:65px;
+            }
+            .close{
+                    background-color: #f9ae39;border-radius: 50%; color: #ffffff;  height: 24px; opacity: 1;  position: absolute; right: 6px; top: 6px;  width: 24px;
+            } 
+        h2{
+           font-size: 55px; text-transform: uppercase;  
+        }
+    }
+    .modal-footer{
+        text-align: center; border-top: none;
+    }
+   
+    }  
+    .form-group{ margin-bottom: 20px; padding: 0 110px;
+        input[type='text']{
+              height: 60px;
+        }
+         label{
+                 margin-bottom: 10px;
+             }
+        .form-control{
+             border-radius: 0px; box-shadow: none;
+            
+        }
+    }
+    .btn{
+         padding:15px 20px; font-size:20px; font-family:$avantgarde-md; letter-spacing: 0.3px; text-transform: uppercase;
+    }
+
+}
+
+/*=================toggle=========================*/
+.toggle.btn{
+    min-height: 27px !important; height: 26px !important;
+}
+.off{
+    .toggle-group{
+        span.btn-default{left: 12px;} 
+    }
+}
+.toggle-group{
+    .btn{
+       font-size: 14px; padding: 2px;
+    }
+    span.btn-default{
+     right: 12px;width:26px;
+      
+    }
+}
+/*====================toggle=========================*/
+
+ .admin_pagination{background-color:$pagination-bg; margin: 20px 0; 
+                      .pagination{margin: 0px;
+                         li{
+                             a{ padding: 13px 20px 10px 20px; position: relative; background-color: #E4E4E6; border-radius: 0px;color:#333; font-size: 16px; border-left:1px solid #c9c9c9;
+                                &:after{
+                                    content:''; position: absolute; bottom: -1px; height: 3px; width: 100%; background-color: $color-green; left: 0; right: 0; display: none;
+                                }
+                                 &:hover, &:focus, &:active{ border-color:#c9c9c9; border-top:1px solid transparent; background-color: #fff;
+                                   &:after{ display: block;} 
+                                 }
+                             }
+                             a.prev{
+                                  background-color: $color-white; border: none;
+                             }
+                             a.next{
+                                  background-color: $color-white; border: none;
+                             }
+                             &:first-child,  &:last-child{
+                                 a{
+                                        &:after{ background-color: transparent;} 
+                                 }
+                             }
+                         }
+                         li.active{
+                             a{
+                                 background-color: #fff; color:#333; border:none; border-left:1px solid #c9c9c9;border-right:1px solid #c9c9c9;
+                                   &:after{ bottom:-2px;display: block;}  
+                             }
+                         }
+                      }
+
+ }

@@ -1,0 +1,126 @@
+<?php
+/* @var $this yii\web\View */
+
+use yii\helpers\Html;
+use yii\bootstrap\ActiveForm;
+use yii\base\view;
+use yii\web\UrlManager;
+
+$this->title = 'Your Location';
+?>
+<main class="inner-content" id="inner-content">
+    <div class="container location-section">
+        <h1 class="inner-heading"><?= $this->title ?></h1>
+        <?php
+                $form = ActiveForm::begin([
+                            'action' => 'service-location/search-location',
+                            //'enableAjaxValidation' => true,
+                            'enableClientValidation' => true,
+                            'method' => 'post',
+                            'id' => 'edit_package'
+                ]);
+            ?>
+            <div class="row">
+                <div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2">
+
+                    <div class="form-group">
+                        <label>Address Line 1</label>
+                        <?=
+                        $form->field($model, 'address1', [
+                            'template' => "{input}\n{hint}\n{error}"
+                        ])->textInput(['placeholder' => "Address Line 1", 'class' => "form-control", 'maxlength' => 250]);
+                        ?>                       
+                        <!--<input type="text" class="form-control" placeholder="Address Line 1">-->
+                    </div>
+                    <div class="form-group">
+                        <label>Address Line 2</label>
+                        <?=
+                        $form->field($model, 'address2', [
+                            'template' => "{input}\n{hint}\n{error}"
+                        ])->textInput(['placeholder' => "Address Line 2", 'class' => "form-control", 'maxlength' => 250]);
+                        ?>
+                        <!--<input type="text" class="form-control" placeholder="Address Line 2">-->
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6 col-sm-6">
+                            <div class="form-group ui-widget">
+                                <label>City</label> 
+                                <?=
+                                $form->field($model, 'city', [
+                                    'template' => "{input}\n{hint}\n{error}"
+                                ])->textInput(['placeholder' => "City", 'class' => "form-control", 'maxlength' => 50,'data-size' => 5]);
+                                ?>
+                                <!--<input type="text" class="form-control" placeholder="City">-->
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-sm-6">
+                            <div class="form-group ui-widget">
+                                <label>Province</label>
+                                <?=
+                                $form->field($model, 'province', [
+                                    'template' => "{input}\n{hint}\n{error}"
+                                ])->textInput(['placeholder' => "Province", 'class' => "form-control" , 'maxlength' => 50]);
+                                ?>
+                                <!--<input type="text" class="form-control" placeholder="Province">-->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6 col-sm-6">
+                            <div class="form-group">
+                                <label>Telephone No.</label>
+                                <?=
+                                $form->field($model, 'telephone_number', [
+                                    'template' => "{input}\n{hint}\n{error}"
+                                ])->textInput(['placeholder' => "Telephone No.", 'class' => "form-control", 'maxlength' => 10]);
+                                ?>
+                                <!--<input type="text" class="form-control" placeholder="Telephone No.">-->
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-sm-6">
+                            <div class="form-group">
+                                <label>Postal Code</label>
+                                <?=
+                                $form->field($model, 'postal_code', [
+                                    'template' => "{input}\n{hint}\n{error}"
+                                ])->textInput(['placeholder' => "Postal Code", 'class' => "form-control", 'maxlength' => 6]);
+                                ?>
+                                <!---<input type="text" class="form-control" placeholder="Postal Code">-->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Add Personal Message</label>
+                        <?=
+                        $form->field($model, 'personal_information', [
+                            'template' => "{input}\n{hint}\n{error}"
+                        ])->textarea(['class' => "form-control", 'placeholder' => "Add Personal Message"]);
+                        ?>
+                        <!--<textarea class="form-control" placeholder="Add Personal Message" rows="4"></textarea>-->
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="center-block text-center btn-bottom clearfix">
+                <?=
+                Html::submitButton('SAVE LOCATION', [
+                    'class' => 'btn btn-info btn-lg',
+                    'name' => 'save_location',
+                    'id' => 'save_location'
+                ]);
+                ?>
+                <!--<a class="btn btn-info btn-lg" href="wellza-provider.php">SAVE LOCATION</a>-->
+            </div>
+        <?php ActiveForm::end(); ?>
+    </div>
+</main>
+<?php
+    //Renders message for no provider found
+    echo Yii::$app->view->render('_message',['model' => $model]);        
+?>
+<input type="hidden" id="pageurl" name="pageurl" value="<?php echo Yii::$app->urlManager->createUrl('client/service-location') ?>">
+<?php
+$this->registerJsFile("@web/js/client/service-location.js");
+$this->registerJsFile('//code.jquery.com/ui/1.11.4/jquery-ui.js');
+?>

@@ -1,0 +1,173 @@
+<?php
+
+/* 
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+namespace common\models;
+
+use Yii;
+//use yii\base\Model;
+use Stripe\Stripe;  
+use Stripe\Charge;
+use yii\db\ActiveRecord;
+use yii\helpers\ArrayHelper;
+//use common\components\customvalidators\CreditCardNumberValidator;
+
+/**
+ * Description of Stripe model
+ *
+ * @author #
+ */
+class StripePayment extends base\BaseStripePayment {
+        
+    /**
+     * @inheritdoc
+     */
+    public function rules() {
+        return ArrayHelper::merge(
+                    parent::rules(), [
+                    ['creditCard_number','CreditCardNumberValidator'],
+                    ['creditCard_cvv','integer','message' => 'CCV not valid']    
+        ]);
+    }
+    
+    /**
+     * Validation for credit card 
+     * * */
+    public function CreditCardNumberValidator($attribute, $params)
+    {        
+        $value = $this->$attribute;
+        $false = false;
+        $card_type = "";
+        $card_regexes = array(
+            "/^4\d{12}(\d\d\d){0,1}$/" => "visa",
+            "/^5[12345]\d{14}$/" => "mastercard",
+            "/^3[47]\d{13}$/" => "amex",
+            "/^6011\d{12}$/" => "discover",
+            "/^30[012345]\d{11}$/" => "diners",
+            "/^3[68]\d{12}$/" => "diners",
+        );
+
+        foreach ($card_regexes as $regex => $type) {
+            if (preg_match($regex, $value)) {
+                $card_type = $type;
+                break;
+            }
+        }
+
+        if (!$card_type) {
+            $this->addError($attribute, 'Card Number is not valid');
+        }
+
+        /*  mod 10 checksum algorithm  */
+        $revcode = strrev($value);
+        $checksum = 0;
+
+        for ($i = 0; $i < strlen($revcode); $i++) {
+            $current_num = intval($revcode[$i]);
+            if ($i & 1) { /* Odd  position */
+                $current_num *= 2;
+            }
+            /* Split digits and add. */
+            $checksum += $current_num % 10;
+            if
+            ($current_num > 9) {
+                $checksum += 1;
+            }
+        }
+
+        if ($checksum % 10 != 0) {
+            $this->addError($attribute, 'Card Number is not valid');            
+        }        
+    }
+    
+    /**
+     * Check balance from stripe
+     * * */
+    public function checkBalance() {
+        return \Stripe\Balance::retrieve();
+    }
+    
+    /**
+     * Payment for the purchased commodity
+     * * */
+    public function paynow($data) {
+        if(isset($data['StripePayment']) && $data['StripePayment']!=''){
+            $token=$data['StripePayment'];
+            $date_arra = explode('/',$data['StripePayment']['creditCard_expirationDate']);
+            $year = $date_arra[1];
+            $month = $date_arra[0]; 
+            $myCard = array('number' => $data['StripePayment']['creditCard_number'], 'exp_month' => $month, 'exp_year' => $year);
+            
+            try {                
+                $charge = \Stripe\Charge::create(array(
+            
+                  "amount" => ($data['StripePayment']['amount']*100),      
+                  "currency" => "usd",
+                  "source" => $myCard,
+                  "description" => "Item Amount"
+                  ));
+               return $charge;
+              } catch(\Stripe\Error\Card $e) {
+                 
+                return $e;// The card has been declined
+              }
+        }else{
+            return false;
+        }
+    }
+    
+    /**
+     * Customer credit card will be saved here for further payment
+     * @param $data 
+     * @return True|False
+     * * */
+    public function saveCreditCard($data) {
+        if(!empty($data)){
+            
+            $date_arra = explode('/',$data['card_date']);
+            $year = $date_arra[1];
+            $month = $date_arra[0]; 
+            //$token=$data['StripePayment'];
+            //$date_arra = explode('/',$data['StripePayment']['creditCard_expirationDate']);
+            //$year = $date_arra[1];
+            //$month = $date_arra[0]; 
+            $token = array('number' => $data['card_number'], 'exp_month' => $month, 'exp_year' => $year,'cvc' => $data['card_cvc'],'name' => $data['card_name']);
+            
+            try {
+                $user_data = User::findOne(['id' => \Yii::$app->user->id]);
+                
+                $card_token = \Stripe\Token::create(array(
+                                "card" => $token
+                                ));
+                
+                $customer =    \Stripe\Customer::create(array(
+                                    "email" => $user_data->email,
+                                    "source" => $card_token->id,
+                                    "description" => 'Save Card'
+                                ));
+                if(!empty($customer)) {
+                    
+                    $card_id = $customer->sources->data[0]->id;
+                    $brand = $customer->sources->data[0]->brand;
+                    $customer_id = $customer->sources->data[0]->customer;
+                    $credit_card_number = $customer->sources->data[0]->last4;
+                    $card_holder_name = $customer->sources->data[0]->name;        
+                    $customer_data = json_encode($customer);
+                } else {
+                    return false;  
+                }                
+                
+               //return $customer;
+              } catch(\Stripe\Error\InvalidRequest $e) {
+                 
+                return $e;// The request is invalid
+              }
+        }else{
+            return false;
+        }
+    }
+}

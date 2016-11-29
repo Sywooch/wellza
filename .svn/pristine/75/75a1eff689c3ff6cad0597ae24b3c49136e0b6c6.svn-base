@@ -1,0 +1,66 @@
+<?php
+
+namespace common\models\query;
+
+use Yii;
+
+class UserQuery extends \yii\db\ActiveQuery
+{
+    public function byId($val)
+    {
+        $this->andWhere('id = :userid',[':userid' => $val]);
+        return $this;
+    }
+    public function byUserId($val)
+    {
+        $this->andWhere('authtoken.user_id = :id',[':id' => $val]);
+        return $this;
+    }
+    
+    public function byUserType($email = null,$user_type = null,$status = null)
+    {
+        $this->andWhere('email = :adminemail AND user_type = :user_type AND status = :status',[':adminemail' => $email,':user_type' => $user_type,':status' => $status]);
+        return $this;
+    }
+    
+    public function byParams($id = null,$status = null)
+    {
+        $this->andWhere('id = :id AND status = :status',[':id' => $id,':status' => $status]);
+        return $this;
+    }
+    
+    public function byProvider($id = null,$status = null)
+    {
+        $this->andWhere('user.id = :id AND user.status = :status',[':id' => $id,':status' => $status]);
+        return $this;
+    }
+    
+    public function byParamEmail($email = null,$status = null)
+    {
+        $this->andWhere('email = :email AND status = :status',[':email' => $email,':status' => $status]);
+        return $this;
+    }
+    
+    public function bySocialType($social_type = null,$social_id = null)
+    {
+        $this->andWhere('social_id = :social_id AND social_type = :social_type  AND status = :status',[':social_id' => $social_id,':social_type' => $social_type,':status' => 10]);
+        return $this;
+    }
+    
+    public function byStatus($val = null,$user_type = null,$service_id = null,$sub_service_id = null,$latitude = null,$longitude = null)
+    {
+        $this->andWhere('user.status = :status AND user.user_type = :user_type AND provider_services.service_id = :service_id AND provider_services.sub_service_id = :sub_service_id AND user.latitude = :latitude AND user.longitude = :longitude',[':status' => $val,':user_type' => $user_type,':service_id' => $service_id,':sub_service_id' => $sub_service_id,':latitude' => $latitude,':longitude' => $longitude]);
+        //$this->andWhere('user.latitude = :latitude AND user.longitude = :longitude',[':latitude' => $latitude,':longitude' => $longitude]);
+        return $this;
+    }
+    
+    public function byRole($val = null)
+    {   $this->where('user_type = :user_type',[':user_type' => $val]);
+        return $this;
+    }
+    public function byActiveStatus()
+    {   $this->where(['status'=>10]);        
+        return $this;
+    }
+}
+

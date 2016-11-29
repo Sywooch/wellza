@@ -1,0 +1,624 @@
+<?php
+
+return  [
+    'paths'=>[
+    "/user/register"=> [
+            "post"=> [
+                "tags"=> [
+                    "user"
+                ],
+                "summary"=> "Register User",
+                "description"=> "Register a user as provider or client",
+                "operationId"=> "register",
+                "produces"=> [
+                    "application/xml",
+                    "application/json"
+                ],
+                "parameters"=> [
+                    [
+                        "in"=> "body",
+                        "name"=> "body",
+                        "description"=> "Register a user<br/><b>User Type must be ('Client','Provider')</b>",
+                        "required"=> false,
+                        "schema"=> [
+                            '$ref'=> "#/definitions/register"
+                        ]
+                    ]
+                ],
+                "responses"=> [
+                    "default"=> [
+                        "description"=> "successful operation"
+                    ]
+                ]
+            ]
+        ],
+        "/user/get-profile"=> [
+            "get"=> [
+                "tags"=> [
+                    "user"
+                ],
+                "summary"=> "Get profile data",
+                "description"=> "Get profile data of a client or service provider",
+                "operationId"=> "getprofile",
+                "produces"=> [
+                    "application/xml",
+                    "application/json"
+                ],
+                "parameters"=> [
+                    [
+                        "in"=> "header",
+                        "name"=> "access-token",
+                        "description"=> "Get profile data of a client or service provider",
+                        "required"=> true,
+                        "schema"=> [
+                            'type' => 'string'                            
+                        ]
+                    ]
+                ],
+                "responses"=> [
+                    "default"=> [
+                        "description"=> "successful operation"
+                    ]
+                ]
+            ]
+        ],
+        "/user/edit-profile"=> [
+            "post"=> [
+                "tags"=> [
+                    "user"
+                ],
+                "summary"=> "Edit profile data",
+                "description"=> "Edit profile data of a client or service provider",
+                "operationId"=> "editprofile",
+                "consumes" => [
+                    "multipart/form-data",
+                    "application/json",
+                    "application/xml"
+                ],
+                "produces"=> [
+                    "application/xml",
+                    "application/json"
+                ],
+                
+                "parameters"=> [
+                    [
+                        "in"=> "header",
+                        "name"=> "access-token",
+                        "description"=> "Access Token",
+                        "required"=> true,
+                        "schema"=> [
+                            'type' => 'string'                            
+                        ]
+                    ],
+                    [
+                        "in"=> "formData",
+                        "name"=> "first_name",
+                        "type" => "string",
+                        "description"=> "First name",
+                        "required"=> false,
+                        "schema"=> [
+                            'type' => 'string'                            
+                        ]
+                        
+                    ],
+                    [
+                        "in"=> "formData",
+                        "name"=> "last_name",
+                        "type" => "string",
+                        "description"=> "Last name",
+                        "required"=> false,
+                        "schema"=> [
+                            'type' => 'string'                            
+                        ]
+                        
+                    ],
+                    [
+                        "in"=> "formData",
+                        "name"=> "gender",
+                        "type" => "string",
+                        "enum" => ['Male','Female'],
+                        "description"=> "Gender",
+                        "required"=> true,
+                        "schema"=> [
+                            'type' => 'string'                            
+                        ]                       
+                    ],
+                    [
+                        "in"=> "formData",
+                        "name"=> "birth_date",
+                        "type" => "string",
+                        "description"=> "Birth Date<br/><b>(Format:dd-mm-yyyy)</b>",
+                        "required"=> false,
+                        "schema"=> [
+                            'type' => 'string'                            
+                        ]
+                        
+                    ],
+                    [
+                        "in"=> "formData",
+                        "name"=> "mobile",
+                        "type" => "string",
+                        "description"=> "Mobile",
+                        "required"=> false,
+                        "schema"=> [
+                            'type' => 'string'                            
+                        ]
+                        
+                    ],
+                    [
+                        "in"=> "formData",
+                        "name"=> "address",
+                        "type" => "string",
+                        "description"=> "Address",
+                        "required"=> false,
+                        "schema"=> [
+                            'type' => 'string'                            
+                        ]
+                        
+                    ],
+                    [
+                        "in"=> "formData",
+                        "name"=> "latitude",
+                        "type" => "number",
+                        "format" => "double",
+                        "description"=> "Latitude",
+                        "required"=> false,
+                        "schema"=> [
+                            'type' => 'number'                            
+                        ]
+                        
+                    ],
+                    [
+                        "in"=> "formData",
+                        "name"=> "longitude",
+                        "type" => "number",
+                        "format" => "double",
+                        "description"=> "Longitude",
+                        "required"=> false,
+                        "schema"=> [
+                            'type' => 'number'                            
+                        ]
+                        
+                    ],
+                    [
+                        "in"=> "formData",
+                        "name"=> "about_me",
+                        "type" => "array",
+                        "multiLine"=> true,
+                        "description"=> "About Me",
+                        "required"=> false,
+                        "schema"=> [
+                            'type' => 'string'                            
+                        ]
+                        
+                    ],
+                            
+                    [
+                        "in"=> "formData",
+                        "name"=> "profile_image",
+                        "type" => "file",
+                        "description"=> "Upload Profile Image",
+                        "required"=> false,
+                        "schema"=> [
+                            'type' => 'file'                            
+                        ]
+                        
+                    ],
+                    /*[
+                        "in"=> "body",
+                        "name"=> "body",
+                        "description"=> "Edit profile data of a client or service provider",
+                        "required"=> false,
+                        "schema"=> [
+                            '$ref'=> "#/definitions/editprofile"
+                        ]
+                    ],*/
+                    
+                ],
+                "responses"=> [
+                    "default"=> [
+                        "description"=> "successful operation"
+                    ]
+                ]
+            ]
+        ],
+        "/user/login"=> [
+            "post"=> [
+                "tags"=> [
+                    "user"
+                ],
+                "summary"=> "Login a user",
+                "description"=> "Login a client or service provider",
+                "operationId"=> "login",
+                "produces"=> [
+                    "application/xml",
+                    "application/json"
+                ],
+                "parameters"=> [
+                    [
+                        "in"=> "body",
+                        "name"=> "body",
+                        "description"=> "Login a client or service provider",
+                        "required"=> false,
+                        "schema"=> [
+                            '$ref'=> "#/definitions/login"
+                        ]
+                    ]
+                ],
+                "responses"=> [
+                    "default"=> [
+                        "description"=> "successful operation"
+                    ]
+                ]
+            ]
+        ],
+        "/user/social-login"=> [
+            "post"=> [
+                "tags"=> [
+                    "user"
+                ],
+                "summary"=> "Social Login user",
+                "description"=> "Login via social media for client only",
+                "operationId"=> "sociallogin",
+                "consumes" => [
+                    "application/xml",
+                    "application/json"
+                ],
+                "produces"=> [
+                    "application/xml",
+                    "application/json"
+                ],
+                "parameters"=> [
+                    [
+                        "in"=> "body",
+                        "name"=> "body",
+                        "description"=> "Login via social media for client only.<b>social_type must be like for eg: facebook,twitter,linkedin</b>",
+                        "required"=> false,
+                        "schema"=> [
+                            '$ref'=> "#/definitions/sociallogin"
+                        ]
+                    ]
+                ],
+                "responses"=> [
+                    "default"=> [
+                        "description"=> "successful operation"
+                    ]
+                ]
+            ]
+        ],
+        "/user/logout"=> [
+            "get"=> [
+                "tags"=> [
+                    "user"
+                ],
+                "summary"=> "Logout a user",
+                "description"=> "Logout a client or service provider",
+                "operationId"=> "logout",
+                "produces"=> [
+                    "application/xml",
+                    "application/json"
+                ],
+                "parameters"=> [
+                    [
+                        "in"=> "header",
+                        "name"=> "access-token",
+                        "description"=> "Logout a client or service provider",
+                        "required"=> true,
+                        "schema"=> [
+                            'type' => 'string'
+                        ]
+                    ]
+                ],
+                "responses"=> [
+                    "default"=> [
+                        "description"=> "successful operation"
+                    ]
+                ]
+            ]
+        ],
+        "/user/reset-password-request" => [
+            "post" => [
+                "tags" => [
+                    "user"
+                ],
+                "summary" => "Reset password request",
+                "description" => "This can only be done by non-logged in users.",
+                "operationId" => "reset-password-request",
+                "produces" => [
+                    "application/xml",
+                    "application/json"
+                ],
+                "parameters" => [
+                    [
+                        "in" => "body",
+                        "name" => "body",
+                        "description" => "Reset password request",
+                        "required" => true,
+                        "schema" => [
+                            '$ref' => "#/definitions/reset-password-request"
+                        ]
+                    ]
+                ],
+                "responses" => [
+                    "default" => [
+                        "description" => "successful operation"
+                    ]
+                ]
+            ]
+        ],
+        "/user/change-password" => [
+            "post" => [
+                "tags" => [
+                    "user"
+                ],
+                "summary" => "Change password",
+                "operationId" => "change-password",
+                "produces" => [
+                    "application/xml",
+                    "application/json"
+                ],
+                "parameters" => [
+                    [
+                        "name" => "access-token",
+                        "in" => "header",
+                        "description" => "The user auth token",
+                        "required" => true,
+                        "type" => "string"
+                    ],
+                    [
+                        "in" => "body",
+                        "name" => "body",
+                        "description" => "",
+                        "required" => true,
+                        "schema" => [
+                            '$ref' => "#/definitions/change-password"
+                        ]
+                    ]
+                ],
+                "responses" => [
+                    "default" => [
+                        "description" => "successful operation"
+                    ]
+                ]
+            ]
+        ],
+        "/user/refer-friend" => [
+            "post" => [
+                "tags" => [
+                    "user"
+                ],
+                "summary" => "Refer Friend",
+                "operationId" => "refer_friend",
+                "produces" => [
+                    "application/xml",
+                    "application/json"
+                ],
+                "parameters" => [
+                    [
+                        "name" => "access-token",
+                        "in" => "header",
+                        "description" => "The user auth token",
+                        "required" => true,
+                        "type" => "string"
+                    ],
+                    [
+                        "in" => "body",
+                        "name" => "body",
+                        "description" => "",
+                        "required" => true,
+                        "schema" => [
+                            '$ref' => "#/definitions/refer_friend"
+                        ]
+                    ]
+                ],
+                "responses" => [
+                    "default" => [
+                        "description" => "successful operation"
+                    ]
+                ]
+            ]
+        ],
+        "/user/referred-friends" => [
+            "get" => [
+                "tags" => [
+                    "user"
+                ],
+                "summary" => "Referred Friend",
+                "operationId" => "referred_friend",
+                "produces" => [
+                    "application/xml",
+                    "application/json"
+                ],
+                "parameters" => [
+                    [
+                        "name" => "access-token",
+                        "in" => "header",
+                        "description" => "The user auth token",
+                        "required" => true,
+                        "type" => "string"
+                    ]
+                ],
+                "responses" => [
+                    "default" => [
+                        "description" => "successful operation"
+                    ]
+                ]
+            ]
+        ],
+    ],
+    'definitions'=>[
+        'register' => [
+            'type' => "object",
+            'properties' => [
+                'first_name'=>[
+                    'type'=>'string'
+                ],
+                'last_name'=>[
+                    'type'=>'string'
+                ],
+                'email'=>[
+                    'type'=>'string'
+                ],
+                'password'=>[
+                    'type'=>'string'
+                ],
+                'confirm_password'=>[
+                    'type'=>'string'
+                ],
+                'user_type'=>[
+                    'type'=>'string'
+                ],
+                'device_id'=>[
+                    'type'=>'string'
+                ],
+                'device_type'=>[
+                    'type'=>'string'
+                ],
+                'dev_certificate'=>[
+                    'type'=>'string'
+                ]
+            ],
+            'xml' => [
+                'name' => "Register"
+            ]
+        ],
+        'editprofile' => [
+            'type' => "object",
+            'properties' => [
+                /*'first_name'=>[
+                    'type'=>'string'
+                ],*/
+                'last_name'=>[
+                    'type'=>'string'
+                ],
+                'gender'=>[
+                    'type'=>'string'
+                ],
+                'birth_date'=>[
+                    'type'=>'string'
+                ],
+                
+                'mobile'=>[
+                    'type'=>'string'
+                ],
+                'address'=>[
+                    'type'=>'string'
+                ],
+                'about_me'=>[
+                    'type'=>'string'
+                ]
+            ],
+            'xml' => [
+                'name' => "Editprofile"
+            ]
+        ],
+        'sociallogin' => [
+            'type' => "object",
+            'properties' => [
+                'first_name'=>[
+                    'type'=>'string'
+                ],
+                'last_name'=>[
+                    'type'=>'string'
+                ],
+                'email'=>[
+                    'type'=>'string'
+                ],
+                'image_url'=>[
+                    'type'=>'string'
+                ],
+                'social_id'=>[
+                    'type'=>'string'
+                ],
+                'social_type'=>[
+                    'type'=>'string'
+                ],
+                'device_id'=>[
+                    'type'=>'string'
+                ],
+                'device_type'=>[
+                    'type'=>'string'
+                ],
+                'dev_certificate'=>[
+                    'type'=>'string'
+                ]
+            ],
+            'xml' => [
+                'name' => "SocialLogin"
+            ]
+        ],
+        'login' => [
+            'type' => "object",
+            'properties' => [
+                'email'=>[
+                    'type'=>'string'
+                ],
+                'password'=>[
+                    'type'=>'string'
+                ],
+                'device_id'=>[
+                    'type'=>'string'
+                ],
+                'device_type'=>[
+                    'type'=>'string'
+                ],
+                'dev_certificate'=>[
+                    'type'=>'string'
+                ]
+            ],
+            'xml' => [
+                'name' => "Login"
+            ]
+        ],
+        'reset-password-request' => [
+            'type' => "object",
+            'properties' => [
+                'email' => [
+                    'type' => "string"
+                ]
+            ],
+            'xml' => [
+                'name' => "Signup"
+            ]
+        ],
+        'change-password' => [
+            'type' => "object",
+            'properties' => [
+                'current_password' => [
+                    'type' => "string"
+                ],
+                'new_password' => [
+                    'type' => "string"
+                ],
+            ],
+            'xml' => [
+                'name' => "ChangePassword"
+            ]
+        ],
+        'refer_friend' => [
+            'type' => "object",
+            'properties' => [
+                'first_name' => [
+                    'type' => "string"
+                ],
+                'last_name' => [
+                    'type' => "string"
+                ],
+                'email' => [
+                    'type' => "string"
+                ],
+                'message' => [
+                    'type' => "string"
+                ],
+            ],
+            'xml' => [
+                'name' => "ReferFriend"
+            ]
+        ],
+        
+    ]
+    
+ ];
+                        
+
+

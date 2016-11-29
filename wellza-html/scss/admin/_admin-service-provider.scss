@@ -1,0 +1,422 @@
+.admin-service-provider{ 
+    .m-t-30{ margin-top: 30px;}
+    .panel-heading{ border-bottom: none !important;}
+    .customer-detail{padding: 60px 15px 30px; background-color: $color-white;box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.1);
+                     .customer-left{
+                         .customer-image{
+                             height: 200px; width: 200px; border: 3px solid $color-green; border-radius: 50%; padding: 5px; margin: 0 auto;
+                             @media(min-width:$screen-sm-min) and (max-width:$screen-md-max){
+                                 height: 120px; width: 120px;
+                             }
+                         }
+                         ul{
+                             li{
+                                 padding: 3px 0px;
+                             }
+                             .name{font-family:$avantgardestd-bk; font-size:28px; color:#333;
+                                   @media(min-width:$screen-sm-min) and (max-width:$screen-md-max){
+                                       font-size:18px;
+                                   }
+                             }
+                             .wellza-member{
+                                 font-size: 16px; color: #F8AD39; font-family: $avantgardestd-bk;
+                                 @media(min-width:$screen-sm-min) and (max-width:$screen-md-max){
+                                     font-size:14px;
+                                 }
+                             }
+                             .gender{
+                                 font-size: 16px; color: $color-666;font-family: $avantgarde-md;
+                                 @media(min-width:$screen-sm-min) and (max-width:$screen-md-max){
+                                     font-size:14px;
+                                 }
+                             }  
+                         }
+                     }
+
+                     .user-text-detail{
+                         .text-gray{
+                             color: #A0A0A0; font-family: $avantgardestd-bk; font-size:18px;border-bottom:1px solid #D6D6D6;margin-bottom:30px;
+                             @media(min-width:$screen-sm-min) and (max-width:$screen-md-max){
+                                 font-size:14px; 
+                             }
+                             &:first-child{margin-top:0;}
+                             span{color: $color-666; font-family: $avantgardestd-bk; font-size:20px;
+                                  @media(min-width:$screen-sm-min) and (max-width:$screen-md-max){
+                                      font-size:16px; 
+                                  }
+                             }
+                         }
+                     }
+    }
+    .service-provider-list{@extend .m-t-30;
+                           .table-responsive{
+                               padding:1px;
+                               @media(min-width:$screen-sm-min) and (max-width:$screen-lg-max){
+                                   width: 100%;  margin-bottom: 15px;overflow-y: hidden;      overflow-x: auto;
+                               }
+                               table{
+                                   @media(min-width:$screen-sm-min) and (max-width:$screen-lg-max){
+                                       width: 1400px; 
+                                   }  
+                               }
+                           }
+                           .head2{
+                               font-family: $avantgarde-md;font-size:28px;color:$heading-color;font-weight:bold;margin-top:40px;margin-bottom:20px;
+                           }
+                           .table-responsive{ padding: 1px;}
+                           .table{margin-bottom:0; }
+                           .main-provider-table{
+                               background-color: $color-white; box-shadow: 0 0 2px 1px rgba(0,0,0,0.1);
+                               .pad{padding:0px;border:0;}
+                               .data-table{
+                                   tr{
+                                       &:first-child{
+                                           td{
+                                               border-top: none;  
+                                           }
+                                       }
+                                   }
+
+                                   .table-user-wrap{
+                                       padding:30px 15px;
+                                       .user-img{
+                                           width: 75px; height: 75px; border: 2px solid #666; padding: 3px;  border-radius: 50%; display: inline-block; float: left;
+                                       }
+                                       .user-detail{
+                                           float: left;margin-top: 8px;margin-left: 25px;
+                                           .name{
+                                               font-family: $avantgardestd-bk; font-size:20px; color:#383838; font-weight:bold;margin-bottom:0;
+                                           }
+                                           .address{
+                                               font-family: $avantgardestd-bk; font-size:16px; color:$color-666;
+                                           }
+                                       }
+                                   }
+
+                                   .user-detail-tr{
+                                       font-family: $avantgardestd-bk;
+                                       background:#F9F9F9;
+                                       color:$color-666;
+                                       height: 60px;
+                                       td{vertical-align: middle;}
+                                       img{
+                                           margin-top: -5px;
+                                       }
+                                       .category{
+                                           padding-left: 15px;
+                                           padding-top:15px;
+                                           padding-bottom:15px;
+                                       }
+                                       .review{
+                                           color:$color-green;
+                                           font-size: 16px;
+                                           font-family: $avantgarde-md;
+                                       }
+                                       .clr-6{
+                                           color:$color-666;
+                                           font-family: $avantgarde-md;
+                                       }
+                                       .cancle{
+                                           color: $color-pink;
+                                           font-family: $avantgarde-md;
+                                       }
+                                       .done{
+                                           color:$color-green;
+                                           font-family: $avantgarde-md;
+                                       }
+                                   }
+
+                               }
+                           }
+
+    }
+    .product-status-list{margin-left: -20px;margin-right: -20px; @extend .m-t-30;
+                         .col-lg-3{
+                             padding: 0 20px;
+                         }
+                         .item{ margin-bottom: 20px;
+                                .product-detail{
+                                    text-align: center; background-color: $color-white;box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.1);padding-bottom:1px;
+                                    text-align: center;
+                                    .product-name{
+                                        font-size:20px; color: #52BFB8;font-family: $avantgarde-md;font-weight:normal; margin-top:20px;
+                                    }
+                                    .price{
+                                        .new-price{
+                                            font-size:18px; color:$color-pink;font-family: $avantgarde-md;
+                                        }
+                                        .old-price{
+                                            font-size: 15px; color:#A1A1A1;display:inline-block;position:relative;
+                                            &:after{
+                                                content: ''; display: block; position:absolute; width: 100%; height: 1px; background: $color-pink; top:10px;
+                                            }
+                                        }
+                                    }
+                                    .status{
+                                        font-family:$avantgarde-md;
+                                        padding-top:5px;
+                                    }
+                                    .return{
+                                        color:$color-666;
+                                    }
+                                    .cancle{
+                                        color:#A1A1A1;
+                                    }
+                                    .deliver{
+                                        color:$color-yellow;
+                                    }
+                                }
+                         }
+                         .owl-nav{
+                             position: absolute;
+                             top: 45%;
+                             width: 100%;
+                             height: 0;
+                             .owl-prev{
+                                 float: left;
+                                 position: relative;
+                                 left: -9px;
+                             }
+                             .owl-next{
+                                 float: right;
+                                 position: relative;
+                                 right: -9px;
+                             }
+                         }
+    }
+    .serice-offer-list{ @extend .m-t-30;}
+    .portfolio-list{
+        padding: 20px;margin-top: 30px; @extend .box-shadow; 
+        .portfolio-box{
+            margin-bottom: 20px;
+            img{
+                width: 100%;
+            }
+        }
+    }
+    .appointment-history-list{@extend .m-t-30;
+                              & > .row{
+                                  margin: 0 -23px;
+                              }
+                              .list-box{position: relative; margin: 0 8px 50px;text-align: center; padding:20px 0px 0; background-color: $color-white;box-shadow: 0 0 3px -1px rgba(0, 0, 0, 0.2);
+
+                                        .img-box{ position: relative; height: 171px; width: 171px;margin: 0 auto; border:4px solid #A4A4A4;border-radius: 50%;
+                                                  .provider-image{height: 100%; width: 100%; border-radius: 50%; border:5px solid $color-white;
+                                                                  img{
+                                                                      height:100%; width: 100%; margin:0 auto;
+                                                                  }  
+                                                  }
+
+                                                  &.check{
+                                                      border-color:#F2C24C; 
+                                                  }
+                                                  .chat{display: inline-block; position: absolute; right: -11px; top: 15px; z-index: 999;}
+                                                  .checkbox{display: inline-block; position: absolute; right:-11px; z-index: 999; top:15px;
+                                                            input[type=checkbox]:checked {
+                                                                + label{ 
+                                                                    span{ background-image: url('../images/like.png');  }
+                                                                }
+                                                            }
+                                                            label{ padding: 0px !important;
+                                                                   span{
+                                                                       background-image: url('../images/unlike.png'); height:40px; width: 40px;  background-repeat: no-repeat; 
+                                                                       display: inline-block; vertical-align: middle;
+                                                                   }
+                                                            }
+                                                            .checkbox, .radio { width: 100%; margin:0;}
+                                                            input[type=checkbox] {display: none;}
+                                                            label{
+                                                                &:before{
+                                                                    content:"";display: inline-block;position:absolute;left: 0; background-color:#F5F7FA;      
+                                                                }
+                                                            }
+                                                            input[type=checkbox]:checked + label{  }
+
+                                                  }
+
+                                        }
+                                        .provider-info{ margin: 10px 0;
+                                                        .provider-name{
+                                                            font-size: 28px; color: #333; margin-top: 15px;
+                                                        }
+                                                        .address{ font-size: 18px; color: #A1A1A1;}
+                                                        .timing{ color: $color-pink; font-size: 18px; font-family: $avantgarde-md; margin-top: 10px;}
+                                                        .rating{margin: 15px 0; 
+                                                                .review{
+                                                                    font-size: 20px; color: #A1A1A1; font-family: $avantgardestd-bk; font-weight: 600; margin-top: 5px;
+                                                                }
+                                                        }
+                                        }
+                                        .price-date-box{border-top: 2px solid #F0F0F0; letter-spacing: 0.9px; 
+                                                        .left, .right{
+                                                            float: left; width: 50%; text-align:left; padding: 10px 15px;
+                                                            @media(max-width:$screen-xlg-max){
+                                                                padding: 10px 5px; 
+                                                            }
+                                                            .icon{ margin-right: 10px;
+                                                                   img{
+                                                                       @media(max-width:$screen-xlg-max){
+                                                                           width:35px;
+                                                                       }
+                                                                   }
+                                                            }
+                                                            .icon, .price-box{
+                                                                float: left; 
+                                                            }
+                                                            .label-info{
+                                                                background-color: transparent; color: $color-666; font-size: 16px;
+                                                            }
+                                                            .price, .time{
+                                                                font-size: 20px; color: $color-black;font-family: $avantgarde-md; 
+                                                                @media(max-width:$screen-xlg-max){
+                                                                    font-size: 18px;
+                                                                }
+                                                            }
+                                                        }
+                                                        .left{
+                                                            border-right: 2px solid #F0F0F0;
+                                                        }
+                                        }
+
+                              }
+    }
+    .sales-history-list{ @extend .m-t-30;
+                         .table{
+                             margin-bottom: 0; border:0;
+                             td{
+                                 border:0;
+                             }
+                         }
+
+                         .sales-history-table-bg{ 
+                             background:#F8F8F8;
+
+                         }
+                         .sales-history-table-trans{
+                             background:transparent;
+                         }
+
+                         .sales-history-table{
+                             background:#fff; @extend .box-shadow; margin-bottom: 30px;
+                             .table{
+                                 @media(max-width:$screen-xs-max){
+                                     width: 1200px !important;
+                                 }
+                                 .pad0{padding:0;}
+
+                                 .sales-history-td-user{
+                                     padding-left:40px;
+                                     img{
+                                         @media(max-width:$screen-xs-max){
+                                             width: 100px;
+                                         }
+                                     }
+                                 } 
+
+                                 th{
+                                     color: $color-666; font-family:$avantgarde-md; font-size: 20px;font-weight: normal; padding:15px 0;
+                                     border-bottom: 1px solid #eeeeee;
+                                 }
+
+                                 .sales-history-td div{
+                                     color: $color-666;font-family:$avantgarde-md; font-size: 17px; padding: 10px 0; display: block;
+                                     @media(max-width:$screen-xs-max){
+                                         font-size: 14px;padding:5px 0;
+                                     }
+                                 }
+
+                                 .sales-user-detail{
+                                     padding: 18px 0px 0px 20px;display: inline-block;
+
+                                     @media(max-width:$screen-xs-max){
+                                         padding: 8px 0px 0px 20px;
+                                     }
+
+                                     p{
+                                         &:nth-child(1){
+                                             color: $color-pink;font-family: $avantgarde-md;font-size: 22px;
+                                             @media(max-width:$screen-xs-max){
+                                                 font-size: 20px;
+                                             }
+                                         }
+
+                                         &:nth-child(2){
+                                             color: $color-666; font-family:$avantgardestd-bk;font-size: 16px;
+                                             @media(max-width:$screen-xs-max){
+                                                 font-size: 13px;
+                                             }
+                                         }
+                                     }
+
+                                     span{
+                                         color: $color-green;font-family:$avantgardestd-bk; font-size: 17px; background:url(#{$imageurl}/select-green.png); background-position: left center; background-repeat: no-repeat;
+                                     padding:5px 0 5px 35px;
+                                     @media(max-width:$screen-xs-max){
+                                         font-size: 15px; background-size: 25px;
+                                     }
+                                 }
+                             } 
+
+                             .sales-total-table{
+                                 border-top: 1px solid #EEEEEE;
+                                 .sales-total-comm{
+                                     padding-left:60px;
+                                     div{
+                                         color:#9F9F9F;font-size: 22px;font-family:$avantgardestd-bk;
+                                         @media(max-width:$screen-xs-max){
+                                             font-size: 18px;
+                                         }
+                                     }
+                                     span{
+                                         color: $color-green; font-size: 22px; font-family: $avantgarde-md;
+                                         @media(max-width:$screen-xs-max){
+                                             font-size: 20px;
+                                         }
+                                     }
+                                 } 
+
+                                 .sales-total-td{
+                                     padding-right:93px;
+                                     div{
+                                         color:  $color-666; font-size: 22px;  font-family:$avantgardestd-bk; 
+                                         @media(max-width:$screen-xs-max){
+                                             font-size: 22px;
+                                         }
+                                     }
+                                     span{ 
+                                         color: $color-green;  font-size: 22px;font-family: $avantgarde-md;
+                                         @media(max-width:$screen-xs-max){
+                                             font-size: 22px;
+                                         }
+                                     }
+                                 }
+                             }
+                         }
+    } 
+
+
+}
+.employee-info-list{@extend .m-t-30;
+                .employee-info-table{@extend .box-shadow;
+                     .table{ text-align: center;
+                             th{
+                                 color: $color-666; font-family:$avantgarde-md; font-size: 20px;font-weight: normal; padding:10px 15px;
+                                 border-bottom: 1px solid #eeeeee;text-align: center;
+                             }
+                             td{ padding: 20px 15px; font-family: $avantgarde-md;
+                                 a.file-area{ text-decoration: none; 
+                                     .file-icon{ 
+                                 border-radius: 50%;@extend .box-shadow;display: block;  height: 55px; line-height: 55px; margin: 0 auto; width: 55px;                                     }
+                                 }
+                                 .file-name{
+                                      color: #A0A0A0; font-size: 16px; margin-top: 10px;
+                                 }
+                                 .commission{
+                                      font-size: 17px; 
+                                 }
+                             }
+                     }
+                }
+
+}
+}  

@@ -1,0 +1,42 @@
+<?php
+/* * ********************************************************************************************************************* *//**
+ *  Controller Name: InboxController.php
+ *  Created: Codian Team
+ *  Description: This will manage client messages to provider done while chatting.Manages the ajax call functions.
+ * ************************************************************************************************************************* */
+
+namespace frontend\modules\client\controllers;
+
+use Yii;
+use yii\base\InvalidParamException;
+use yii\web\BadRequestHttpException;
+use yii\web\Response;
+use yii\widgets\ActiveForm;
+
+class InboxController extends \frontend\modules\client\components\Controller
+{
+    public function actionIndex()
+    {
+        $model = new \common\models\Message();
+        $model->scenario = 'clientinbox';
+        return $this->render('inbox',['model' =>$model]);
+    }
+    /**
+     * Send message from here
+     * **/
+    public function actionSendMessage() {
+        $model = new \common\models\Message(); 
+        $post = Yii::$app->request->post();
+        $data = json_decode($post);
+        $message = $model->saveMessage($data);
+        return $message;
+    }
+
+}
+
+/********************************************** Ajax Driven functions ******************************************************************* */
+/*************************************************************************************************************************************** */
+
+/*************************************************************************************************************************************/
+// EOF: MyProfileController.php
+/*************************************************************************************************************************************/

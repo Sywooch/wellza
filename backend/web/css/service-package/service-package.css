@@ -1,0 +1,29 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 27 Sep, 2016, 5:58:30 PM
+    Author     : User
+*/
+
+#preloader {
+    left: 50%;
+    position: fixed;
+    right: 0;
+    top: 50%;
+    z-index: 9999;
+}
+.overlay {
+    background: #fff;
+    //display: none;
+    height: 100%;
+    position: fixed;
+    right: 0;
+    top: 0;
+    width: 100%;
+    z-index: 9999;
+    opacity: 0.5;
+}
+

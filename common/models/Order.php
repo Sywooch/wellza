@@ -1,0 +1,307 @@
+<?php
+
+namespace common\models;
+
+use Yii;
+use  yii\web\Session;
+use yii\helpers\ArrayHelper;
+use yii\behaviors\TimestampBehavior;
+use yii\db\Expression;
+use yii\web\NotFoundHttpException;
+/**
+ * This is the model class for table "order".
+ *
+ * @property integer $id
+ * @property integer $user_id
+ * @property string $invoice_number
+ * @property string $store_name
+ * @property string $currency
+ * @property string $payment_method
+ * @property string $comment
+ * @property integer $order_tracking_number
+ * @property string $total
+ * @property string $shipping_charge
+ * @property string $tax
+ * @property string $status
+ * @property string $ip_address
+ * @property string $user_agent
+ * @property string $created_at
+ * @property string $updated_at
+ *
+ * @property CouponHistory[] $couponHistories
+ * @property GiftVoucher[] $giftVouchers
+ * @property User $user
+ * @property OrderDetail[] $orderDetails
+ * @property TransactionTable[] $transactionTables
+ * @property VoucherHistory[] $voucherHistories
+ */
+class Order extends base\BaseOrder
+{
+    /**
+     * @inheritdoc
+     */
+    public static function tableName()
+    {
+        return 'order';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function rules()
+    {
+        return [
+            [['user_id', 'order_tracking_number'], 'integer'],
+            [['comment', 'status'], 'string'],
+            [['total', 'shipping_charge', 'tax'], 'number'],
+            [['created_at', 'updated_at'], 'safe'],
+            [['invoice_number', 'ip_address', 'user_agent'], 'string', 'max' => 150],
+            [['store_name'], 'string', 'max' => 60],
+            [['currency'], 'string', 'max' => 20],
+            [['payment_method'], 'string', 'max' => 100],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function attributeLabels()
+    {
+        return [
+            'id' => 'ID',
+            'user_id' => 'User ID',
+            'invoice_number' => 'Invoice Number',
+            'store_name' => 'Store Name',
+            'currency' => 'Currency',
+            'payment_method' => 'Payment Method',
+            'comment' => 'Comment',
+            'order_tracking_number' => 'Order Tracking Number',
+            'total' => 'Total',
+            'shipping_charge' => 'Shipping Charge',
+            'tax' => 'Tax',
+            'status' => 'Status',
+            'ip_address' => 'Ip Address',
+            'user_agent' => 'User Agent',
+            'created_at' => 'Created At',
+            'updated_at' => 'Updated At',
+        ];
+    }
+    
+    /**
+     * 
+     * @return type
+     */
+    
+    public function behaviors() {
+        return [
+            [
+                'class' => \yii\behaviors\TimestampBehavior::className(),
+                'createdAtAttribute' => 'created_at',
+                'updatedAtAttribute' => 'updated_at',
+                'attributes' => [
+                    \yii\db\ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
+                    \yii\db\ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
+                ],
+                'value' => new Expression('NOW()'),
+            ],
+        ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCouponHistories()
+    {
+        return $this->hasMany(CouponHistory::className(), ['order_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getGiftVouchers()
+    {
+        return $this->hasMany(GiftVoucher::className(), ['order_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUser()
+    {
+        return $this->hasOne(User::className(), ['id' => 'user_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getOrderDetails()
+    {
+        return $this->hasMany(OrderDetail::className(), ['order_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTransactionTables()
+    {
+        return $this->hasMany(TransactionTable::className(), ['order_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getVoucherHistories()
+    {
+        return $this->hasMany(VoucherHistory::className(), ['order_id' => 'id']);
+    }
+
+    /**
+     * @inheritdoc
+     * @return \common\models\query\OrderQuery the active query used by this AR class.
+     */
+    public static function find()
+    {
+        return new \common\models\query\OrderQuery(get_called_class());
+    }
+    
+    public function saveOrder() {
+        $model = new Order();
+        Yii::$app->db->createCommand('set foreign_key_checks=0')->execute();
+             
+    }
+    
+    public function updateOrder($returndata = null,$type = null) {
+        $model = new Order();
+        $session = Yii::$app->session;
+        Yii::$app->db->createCommand('set foreign_key_checks=0')->execute();
+        if($type == 'update') {
+            $order = self::findOne(['id' => $session->get('order_id')]);
+            
+            $order_id = $returndata->id;
+            $amount = $returndata->amount/100;
+            $balance_transaction = $returndata->balance_transaction;
+            $currency = $returndata->currency;
+            $created = $returndata->created;
+
+            $order->currency = $returndata->currency;
+            $order->total = $amount;
+            $order->invoice_number = $order_id;
+            $order->comment = $returndata->description;
+            $order->status = 'Complete';
+            if($order->update(false)) {
+                $order_detail = new OrderDetail();
+                $order_detail->saveOrderDetail($session->get('order_id'));
+                Yii::$app->db->createCommand('set foreign_key_checks=1')->execute();
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            $model->user_id = Yii::$app->user->id;
+            $model->store_name = 'Wellza';
+            $model->payment_method = 'Stripe'; 
+            $model->status = 'Pending';
+            $model->ip_address = Yii::$app->getRequest()->getUserIP();
+            $model->user_agent = Yii::$app->getRequest()->getUserAgent();
+            if($model->save(false)) {
+                $session['order_id'] = $model->id; 
+                Yii::$app->db->createCommand('set foreign_key_checks=1')->execute();
+                return true;
+            } else {
+                return false;
+            }
+        }
+       
+    }
+    
+    public static function purchasedProduct($userId) {
+        $where = "WHERE o.user_id = {$userId} AND o.`status` = 'Complete' AND od.commodity_type = 'product'";
+        $query = "SELECT o.id,od.product_id,od.product_name,od.created_at,od.shipping_address1,od.shipping_address2,
+            od.city,od.zip,od.price,o.tax,o.shipping_charge,od.quantity,od.`code`,pi.product_image
+        FROM `order` o JOIN order_detail od ON o.id = od.order_id
+        JOIN product_image pi ON od.product_id = pi.product_id AND pi.is_cover = 1 {$where}";
+        $count = \yii::$app->db->createCommand($query)->queryScalar();
+        $dataProvider = new \yii\data\SqlDataProvider([
+            'sql' => $query,
+            'totalCount' => $count,
+            'pagination' => [
+                'pageSize' => 10,
+            ],
+        ]);
+        if (!empty($dataProvider)) {
+            $result = [];
+            $url = \Yii::$app->urlManagerBackend->baseurl;
+            foreach ($dataProvider->getModels() as $data) {
+                if (!empty($data['product_image']) && file_exists('../../backend/web/' . $data['product_image'])) {
+                    return $url . $data['product_image'];
+                } else {
+                    return $url . '/uploads/products/default-product-image.png';
+                }
+                $result[] = $data;
+            }
+            $dataProvider->setModels($result);
+        }
+        return $dataProvider;
+    }
+    public static function purchasedProduct2($userId) {
+        $where = "WHERE o.user_id = {$userId} AND o.`status` = 'Complete' AND od.commodity_type = 'product'";
+        $query = "SELECT o.id,od.product_id,od.product_name,od.created_at,od.shipping_address1,od.shipping_address2,
+            od.city,od.zip,od.price,o.tax,o.shipping_charge,od.quantity,od.`code`,pi.product_image
+        FROM `order` o JOIN order_detail od ON o.id = od.order_id
+        JOIN product_image pi ON od.product_id = pi.product_id AND pi.is_cover = 1 {$where}";
+        $count = \yii::$app->db->createCommand($query)->queryScalar();
+        $dataProvider = new \yii\data\SqlDataProvider([
+            'sql' => $query,
+            'totalCount' => $count,
+            'pagination' => [
+                'pageSize' => 10,
+            ],
+        ]);
+        if (!empty($dataProvider)) {
+            $result = [];
+            $url = \Yii::$app->urlManagerBackend->baseurl;
+            foreach ($dataProvider->getModels() as $data) {
+                if (!empty($data['product_image']) && file_exists('../../backend/web/' . $data['product_image'])) {
+                    return $url . $data['product_image'];
+                } else {
+                    return $url . '/uploads/products/default-product-image.png';
+                }
+                $result[] = $data;
+            }
+            $dataProvider->setModels($result);
+        }
+        return $dataProvider;
+    }
+    
+    public static function placeOrder($userId) {
+        $model = new Order;
+        $model->user_id = $userId;
+        $model->store_name = 'Wellza';
+        $model->payment_method = 'Stripe';
+        $model->status = 'Pending';
+        $model->ip_address = Yii::$app->getRequest()->getUserIP();
+        $model->user_agent = Yii::$app->getRequest()->getUserAgent();
+        if ($model->save(false)) {
+            return $model;
+        } else {
+            return false;
+        }
+    }
+
+    public static function updateOrderStatus($userId,$orderId, $paymentParams) {
+        $order = self::findOne($orderId);
+        $amount = $paymentParams->amount / 100;
+        $order->currency = $paymentParams->currency;
+        $order->total = $amount;
+        $order->invoice_number = $paymentParams->id;
+        $order->comment = $paymentParams->description;
+        $order->status = 'Complete';
+        if ($order->update(false)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+}

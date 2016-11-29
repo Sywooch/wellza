@@ -1,0 +1,946 @@
+<?php
+
+namespace common\components;
+
+use Yii;
+use yii\web\Response;
+use common\models\EmailTemplate;
+use common\models\Followers;
+
+class Utility {
+
+    public static $request;
+    public static $response;
+    public static $user;
+    public static $url;
+    public static $getFlashMsg;
+
+    const DATE_FORMAT = 'php:Y-m-d';
+    const DATETIME_FORMAT = 'php:Y-m-d H:i:s';
+    const TIME_FORMAT = 'php:H:i:s';
+
+    public static function sendMail($data) {
+
+        $from = Utility::getConfig('admin_email');
+        $to = '';
+        $subject = '';
+        $emailContent = '';
+        switch ($data['request']) {
+
+            case "forget_password":
+                $subject = "Reset Password Link";
+                $to = $data['to'];
+                $link = $data['link'];
+                $emailModel = EmailTemplate::getEmailTemplate('forget_password');
+                $emailContent = $emailModel->content;
+                $emailContent = str_replace('{name}', ucwords($data['user']), $emailContent);
+                $emailContent = str_replace('{link}', $data['link'], $emailContent);
+                $emailContent = str_replace('{logo}', $data['logo'], $emailContent);
+                break;
+            case "registration":
+                $subject = "Registration";
+                $to = $data['to'];
+                //$link = $data['activationLink'];
+                //$emailModel = EmailTemplate::getEmailTemplate('registration');
+                //$emailContent = $emailModel->content;
+                //$emailContent = str_replace('{name}', ucwords($data['user_name']), $emailContent);
+                //$emailContent = str_replace('{link}', $data['activationLink'], $emailContent);
+                //$emailContent = str_replace('{logo}', $data['logo'], $emailContent);
+                break;
+            case "social_registration":
+                $subject = "Registration";
+                $to = $data['to'];
+                //$emailModel = EmailTemplate::getEmailTemplate('facebook_registration');
+                //$emailContent = $emailModel->content;
+                //$emailContent = str_replace('{name}', ucwords($data['user_name']), $emailContent);
+                //$emailContent = str_replace('{email}', $data['to'], $emailContent);
+                //$emailContent = str_replace('{password}', $data['password'], $emailContent);
+                break;
+            case "user_registration":
+                $subject = "Registration";
+                $to = $data['email'];
+                $emailModel = EmailTemplate::getEmailTemplate('user_registration');
+                $emailContent = $emailModel->content;
+                $emailContent = str_replace('{name}', ucwords($data['user_name']), $emailContent);
+                $emailContent = str_replace('{logo}', $data['logo'], $emailContent);
+                break;
+            case "admin_registration":
+                $subject = "Admin Registration";
+                $to = $data['email'];
+                $emailModel = EmailTemplate::getEmailTemplate('admin_registration');
+                $emailContent = $emailModel->content;
+                $emailContent = str_replace('{firstname}', ucwords($data['first_name']), $emailContent);
+                $emailContent = str_replace('{lastname}', ucwords($data['last_name']), $emailContent);
+                $emailContent = str_replace('{email}', $data['email'], $emailContent);
+                $emailContent = str_replace('{password}', $data['password'], $emailContent);
+                $emailContent = str_replace('{logo}', $data['logo'], $emailContent);
+                break;
+            case "staff_registration":
+                $subject = "Staff Registration";
+                $to = $data['email'];
+                $emailModel = EmailTemplate::getEmailTemplate('staff_registration');
+                $emailContent = $emailModel->content;
+                $emailContent = str_replace('{firstname}', ucwords($data['first_name']), $emailContent);
+                $emailContent = str_replace('{lastname}', ucwords($data['last_name']), $emailContent);
+                $emailContent = str_replace('{email}', $data['email'], $emailContent);
+                $emailContent = str_replace('{password}', $data['password'], $emailContent);
+                $emailContent = str_replace('{logo}', $data['logo'], $emailContent);
+                break;
+            case "refer_friend":
+                $subject = "Refer code";
+                $to = $data['email'];
+                $emailModel = EmailTemplate::getEmailTemplate('refer_friend');
+                $emailContent = $emailModel->content;
+                $emailContent = str_replace('{firstname}', ucwords($data['first_name']), $emailContent);
+                $emailContent = str_replace('{lastname}', ucwords($data['last_name']), $emailContent);
+                $emailContent = str_replace('{email}', $data['email'], $emailContent);
+                $emailContent = str_replace('{message}', $data['message'], $emailContent);
+                $emailContent = str_replace('{logo}', $data['logo'], $emailContent);
+                break;
+            default:
+            case "support":
+                $subject = "query";
+                $to = Utility::getConfig('admin_email');
+                $emailModel = EmailTemplate::getEmailTemplate('support');
+                $emailContent = $emailModel->content;
+                $emailContent = str_replace('{name}', ucwords($data['name']), $emailContent);
+                $emailContent = str_replace('{provider}', ucwords($data['provider']), $emailContent);
+                $emailContent = str_replace('{service}', ucwords($data['service']), $emailContent);
+                $emailContent = str_replace('{email}', $data['email'], $emailContent);
+                $emailContent = str_replace('{message}', $data['message'], $emailContent);
+                $emailContent = str_replace('{logo}', $data['logo'], $emailContent);
+                break;
+            default:
+                echo "default case";
+        }
+        \Yii::$app->mail->compose()
+                ->setFrom([$from => 'Wellza'])
+                ->setTo($to)
+                ->setSubject($subject)
+                ->setHtmlBody($emailContent)
+                ->send();
+        return true;
+    }
+
+    public static function get24hrtime($time_in_12_hour_format) {
+        if (empty($time_in_12_hour_format) || $time_in_12_hour_format == NULL)
+            return NULL;
+        else
+            return $time_in_24_hour_format = date("H:i", strtotime($time_in_12_hour_format));
+    }
+
+    public static function get12hrtime($time_in_24_hour_format) {
+        if (empty($time_in_24_hour_format) || $time_in_24_hour_format == NULL)
+            return NULL;
+        else
+            return $time_in_12_hour_format = date("h:i A", strtotime($time_in_24_hour_format));
+    }
+
+    public static function showFlashMsg() {
+        if (Yii::$app->session->hasFlash('success')):
+            ?>
+            <div class="alert alert-success" role="alert">
+                <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <?= Yii::$app->session->getFlash('success') ?>
+            </div>
+            <?php
+        endif;
+        if (Yii::$app->session->hasFlash('info')):
+            ?>
+            <div class="alert alert-info" role="alert">
+                <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <?= Yii::$app->session->getFlash('info') ?>
+            </div>
+            <?php
+        endif;
+        if (Yii::$app->session->hasFlash('error')):
+            ?>
+            <div class="alert alert-info" role="alert">
+                <button type="button" class="close" data-dismiss="error"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <?= Yii::$app->session->getFlash('error') ?>
+            </div>
+            <?php
+        endif;
+    }
+
+    public static function checkSalonImage($image) {
+        if (!empty($image)) {
+            $main_file = Yii::getAlias('@salon_image_url') . '/' . Yii::$app->user->id . '/profile/' . $image;
+            //$filename  = \Yii::getAlias('@webroot').'/uploads/gallary/' . Yii::$app->user->id . '/profile/' . $image;
+            $filename = '../../frontend/web/uploads/gallary/' . Yii::$app->user->id . '/profile/' . $image;
+            if (file_exists($filename)) {
+                return $main_file;
+            }
+        }
+        return Yii::$app->params['salonDefaultImage'];
+    }
+
+    public static function getProductImage($image) {
+        if (!empty($image)) {
+            $main_file = Yii::getAlias('@product_url') . '/' . $image;
+            $filename = '../../frontend/web/uploads/product/' . $image;
+            if (file_exists($filename)) {
+                return $main_file;
+            }
+        }
+        return Yii::$app->params['productDefaultImage'];
+    }
+
+    public static function checkStaffImage($image) {
+        if ($image) {
+            $main_file = Yii::getAlias('@staff_image_url') . '/' . $image;
+            //$filename  = \Yii::getAlias('@webroot').'/uploads/staff_image/' . $image;
+            $filename = '../../frontend/web/uploads/staff_image/' . $image;
+            if (file_exists($filename)) {
+                return $main_file;
+            } else {
+                return Yii::$app->params['staffDefaultImage'];
+            }
+        } else {
+            return Yii::$app->params['staffDefaultImage'];
+        }
+    }
+
+    public static function getConfig($key) {
+        $model = \Yii::$app->db->createCommand("SELECT email FROM user where user_type='Administrator'");
+        $value = $model->queryColumn();
+        if (!empty($value))
+            return $value[0];
+        else
+            return null;
+    }
+
+    public static function showName($fname, $lname = "") {
+        if ($lname == "")
+            return ucwords($fname);
+        else
+            return ucwords($fname . " " . $lname);
+    }
+
+    public static function renderJSON($data) {
+        header('Content-type: application/json');
+        echo json_encode($data);
+        die;
+    }
+
+    public static function changeImageName($fileName) {
+        $ext = pathinfo($fileName, PATHINFO_EXTENSION);
+        $uniqueName = uniqid() . "-" . time();
+        $newName = str_replace($fileName, $uniqueName, $fileName) . "." . $ext;
+        return $newName;
+    }
+
+    public static function changeFileName($fileName) {
+        $ext = pathinfo($fileName, PATHINFO_EXTENSION);
+        $uniqueName = uniqid() . "-" . time();
+        $newName = str_replace($fileName, $uniqueName, $fileName) . "." . $ext;
+        return $newName;
+    }
+
+    public static function changeDateFormatToDMY($date) {
+//        $newDate = date('M "-" DD "-" y')
+        $newDate = date(' d M y', strtotime($date));
+        return $newDate;
+    }
+
+    public static function unlinkFile($path, $file) {
+        $path . $file;
+        if (!empty($file) && file_exists($path . $file)) {
+            unlink($path . $file);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public static function generateAccessToken() {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $randomStr = substr(str_shuffle($characters), 0, 5);
+        $accessToken = time() . $randomStr;
+        return $accessToken;
+    }
+
+//    public static function make_slug($title) {
+//        $slug = preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '-', $title));
+//        return $slug;
+//    }
+
+    public static function getLatLangByAddress($address) {
+        $latlangString = '';
+        $Address = urlencode($address);
+        $request_url = "http://maps.googleapis.com/maps/api/geocode/xml?address=" . $Address . "&sensor=true";
+        $xml = simplexml_load_file($request_url) or die("url not loading");
+        $status = $xml->status;
+        if ($status == "OK") {
+            $Lat = $xml->result->geometry->location->lat;
+            $Lon = $xml->result->geometry->location->lng;
+            $latlangString = "$Lat,$Lon";
+            return $latlangString;
+        } else {
+            return $latlangString;
+        }
+    }
+
+    /**
+     * calculate distance between two points
+     * @param array $param
+     * @return float
+     */
+    public static function haversineDistance($param) {
+        $latitudeFrom = $param['latFrom'];
+        $longitudeFrom = $param['langFrom'];
+        $latitudeTo = $param['latTo'];
+        $longitudeTo = $param['langTo'];
+        $earthRadius = 6371000;
+        $sql = " SELECT FLOOR(
+                    (
+                        6373 *
+                        acos(
+                            cos( radians( '{$latitudeFrom}' ) ) *
+                            cos( radians($latitudeTo ) ) *
+                            cos(
+                                radians( $longitudeTo ) - radians( '{$longitudeFrom}' )		
+                            ) +
+                            sin(radians('{$latitudeFrom}' ) ) *		
+                            sin(radians( $latitudeTo) )
+                        )
+                        )
+                    )  as distance";
+        return \yii::$app->db->createCommand($sql)->queryScalar();
+    }
+
+    public static function getDistanceInMeters($param) {
+        $latitudeFrom = $param['latFrom'];
+        $longitudeFrom = $param['langFrom'];
+        $latitudeTo = $param['latTo'];
+        $longitudeTo = $param['langTo'];
+        $earthRadius = 6371000;
+        $sql = " SELECT (
+                    (
+                        6373 *
+                        acos(
+                            cos( radians( '{$latitudeFrom}' ) ) *
+                            cos( radians($latitudeTo ) ) *
+                            cos(
+                                radians( $longitudeTo ) - radians( '{$longitudeFrom}' )		
+                            ) +
+                            sin(radians('{$latitudeFrom}' ) ) *		
+                            sin(radians( $latitudeTo) )
+                        )
+                        )
+                    )  as distance";
+        $miles = \yii::$app->db->createCommand($sql)->queryScalar();
+        return $miles * 1609.344;
+    }
+
+    /**
+     * Function for sending push notification to a single user
+     * @param integer $id user_id
+     * @param string $message
+     * @param array $responseData
+     * @return boolean
+     */
+    public static function sendPushNotification($id, $message, $responseData) {
+//         \yii\helpers\VarDumper::dump($responseData,10,true);die;
+        $userDeviceData = \common\models\Authtoken::find()->select('*')->where(['user_id' => $id])->distinct()->all();
+        foreach ($userDeviceData as $userDevice) {
+            if (!empty($userDevice)) {
+                $deviceId = $userDevice->device_id;
+                if (!empty($deviceId)) {
+
+//                    if ($userDevice->device_type == 'ios' && strlen($deviceId) == 64) {
+//
+//                        if ($userDevice->certification_type == 'development') {
+//                            \Yii::$app->apns->environment = \bryglen\apnsgcm\Apns::ENVIRONMENT_SANDBOX;
+//                            \Yii::$app->apns->pemFile = 'FantopiasDevelopment.pem';
+//                            $apns = \Yii::$app->apns;
+//                            $apns->send($deviceId, strip_tags($message), $responseData, [
+//                                'sound' => 'default',
+//                                'badge' => 1
+//                                    ]
+//                            );
+//                        } else if ($userDevice->certification_type == 'live' || $userDevice->certification_type == 'distribution') {
+//                            \Yii::$app->apns->environment = \bryglen\apnsgcm\Apns::ENVIRONMENT_PRODUCTION;
+//                            \Yii::$app->apns->pemFile = 'FantopiasDevelopment.pem';
+//                            $apns = \Yii::$app->apns;
+//                            $apns->send($deviceId, strip_tags($message), $responseData, [
+//                                'sound' => 'default',
+//                                'badge' => 1
+//                                    ]
+//                            );
+//                        }
+//                    }
+
+                    if ($userDevice->device_type == 'android') {
+                        $gcm = Yii::$app->gcm;
+                        $result = $gcm->send($deviceId, strip_tags($message), $responseData, [
+                            'timeToLive' => 3
+                                ]
+                        );
+                    }
+                }
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Function for sending push notifications to multiple users at a time 
+     * @param array $ids Array of user Ids
+     * @param string $message
+     * @param array $responseData
+     * @return boolean
+     */
+    public static function sendMultiPushNotification($ids, $message, $responseData) {
+        $androidDeviceIds = [];
+        $iosLiveDeviceIds = [];
+        $iosDevDeviceIds = [];
+        $userDeviceData = \common\models\UserDevices::find()->select('*')->where(['user_id' => $ids])->distinct()->all();
+        foreach ($userDeviceData as $userDevice) {
+            if ($responseData['type'] == 'new_post') {
+                $memberDetail = \common\models\ClubMember::find()->where(['user_id' => $userDevice->user_id, 'fan_club_id' => $responseData['fan_club_id'], 'status' => 'active'])->one();
+                $role = !empty($memberDetail->role) ? $memberDetail->role : '';
+            }
+            if (!empty($userDevice) && $userDevice->device_type == 'android' && !empty($userDevice->device_id)) {
+                $androidDeviceIds[] = $userDevice->device_id;
+            }
+            if (!empty($userDevice) && $userDevice->device_type == 'ios') {
+                if (($userDevice->certification_type == 'live' || $userDevice->certification_type == 'distribution') && !empty($userDevice->device_id) && (strlen($userDevice->device_id) == 64)) {
+                    $iosLiveDeviceIds[] = $userDevice->device_id;
+                } elseif ($userDevice->certification_type == 'development' && !empty($userDevice->device_id) && (strlen($userDevice->device_id) == 64)) {
+                    $iosDevDeviceIds[] = $userDevice->device_id;
+                }
+            }
+        }
+        if (!empty($androidDeviceIds)) {
+            $gcm = Yii::$app->gcm;
+            $result = $gcm->sendMulti($androidDeviceIds, strip_tags($message), $responseData, [
+                'timeToLive' => 3
+                    ]
+            );
+        }
+        if (!empty($iosDevDeviceIds)) {
+            \Yii::$app->apns->environment = \bryglen\apnsgcm\Apns::ENVIRONMENT_SANDBOX;
+            \Yii::$app->apns->pemFile = 'FantopiasDevelopment.pem';
+            $apns = \Yii::$app->apns;
+            if ($responseData['type'] == 'new_post') {
+                $apns->sendMultiCustome($iosDevDeviceIds, strip_tags($message), $responseData, ['role' => $role], [
+                    'sound' => 'default',
+                    'badge' => 1
+                        ]
+                );
+            } else {
+                $apns->sendMulti($iosDevDeviceIds, strip_tags($message), $responseData, [
+                    'sound' => 'default',
+                    'badge' => 1
+                        ]
+                );
+            }
+        }
+
+        if (!empty($iosLiveDeviceIds)) {
+            \Yii::$app->apns->environment = \bryglen\apnsgcm\Apns::ENVIRONMENT_PRODUCTION;
+            \Yii::$app->apns->pemFile = 'FantopiasDevelopment.pem';
+            $apns = \Yii::$app->apns;
+            $apns->sendMulti($iosLiveDeviceIds, strip_tags($message), $responseData, [
+                'sound' => 'default',
+                'badge' => 1
+                    ]
+            );
+        }
+        return true;
+    }
+
+    public static function setTimezone($date, $timeZone) {
+        $date = new \DateTime($date, new \DateTimeZone($timeZone));
+        return ($date->format(\DateTime::ISO8601));
+    }
+
+    public static function getAddressByLatlang($lat, $lang) {
+        $geolocation = $lat . ',' . $lang;
+        $request = 'http://maps.googleapis.com/maps/api/geocode/json?latlng=' . $geolocation . '&sensor=false';
+        $file_contents = file_get_contents($request);
+        $json_decode = json_decode($file_contents);
+        $data = [];
+        if (isset($json_decode->results[0])) {
+            $response = array();
+            foreach ($json_decode->results[0]->address_components as $addressComponet) {
+                if (in_array('political', $addressComponet->types)) {
+                    $response[] = $addressComponet->long_name;
+                }
+            }
+            $count = count($response);
+            if ($count <= 5) {
+                if (isset($response[$count - 5])) {
+                    $second = $response[$count - 5];
+                } else {
+                    $second = 'null';
+                }
+                if (isset($response[$count - 4])) {
+                    $third = $response[$count - 4];
+                } else {
+                    $third = 'null';
+                }
+                if (isset($response[$count - 3])) {
+                    $fourth = $response[$count - 3];
+                } else {
+                    $fourth = 'null';
+                }
+                if (isset($response[$count - 2])) {
+                    $fifth = $response[$count - 2];
+                } else {
+                    $fifth = 'null';
+                }
+                if (isset($response[$count - 1])) {
+                    $sixth = $response[$count - 1];
+                } else {
+                    $sixth = 'null';
+                }
+                if ($second != 'null' && $third != 'null' && $fourth != 'null' && $fifth != 'null' && $sixth != 'null') {
+                    $data ['address'] = $second;
+                    $data ['city'] = $third;
+                    $data ['state'] = $fifth;
+                    $data ['country'] = $sixth;
+                } else if ($second == 'null' && $third != 'null' && $fourth != 'null' && $fifth != 'null' && $sixth != 'null') {
+                    $data ['address'] = $third;
+                    $data ['city'] = $third;
+                    $data ['state'] = $fifth;
+                    $data ['country'] = $sixth;
+                } else if ($second == 'null' && $third == 'null' && $fourth == 'null' && $fifth != 'null' && $sixth != 'null') {
+                    $data ['city'] = $third;
+                    $data ['state'] = $fifth;
+                    $data ['country'] = $sixth;
+                } else if ($second == 'null' && $third == 'null' && $fourth == 'null' && $fifth != 'null' && $sixth != 'null') {
+                    $data ['state'] = $fifth;
+                    $data ['country'] = $sixth;
+                }
+            } else {
+                if (isset($response[$count - 6])) {
+                    $first = $response[$count - 6];
+                } else {
+                    $first = 'null';
+                }
+                if (isset($response[$count - 5])) {
+                    $second = $response[$count - 5];
+                } else {
+                    $second = 'null';
+                }
+                if (isset($response[$count - 4])) {
+                    $third = $response[$count - 4];
+                } else {
+                    $third = 'null';
+                }
+                if (isset($response[$count - 3])) {
+                    $fourth = $response[$count - 3];
+                } else {
+                    $fourth = 'null';
+                }
+                if (isset($response[$count - 2])) {
+                    $fifth = $response[$count - 2];
+                } else {
+                    $fifth = 'null';
+                }
+                if (isset($response[$count - 1])) {
+                    $sixth = $response[$count - 1];
+                } else {
+                    $sixth = 'null';
+                }
+                if ($first != 'null' && $second != 'null' && $third != 'null' && $fourth != 'null' && $fifth != 'null' && $sixth != 'null') {
+
+                    $data ['address'] = $first . ',' . $second . ',' . $third;
+                    $data ['city'] = $fourth;
+                    $data ['state'] = $fifth;
+                    $data ['country'] = $sixth;
+                } else if ($first == 'null' && $second != 'null' && $third != 'null' && $fourth != 'null' && $fifth != 'null' && $sixth != 'null') {
+                    $data ['address'] = $second . ',' . $third;
+                    $data ['city'] = $fourth;
+                    $data ['state'] = $fifth;
+                    $data ['country'] = $sixth;
+                } else if ($first == 'null' && $second == 'null' && $third != 'null' && $fourth != 'null' && $fifth != 'null' && $sixth != 'null') {
+                    $data ['address'] = $third;
+                    $data ['city'] = $fourth;
+                    $data ['state'] = $fifth;
+                    $data ['country'] = $sixth;
+                } else if ($first == 'null' && $second == 'null' && $third == 'null' && $fourth == 'null' && $fifth != 'null' && $sixth != 'null') {
+                    $data ['city'] = $third;
+                    $data ['state'] = $fifth;
+                    $data ['country'] = $sixth;
+                } else if ($first == 'null' && $second == 'null' && $third == 'null' && $fourth == 'null' && $fifth != 'null' && $sixth != 'null') {
+                    $data ['state'] = $fifth;
+                    $data ['country'] = $sixth;
+                }
+            }
+        }
+        return $data;
+    }
+
+    public static function getTimeZoneByLatLang($lat, $lang) {
+        $json = file_get_contents("http://api.geonames.org/timezoneJSON?lat=" . $lat . "&lng=" . $lang . "&username=demo");
+        $data = json_decode($json);
+        return $tzone = !empty($data->timezoneId) ? $data->timezoneId : 'America/New_York';
+    }
+
+    public static function is_in_array($array, $key, $key_value) {
+        $within_array = false;
+        foreach ($array as $k => $v) {
+            if (is_array($v)) {
+                $within_array = self::is_in_array($v, $key, $key_value);
+                if ($within_array == true) {
+                    break;
+                }
+            } else {
+                if ($v == $key_value && $k == $key) {
+                    $within_array = true;
+                    break;
+                }
+            }
+        }
+        return $within_array;
+    }
+
+    static function createHours() {
+        $timing = [];
+        for ($i = 0; $i < 24; $i++) {
+            if ($i < 10) {
+                $i = '0' . $i;
+            }
+            if ($i < 12) {
+                $timing[$i . ':00:00'] = $i . ' : 00 AM';
+                $timing[$i . ':15:00'] = $i . ' : 15 AM';
+                $timing[$i . ':30:00'] = $i . ' : 30 AM';
+                $timing[$i . ':45:00'] = $i . ' : 45 AM';
+            } else if ($i == 12) {
+                $timing[$i . ':00:00'] = $i . ' : 00 AM';
+                $timing[$i . ':15:00'] = $i . ' : 15 PM';
+                $timing[$i . ':30:00'] = $i . ' : 30 PM';
+                $timing[$i . ':45:00'] = $i . ' : 45 PM';
+            } else {
+                if ($i < 22) {
+                    $j = '0' . ($i - 12);
+                } else {
+                    $j = $i - 12;
+                }
+                $timing[$i . ':00:00'] = $j . ' : 00 PM';
+                $timing[$i . ':15:00'] = $j . ' : 15 PM';
+                $timing[$i . ':30:00'] = $j . ' : 30 PM';
+                $timing[$i . ':45:00'] = $j . ' : 45 PM';
+            }
+        }
+        return $timing;
+    }
+
+    public static function generateRandomString($length = 8) {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[rand(0, $charactersLength - 1)];
+        }
+        return $randomString;
+    }
+
+    public static function getThumbImageSize($sourceImageWidth, $sourceImageHeight, $thumbMaxWidth, $thumbMaxHieght) {
+//        define('THUMBNAIL_IMAGE_MAX_WIDTH', 700);
+//        define('THUMBNAIL_IMAGE_MAX_HEIGHT', 700);
+        $sourceAspectRatio = $sourceImageWidth / $sourceImageHeight;
+        $thumbnailAspectRatio = $thumbMaxWidth / $thumbMaxHieght;
+        if ($sourceImageWidth <= $thumbMaxWidth && $sourceImageHeight <= $thumbMaxHieght) {
+            $thumbnailImageWidth = $sourceImageWidth;
+            $thumbnailImageHeight = $sourceImageHeight;
+        } elseif ($thumbnailAspectRatio > $sourceAspectRatio) {
+            $thumbnailImageWidth = (int) ($thumbMaxHieght * $sourceAspectRatio);
+            $thumbnailImageHeight = $thumbMaxHieght;
+        } else {
+            $thumbnailImageWidth = $thumbMaxWidth;
+            $thumbnailImageHeight = (int) ($thumbMaxWidth / $sourceAspectRatio);
+        }
+        return ['width' => $thumbnailImageWidth, 'height' => $thumbnailImageHeight];
+    }
+
+    public static function getFollowingAndFollowers($userId) {
+        $followingCount = Followers::find()->byfromId($userId)->byStatus('active')->count();
+        $followersCount = Followers::find()->byToId($userId)->byStatus('active')->count();
+        $data['following'] = $followingCount;
+        $data['followers'] = $followersCount;
+        return $data;
+    }
+
+    public static function getTimeString($hours = '', $minutes = '') {
+        $timeString = '';
+        if (!empty($hours) && $hours) {
+            if ($hours > 1) {
+                $timeString = $hours . ' HOURS ';
+            } else {
+                $timeString = $hours . ' HOUR ';
+            }
+        }
+        if (!empty($minutes) && $minutes) {
+            if ($minutes > 1) {
+                $timeString .= $minutes . ' MINUTES';
+            } else {
+                $timeString .= $minutes . ' MINUTE';
+            }
+        }
+        return $timeString;
+    }
+
+    public static function getFormatedTime($time = 0, $hours = 0, $minutes = 0) {
+        $timeStamp1 = strtotime($time);
+        $startTime = date("g:i A", $timeStamp1);
+        $timestamp2 = strtotime($time) + 60 * 60 * $hours + 60 * $minutes;
+        $endTime = date("g:i A", $timestamp2);
+        $timeString = $startTime . ' to' . $endTime;
+        return $timeString;
+    }
+
+    public static function customerImage($image, $id) {
+
+        $main_file = Yii::getAlias('@salon_image_url') . '/' . $id . '/profile/' . $image;
+        $filename = '../../uploads/gallary/' . $id . '/profile/' . $image;
+        if (file_exists($filename)) {
+            return $main_file;
+        } else {
+            return Yii::$app->params['salonDefaultImage'];
+        }
+    }
+
+    public static function make_slug($name, $id) {
+        $slug = preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '-', $name));
+        $data = \common\models\SalonProfile::find()->bySlug($slug)->one();
+        if (empty($data)) {
+            $slug = strtolower($slug);
+        } else {
+            $slug = strtolower($slug . '-' . $id);
+        }
+        if (empty(strpos($slug, '-'))) {
+            $slug = strtolower($slug . '-' . $id);
+        }
+        return $slug;
+    }
+
+    public static function getDayFromDate($date) {
+        if (self::validateDate($date)) {
+            $timestamp = strtotime($date);
+            $wd = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            $day = date('w', $timestamp);
+            $day = $wd[$day];
+            return $day;
+        } else {
+            return false;
+        }
+    }
+
+    public static function validateDate($date) {
+        $d = \DateTime::createFromFormat('Y/m/d', $date);
+        return $d && $d->format('Y/m/d') === $date;
+    }
+
+    public static function calculateDiscount($price, $perc) {
+        if (!empty($price) && !empty($perc)) {
+            $perAmt = ($price * $perc) / 100;
+            $newAmt = $price - $perAmt;
+            return ['newPrice' => $newAmt, 'saved' => $perAmt];
+        }
+        return ['newPrice' => $price, 'saved' => 0];
+    }
+
+    public static function getTimeInterval($t1) {
+        $j = 1;
+        $t2 = $t1;
+        $timeslots = array();
+        $timeslots[] = $t2;
+        // 15 min interval
+        while ($j <= 3) {
+            $t1 = strtotime($t1);
+            $t1 = date('H:i', strtotime('+15 min', $t1));
+            $timeslots[] = $t1;
+            $j++;
+        }
+        //return $t2;
+        return $timeslots;
+    }
+
+    /*     * *
+     * returns the category with classes
+     * ** */
+
+    public static function getCategoryWithClass($category = null) {
+
+        for ($i = 0; $i < count($category); $i++) {
+            switch ($category[$i]['category_name']) {
+                case 'HAIRCUT':
+                    $category[$i]['class_name'] = 'hair-icon';
+                    $category[$i]['controls'] = 'hair-makeup';
+                    break;
+                case 'MAKEUP':
+                    $category[$i]['class_name'] = 'skin-icon';
+                    $category[$i]['controls'] = 'skin';
+                    break;
+                case 'NAILS':
+                    $category[$i]['class_name'] = 'nails-icon';
+                    $category[$i]['controls'] = 'nails';
+                    break;
+                case 'FITNESS':
+                    $category[$i]['class_name'] = 'training-icon';
+                    $category[$i]['controls'] = 'training';
+                    break;
+                case 'MASSAGE':
+                    $category[$i]['class_name'] = 'massage-icon';
+                    $category[$i]['controls'] = 'massage';
+                    break;
+                case 'MENS GROMMING':
+                    $category[$i]['class_name'] = 'gromming-icon bundle-icon';
+                    $category[$i]['controls'] = 'gromming';
+                    break;
+                case 'SPRAY TAN':
+                    $category[$i]['class_name'] = 'tan-icon bundle-icon';
+                    $category[$i]['controls'] = 'tan';
+                    break;
+                case 'BLOWOUT':
+                    $category[$i]['class_name'] = 'blowout-icon bundle-icon';
+                    $category[$i]['controls'] = 'blowout';
+                    break;
+            }
+        }
+
+        return $category;
+    }
+
+    /*     * *
+     * get the list of province
+     * 
+     * ** */
+
+    public static function provinceData($country_id = null) {
+        $province = \common\models\MasterStates::getProvince($country_id);
+        $province = \yii\helpers\ArrayHelper::map($province, 'state_abbrev', 'state_name');
+        return $province;
+    }
+
+    /*     * *
+     * get the list of city
+     * 
+     * ** */
+
+    public static function cityData($country_id = null) {
+        $cities = \common\models\MasterCities::getCities($country_id);
+        $cities = \yii\helpers\ArrayHelper::map($cities, 'city_id', 'city_name');
+        return $cities;
+    }
+
+    /*     * *
+     * save profile image
+     * 
+     * ** */
+
+    public static function saveProfileImg($dirpath = null, $profile_image = null, $id = null, $isadmin = null) {
+
+        if (!empty($id)) {
+            $old_image = \common\models\User::findImgage($id);
+            if (!empty($old_image['profile_image'])) {
+
+                //$file = \Yii::getAlias('@webroot') . '/' . $old_image['profile_image'];
+                $file = \Yii::getAlias('@frontend').'/web/' . $old_image['profile_image'];
+                
+                $file = str_replace('\\', '/', $file);
+                if (file_exists($file)) {
+                    unlink($file);
+                }
+            }
+        }
+
+        if (!is_dir($dirpath)) {
+            mkdir($dirpath, 0777, true);
+        }
+        
+        $dirpath = $dirpath . time() . '_';
+        $temp_dirpath = \Yii::getAlias('@frontend').'/web/'.$dirpath;
+        
+        if (!empty($isadmin)) {
+            $temp_dirpath .= '.png';
+            file_put_contents($temp_dirpath, $profile_image);
+            $dirpath = str_replace(\Yii::getAlias('@frontend').'/web/', '', $temp_dirpath);
+            return $dirpath;
+        } else {
+            $profile_image->saveAs($dirpath . $profile_image->baseName . '.' . $profile_image->extension);
+            
+            return $dirpath . $profile_image->baseName . '.' . $profile_image->extension;
+        }
+    }
+
+    /*     * *
+     * save profile image thumb
+     * 
+     * ** */
+
+    public static function saveProfileThumbImg($dirpath = null, $profile_image_thumb = null, $id = null, $isadmin = null) {
+
+        if (!empty($id)) {
+            $old_image = \common\models\User::findImgage($id);
+
+            if (!empty($old_image['profile_image_thumb'])) {
+                //$file = \Yii::getAlias('@webroot') . '/' . $old_image['profile_image_thumb'];
+                $file = \Yii::getAlias('@frontend').'/web/'. $old_image['profile_image_thumb'];
+                $file = str_replace('\\', '/', $file);
+                if (file_exists($file)) {
+                    unlink($file);
+                }
+            }
+        }
+
+        if (!is_dir($dirpath)) {
+            mkdir($dirpath, 0777, true);
+        }
+
+        $dirpath = $dirpath . time() . '_';
+        $temp_dirpath = \Yii::getAlias('@frontend').'/web/'.$dirpath;
+        if (!empty($isadmin)) {
+            $temp_dirpath .= '.png';
+            file_put_contents($temp_dirpath, $profile_image_thumb);
+            $dirpath = str_replace(\Yii::getAlias('@frontend').'/web/', '', $temp_dirpath);
+            return $dirpath;
+        } else {
+            $profile_image->saveAs($dirpath . $profile_image_thumb->baseName . '.' . $profile_image_thumb->extension);
+            //$dirpath = ltrim($dirpath, './');
+            return $dirpath . $profile_image_thumb->baseName . '.' . $profile_image->extension;
+        }
+    }
+
+    /*     * *
+     * Date time  converter
+     * 
+     * ** */
+
+    public static function convert($dateStr, $type = 'date', $format = null) {
+        if ($type === 'datetime') {
+            $fmt = ($format == null) ? self::DATETIME_FORMAT : $format;
+        } elseif ($type === 'time') {
+            $fmt = ($format == null) ? self::TIME_FORMAT : $format;
+        } else {
+
+            $fmt = ($format == null) ? self::DATE_FORMAT : $format;
+        }
+        return \Yii::$app->formatter->asDate($dateStr, $fmt);
+    }
+
+    public static function is_in_array_history($array, $key, $key_value) {
+        $within_array = false;
+        foreach ($array as $k => $v) {
+            if (is_array($v)) {
+                $within_array = self::is_in_array($v, $key, $key_value);
+                if ($within_array != false) {
+                    $within_array = $k;
+                    break;
+                }
+            } else {
+                if ($v == $key_value && $k == $key) {
+                    $within_array = true;
+                    break;
+                }
+            }
+        }
+        return $within_array;
+    }
+
+}

@@ -1,0 +1,94 @@
+.add-category-modal{
+    .categoryslider-box{ position: relative;  margin-bottom:45px;
+                         @media (max-width:$screen-xs-max){
+                             margin-bottom:20px;
+                         }
+                         .owl-nav { position: absolute; width: 100%; top: 34%; height: 0px;
+                                    .owl-prev{
+                                        float: left;
+                                    }
+                                    .owl-next{
+                                        float: right;
+                                    }
+                         }
+    }
+
+    .item{
+        .checkbox{   
+            input[type=checkbox]:checked, input[type=radio]:checked {
+                + label{
+                    span{
+                        background-color: $color-green; 
+                    }
+                    span.hair-icon{ 
+                        background-image: url('../images/hair-icon-white.png');
+                    }
+                    span.training-icon{
+                        background-image: url('../images/training-icon-white.png');
+                    }
+                    span.skin-icon{
+                        background-image: url('../images/skin-icon-white.png'); 
+                    } 
+                    span.nails-icon{
+                        background-image: url('../images/nails-icon-white.png');
+                    } 
+                    span.massage-icon{
+                        background-image: url('../images/massage-icon-white.png');
+                    } 
+                    span.bundle-icon{
+                        background-image: url('../images/bundle-icon-white.png');
+                    } 
+                }
+
+            }
+
+        }
+        .checkbox, .radio{ width: 100%; display: block; margin-bottom: 10px; margin-top: 10px; position: relative; padding-left: 0px; text-align: center;
+        }
+        input[type=checkbox], input[type=radio]{display: none;}
+        label{&:before{
+                  content:"";display: inline-block; position: absolute;left: 0; background-color:#F5F7FA;       
+              }
+        }  
+
+        .category_icon{  padding: 0px !important;
+                         .cat-icon{transition: all 0.3s ease;height: 120px; width: 120px; background-repeat: no-repeat; background-position: center center;background-color: $color-white;text-align: center; border-radius:50%; display: block; margin: 0 auto;
+                                   box-shadow:0 0px 3px 0px rgba(0, 0, 0, 0.2); 
+                                   @media(min-width:$screen-sm-min) and (max-width:$screen-md-max){
+                                       width:100px;height:100px; background-size:80px;
+                                   }
+                                   @media (max-width:$screen-xs-max){
+                                       width: 70px;height:70px; background-size:50px;
+                                   }
+
+                                   img{
+                                       margin: 0 auto;
+                                   }
+                         }
+                         .hair-icon{
+                             background-image: url('../images/hair-icon.png'); 
+                         }
+                         .training-icon{
+                             background-image: url('../images/training-icon.png');
+                         }
+                         .skin-icon{
+                             background-image: url('../images/skin-icon.png');
+                         } 
+                         .nails-icon{
+                             background-image: url('../images/nails-icon.png');
+                         } 
+                         .massage-icon{
+                             background-image: url('../images/massage-icon.png');
+                         } 
+                         .bundle-icon{
+                             background-image: url('../images/bundle-icon.png');
+                         } 
+
+
+        }  
+    } 
+}
+
+
+
+

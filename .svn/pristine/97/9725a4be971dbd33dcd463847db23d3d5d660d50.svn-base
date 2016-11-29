@@ -1,0 +1,106 @@
+.login-page{
+    .inner-heading{
+         text-align: center; padding: 30px 0 10px;
+    }
+   .login-section{ margin: 40px 120px; box-shadow: 0px 0px 7px 0px rgba(0, 0, 0, 0.1); background-color: $color-white; letter-spacing: 0.3px;
+                @media(max-width:$screen-xs-max){margin:15px;}
+                @media(min-width:$screen-md-min) and (max-width:$screen-lg-max){
+                   margin: 40px 40px;  
+                 }
+                 .help-block-error{ position: absolute;font-size: 14px;}
+                 .inner-heading{ text-align: center;}
+                .left{
+                    background-image: url(../images/login-bg.jpg); background-repeat: no-repeat; background-size: cover;
+                    .table{
+                        display: table;height: 522px;
+                        @media(max-width:$screen-xs-max){height: 200px; }
+                        @media(min-width:$screen-sm-min) and (max-width:$screen-sm-max){height: 300px; } 
+                    }
+                
+                }
+                .right{ padding: 40px; 
+                    .top-btn{ margin-bottom:50px;
+                            li.active{
+                                a{
+                                    color: $color-green;
+                                }
+                            }
+                            li{
+                                a{
+                                    font-size: 20px; font-family: $avantgarde-md; color:#A1A1A1; text-transform: uppercase; text-decoration: none; padding: 0px 5px; position: relative;
+                                    &:after{
+                                        width: 1px; content: ''; position: absolute; right: -9px; top: 3px; height: 19px; background-color: #D6D6D6; 
+                                    }
+
+                                    &:hover{
+                                        color: $color-green;
+                                    }
+                                }
+                                &:first-child{
+                                    a{
+                                        padding-left: 0px;
+                                    }
+                                }
+                                &:last-child{
+                                    a{
+                                        &:after{ background-color: transparent;}      
+                                    } 
+                                }
+                            }
+                        }
+                        .forgot-password{
+                            a{
+                                font-size: 14px; color: #666666; float: right;font-family: $avantgarde-md; 
+                            }
+                        }
+                        .form-group{ margin-bottom: 30px;
+                            .form-control{
+                                border:none; border-bottom: 1px solid #D8D7DD; box-shadow: none; border-radius: 0px; height: 45px; font-size: 18px; color: #A2A2A2;font-family: $avantgarde-md; padding-left: 0px;
+                                background-image: url('../images/login-icon.png'); background-repeat: no-repeat; background-position: right; padding-right: 45px;
+                            }
+                            .password{
+                                 background-position: right -116px;
+                            }
+                        }
+                        .bottom-section{
+                             margin-top: 176px; margin-bottom:0px;
+                             @media(max-width:480px){
+                                margin-top: 76px; 
+                            }
+                        }
+                        .btn{
+                             padding: 10px 25px; font-size: 16px;font-family: $avantgarde-md; 
+                             @media(max-width:480px){
+                                padding:8px; font-size:12px;
+                              }
+                        }
+                        .login-social-site{
+                            float: right;
+                            li{padding:0;
+                                a{
+                                    i{
+                                        height: 42px; width: 42px; font-size: 20px; border-radius: 50%;  display: table-cell; vertical-align: middle; text-align: center;color:$color-white; 
+                                        @media(max-width:480px){
+                                            height: 30px; width:30px; font-size:14px;
+                                        }
+                                    }
+                                    i.fa-facebook{
+                                         background-color: #5D84BB;
+                                    }
+                                    i.fa-linkedin{
+                                       background-color: #0084B1; 
+                                    }
+                                    i.fa-google-plus{
+                                       background-color: #E86050; 
+                                    }
+                                    i.fa-twitter{
+                                        background-color: #55ACEE;
+                                    }
+                                }
+                            }
+                        }
+                }
+} 
+}
+
+

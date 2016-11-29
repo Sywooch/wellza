@@ -1,0 +1,124 @@
+.service-package-section{padding:0 60px;
+                         .inner-heading{
+                             text-align: center; padding: 30px 0 10px;
+                         }
+                         .btn-bottom{ margin-bottom: 40px;}
+                         .select-time-slider{ margin-top: 90px;
+                                              .owl-item{background-color: $color-white;transform:scale(0.9); border: 2px solid #F0F0F0; padding: 2px;transition:.4s ease border-color;
+                                                        &:hover{
+                                                            border-color: $color-orange;
+                                                        }
+                                                        .item{ transition:.4s ease all;
+                                                               .item-cnt{ text-align: center; padding:15px; z-index: -11;
+                                                                          .time{
+                                                                              .number{
+                                                                                  font-size: 60px; color:$color-black; font-family: $avantgardestd-bk; position: relative;
+                                                                                  &:after{
+                                                                                      background-color:rgba(0,0,0,0.1); content: "";  height: 2px; left: 0;
+                                                                                      position: absolute;  right: 0; text-align: center;bottom:-7px;width: 129px; z-index: -1; margin: 0 auto; 
+                                                                                  }
+                                                                              }
+                                                                              .minutes{
+                                                                                  font-size: 18px; color:$color-black; font-family: $brandon-grotesque-r; margin-top: -13px;
+                                                                              }
+                                                                              .price{
+                                                                                  font-size: 35px; font-family: $avantgardestd-bk; padding: 10px;
+                                                                              }
+                                                                          }
+                                                               }
+                                                        }  
+
+                                              }
+
+
+                                              .owl-item{
+                                                  &.active.center{  opacity:1;transform:scale(1); background-color: $color-green;border-color:transparent;
+                                                                    .item-cnt{border-left: none;
+                                                                              .time{
+                                                                                  .number,.minutes, .price{ 
+                                                                                      color: $color-white;  
+                                                                                  }
+                                                                              }
+                                                                    }
+                                                  }
+
+                                              }
+
+                         }
+
+                         .select-datetime-section{ position: relative; margin:130px 0 30px; 
+                                                   .top-header{ font-family: $avantgardestd-bk;
+                                                                .left-heading{
+                                                                    float: left; font-size: 20px; color: $color-666;  
+                                                                    @media(max-width:$screen-xs-max){
+                                                                        float: none;text-align:center;
+                                                                    }
+                                                                }
+                                                                .month{
+                                                                    width:250px; position: absolute; top: 0; left: 0; right: 0;margin:0 auto; text-align: center;
+                                                                    @media(max-width:$screen-xs-max){
+                                                                        position: relative;top: 10px;
+                                                                    }
+                                                                    .owl-item{
+                                                                        height:28px; font-size: 25px; color: $color-black;
+                                                                        .item-cnt{z-index: 99999;
+                                                                        }
+                                                                    }
+                                                                    .owl-nav{ position: absolute; top: -5px; width: 100%; height: 0;
+                                                                              .owl-prev, .owl-next{background: transparent; padding: 0; margin:0;}
+                                                                              .owl-prev{ float: left; }
+                                                                              .owl-next{ float: right;}
+                                                                    }
+                                                                }
+
+                                                   }
+                                                   .day{ 
+                                                       margin:25px 30px 30px;  position: relative; 
+
+                                                       .item-cnt{
+                                                           a{
+                                                               text-align: center; text-decoration: none;padding: 15px;color:$color-666; background-color: $color-white; border: 2px solid #F0F0F0;
+                                                               display:block; height: 109px;transition:.4s ease border-color;
+                                                               &:hover, &:active, &:focus{
+                                                                   border-color:$color-orange; 
+                                                               }
+                                                               .date-number{
+                                                                   font-size: 25px; font-family: $avantgarde-md;
+                                                               }
+                                                               .day-name{
+                                                                   font-family: $brandon-grotesque-r; font-size: 16px; display: block;
+                                                               }
+
+                                                           }
+                                                       }
+                                                       .owl-nav{ position: absolute; top: 30px; width: 100%; height: 0;
+                                                                 .owl-prev, .owl-next{background: transparent; padding: 0; margin:0;}
+                                                                 .owl-prev{ float: left; position: relative; left: -30px; }
+                                                                 .owl-next{ float: right;position: relative; right: -30px;}
+                                                       }
+                                                   }
+
+                                                   .time{ 
+                                                       margin:50px 30px 30px;  position: relative; 
+                                                       .item-cnt{
+                                                           a{
+                                                               text-align: center; text-decoration: none;padding: 20px 0 0px;color:$color-666; background-color: $color-white; border: 2px solid #F0F0F0;
+                                                               display:block; height: 80px; 
+                                                               &:hover, &:active, &:focus{
+                                                                   border-color:#F9AE39; 
+                                                               }
+                                                               .time-number{
+                                                                   font-size: 22px; font-family: $avantgarde-md; color: $color-666;
+                                                               }
+
+                                                           }
+                                                       }
+                                                       .owl-nav{ position: absolute; top: 17px; width: 100%; height: 0;
+                                                                 .owl-prev, .owl-next{background: transparent; padding: 0; margin:0;}
+                                                                 .owl-prev{ float: left; position: relative; left: -30px; }
+                                                                 .owl-next{ float: right;position: relative; right: -30px;}
+                                                       }
+                                                   }
+                         }
+
+}

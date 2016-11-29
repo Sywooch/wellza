@@ -1,0 +1,105 @@
+<?php
+/***
+ * Login controller will manage the user login and authentication operations
+ * ***/
+
+namespace frontend\modules\auth\controllers;
+
+use yii;
+use yii\web\Controller;
+
+use common\models\LoginForm;
+use common\models\User;
+use yii\widgets\ActiveForm;
+use yii\web\Response;
+
+class LoginController extends \frontend\modules\auth\components\Controller
+{
+    public function actions() {
+        return [
+            'error' => [
+                'class' => 'yii\web\ErrorAction',
+            ],
+            'auth' => [
+                'class' => 'yii\authclient\AuthAction',
+                'successCallback' => [$this, 'onAuthSuccess'],
+//                'redirectView' => $this->redirect(['/signup/client'])
+            ],
+        ];
+    }
+    
+    /**
+     * Callback for social signup
+     */
+    public function onAuthSuccess($client) {
+        $attributes = $client->getUserAttributes();
+        $social_type = '';
+        if(strpos($client->authUrl,"facebook")) {
+            $social_type = 'facebook';
+        }
+        /* elseif (strpos($client->authUrl,"twitter")) {
+            $social_type = 'twitter';
+            
+        } else {
+            $social_type = 'linkedin';
+        }*/  
+        $model = new LoginForm();
+        $model->scenario = 'sociallogin';
+        $model->email = $attributes['email'];
+        $password = User::getSocialPassword($attributes['email']);
+        
+        $model->password = $password->password_hash;
+        $model->social_id = $attributes['id'];
+        $model->social_type = $social_type;
+        $url = Yii::$app->urlManager->createUrl('auth/our-service');
+        if ($model->login()) {
+            return $this->redirect(['/auth/our-service']);
+            //return $this->redirect([$url]);
+                               
+        } else {
+            return $this->redirect(['/auth/our-service']);
+            //return $this->redirect([$url]);
+        }
+    }
+    public function actionIndex() {
+        
+        $model = new LoginForm();
+        $post = Yii::$app->request->post();
+        //echo Yii::$app->user->isProvider;die('...');
+        if(!Yii::$app->user->isGuest && Yii::$app->user->isClient){
+            return $this->render('/our-service/our-service');
+        }
+        if(!Yii::$app->user->isGuest && Yii::$app->user->isProvider){
+            return $this->redirect(['/provider/service']);
+            //return $this->render('/provider/service');
+        }
+        
+        if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return ActiveForm::validate($model);
+        }
+        if (!empty($post)) {
+            if ($model->load($post) && $model->login()) {
+                if(!Yii::$app->user->isGuest && Yii::$app->user->isClient){
+                    return $this->render('/our-service/our-service');
+                }
+                if(!Yii::$app->user->isGuest && Yii::$app->user->isProvider){
+                    return $this->redirect(['/provider/service']);
+                    //return $this->render('/provider/service');
+                }
+                //return $this->render('/our-service/our-service');
+            }
+        }
+        return $this->render('login', ['model' => $model]);
+    }
+    
+    public function actionOurService() {
+        
+        return $this->render('/our-service/our-service');
+    }
+
+    public function actionLogout() {
+        \yii::$app->user->logout();
+        return $this->redirect(['/auth/login']);
+    }    
+}

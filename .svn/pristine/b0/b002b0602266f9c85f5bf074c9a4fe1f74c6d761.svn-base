@@ -1,0 +1,297 @@
+<?php
+
+/*
+ * This api will get or set the data for a user
+ */
+
+namespace api\modules\v1\controllers;
+
+use Yii;
+use api\components\Controller;
+use common\models\User;
+use common\models\base\BaseLoginForm;
+use yii\web\NotFoundHttpException;
+use yii\filters\VerbFilter;
+use yii\web\UploadedFile;
+use common\models\PasswordResetRequestForm;
+use yii\helpers\ArrayHelper;
+use common\models\ChangePasswordFormApp;
+use common\models\UserRefrence;
+use common\models\Cart;
+/**
+ * User Controller API
+ *
+ */
+class UserController extends Controller {
+
+    public $serializer = [
+        'class' => 'yii\rest\Serializer',
+        'collectionEnvelope' => 'items',
+    ];
+
+    /**
+     * To get all the records from the user table
+     *
+     * * */
+    public function behaviors() {
+        return ArrayHelper::merge(parent::behaviors(), [
+                    'authenticator' => [
+                        'except' => [
+                            'reset-password-request',
+                        ]
+                    ],
+        ]);
+    }
+
+    public function actionIndex() {
+        return User::find()->all();
+    }
+
+    /**
+     * Api Call to register a user
+     *
+     */
+    public function actionRegister() {
+        $model = new \common\models\base\UserForm();
+        //$model->scenario = 'apiregister';
+
+        $model->load($this->requestParams, '');
+
+        if (!$model->validate()) {
+            return $model;
+        }
+
+        $returndata = $model->setUserData();
+
+        if (!empty($returndata)) {
+            return $returndata;
+        } else {
+            return \api\components\Utility::apiError('201', 'Records not saved');
+        }
+    }
+
+    /**
+     * Get the profile of a user.
+     *
+     */
+    public function actionGetProfile() {
+        $access_token = Yii::$app->request->getHeaders()->get('access-token');
+        $auth = \common\models\Authtoken::findIdentityByAccessToken($access_token);
+
+        $returndata = $this->getUserProfileData($auth->user_id);
+        ;
+        //    User::getProfileData($auth->user_id);
+
+        if (!empty($returndata)) {
+            return $returndata;
+        } else {
+            return \api\components\Utility::apiError('201', 'No Record found');
+        }
+    }
+
+    /**
+     * Edit the profile of a user.
+     *
+     */
+    public function actionEditProfile() {
+        $model = new \common\models\base\UserForm(['scenario' => \common\models\base\UserForm::SCENARIO_EDITPROFILE]);
+
+        $model->load($this->requestFormData, '');
+
+        $model->profile_image = UploadedFile::getInstanceByName('profile_image');
+
+        if (!$model->validate()) {
+            return $model;
+        }
+
+        $access_token = Yii::$app->request->getHeaders()->get('access-token');
+
+        $auth = \common\models\Authtoken::findIdentityByAccessToken($access_token);
+        $file = UploadedFile::getInstanceByName('profile_image');
+
+        $user_id = $auth->user_id;
+
+        $returndata = $model->setUserData($user_id, $file);
+        if (!empty($returndata)) {
+            $returndata = $this->getUserProfileData($user_id);
+            return $returndata;
+        } else {
+            return \api\components\Utility::apiError('201', 'No Record found');
+        }
+    }
+
+    /**
+     * returns the user data
+     *
+     */
+    public function getUserProfileData($user_id) {
+
+        $returndata = User::getProfileData($user_id);
+
+        if (!empty($returndata)) {
+            if (!empty($returndata['profile_image'])) {
+                //$baseurl = 'http://192.168.0.192'.Yii::$app->homeUrl;
+                //$baseurl .= $returndata['profile_image'];
+                $url = \yii\helpers\Url::to('@web', true) . '/';
+                $baseurl = $url . $returndata['profile_image'];
+                $returndata['profile_image'] = $baseurl;
+            } else {
+                $default_image = \yii\helpers\Url::to('@web', true) . Yii::getAlias('@defaultimg');
+                $returndata['profile_image'] = $default_image;
+            }
+
+            if (!empty($returndata['birth_date'])) {
+                $date = date_create($returndata['birth_date']);
+                $returndata['birth_date'] = date_format($date, "d-m-Y");
+            }
+
+            if (!empty($returndata['status'])) {
+
+                switch ($returndata['status']) {
+                    case 10:
+                        $returndata['status'] = 'Active';
+                        break;
+                    case 0:
+                        $returndata['status'] = 'Inactive';
+                        break;
+                }
+            }
+
+            return $returndata;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Login a user.
+     *
+     */
+    public function actionLogin() {
+        $model = new BaseLoginForm(['scenario' => \common\models\LoginForm::SCENARIO_APILOGIN]);
+        $model->load($this->requestParams, '');
+
+        if (!$model->validate()) {
+            return $model;
+        }
+
+        if ($model->login()) {
+
+            $data = $model->getLoggedUserDetails();
+            if (!empty($data)) {
+                if (!empty($data['image_url']) && file_exists($data['image_url'])) {
+                    $url = \yii\helpers\Url::to('@web', true) . '/';
+                    $baseurl = $url . $data['image_url'];
+                    $data['image_url'] = $baseurl;
+                } else {
+
+                    $default_image = \yii\helpers\Url::to('@web', true) . Yii::getAlias('@defaultimg');
+                    $data['image_url'] = $default_image;
+                }
+                $data['cart_count'] = Cart::find()->byCustomerId(\Yii::$app->user->id)->count();
+            }
+            return $data;
+        } else {
+            return \api\components\Utility::apiError('201', 'Failed to login.');
+        }
+    }
+
+    /**
+     * Social Login for Client or provider a user.
+     *
+     */
+    public function actionSocialLogin() {
+        $model = new \common\models\base\BaseSocialLogin();
+        $model->load($this->requestParams, '');
+
+        if (!$model->validate()) {
+
+            return $model;
+        } else {
+
+            if (!$model->setUserData()) {
+                return \api\components\Utility::apiError('201', 'Failed to login.');
+            }
+        }
+
+        if ($model->login()) {
+
+            $returndata = $model->getLoggedUserDetails();
+            if (!empty($returndata['image_url'])) {
+                $ext = pathinfo($returndata['image_url'], PATHINFO_EXTENSION);
+                $pos = strpos($ext, '?');
+                if ($pos === false) {
+                    $url = \yii\helpers\Url::to('@web', true) . '/';
+                    $baseurl = $url . $data['image_url'];
+                    $returndata['image_url'] = $baseurl;
+                }
+            }
+            return $returndata;
+            //return $model->getLoggedUserDetails();
+        } else {
+            return \api\components\Utility::apiError('201', 'Failed to login.');
+        }
+    }
+
+    /**
+     * Logout a user.
+     *
+     */
+    public function actionLogout() {
+        $access_token = Yii::$app->request->getHeaders()->get('access-token');
+
+        if (BaseLoginForm::removeAccessToken($access_token)) {
+            Yii::$app->user->logout();
+            return true;
+        } else {
+            return \api\components\Utility::apiError('201', 'Please give correct access token.');
+        }
+    }
+
+    /**
+     * reset password request
+     */
+    public function actionResetPasswordRequest() {
+        $rawData = Yii::$app->request->getRawBody();
+        $post = json_decode($rawData, true);
+        $post['requestType'] = 'api';
+        $model = new PasswordResetRequestForm();
+        $model->load($post, '');
+        if ($model->validate()) {
+            return $model->sendEmail();
+        } else {
+            return $model;
+        }
+    }
+
+    public function actionChangePassword() {
+        $rawData = \Yii::$app->request->getRawBody();
+        $data = json_decode($rawData, true);
+        $model = new ChangePasswordFormApp();
+        //$user->scenario = 'changepassword';
+        $model->load($data, '');
+        if ($model->validate() && $model->changePassword()) {
+            return true;
+        } else {
+            return $model;
+        }
+    }
+
+    public function actionReferFriend() {
+        $rawData = \Yii::$app->request->getRawBody();
+        $data = json_decode($rawData, true);
+        $model = new UserRefrence;
+        $model->load($data, '');
+        if ($model->validate() && $model->referFriend()) {
+            return true;
+        } else {
+            return $model;
+        }
+    }
+
+    public function actionReferredFriends() {
+        $userId = \Yii::$app->user->id;
+        return UserRefrence::referredFriends($userId);
+    }
+
+}
